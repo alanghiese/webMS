@@ -1,0 +1,194 @@
+<closebutton></closebutton>
+
+
+<div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-top: 20px">
+  <button class="btnCustom btn" [routerLink] = "['/graphs/temporal']" [routerLinkActive] = "[ 'active' ]">
+    <input type="radio" name="options" id="option1" autocomplete="off"> 
+    	Estadisticas temporales
+  </button>
+  <button class="btnCustom btn" [routerLink] = "['/graphs/nothing']" [routerLinkActive] = "[ 'active' ]">
+    <input type="radio" name="options" id="option2" autocomplete="off"> 
+    	Ninguno
+  </button>
+  <button class="btnCustom btn" [routerLink] = "['/graphs/turns']" [routerLinkActive] = "[ 'active' ]">
+    <input type="radio" name="options" id="option3" autocomplete="off">  
+    	Estadisticas de turnos
+  </button>
+</div>
+
+<br><br>
+
+<div *ngIf="this.getTemporal()">	
+	<table class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th>Medico</th>
+	      <th>Horarios ofrecidos</th>
+	      <th>Turnos tomados</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+	      <td>doctor1</td>
+	      <td>40</td>
+	      <td>43</td>
+	    </tr>
+	    <tr>
+	      <td>doctor2</td>
+	      <td>22</td>
+	      <td>31</td>
+	    </tr>
+	  </tbody>
+	</table>
+
+
+	<div>
+	  <div style="display: block; max-width: 70%">
+	    <canvas baseChart
+	            [datasets]="barChartData"
+	            [labels]="barChartLabels"
+	            [options]="barChartOptions"
+	            [legend]="barChartLegend"
+	            [chartType]="barChartType"
+	            (chartHover)="chartHovered($event)"
+	            (chartClick)="chartClicked($event)"></canvas>
+	  </div>
+	</div>	
+</div>
+
+<div *ngIf="this.getTurn()">
+	<div class="btn-group btn-group-toggle" data-toggle="buttons" >
+		<button class="btn btnCustom btn-light" (click) = "clickDoctor()">
+			<input type="radio" name="options" id="option1" autocomplete="off"> 
+				Demora de Médicos
+		</button>
+		<button class="btn btnCustom btn-light" (click) = "clear()">
+			<input type="radio" name="options" id="option2" autocomplete="off"> 
+				Ninguno
+		</button>
+		<button class="btn btnCustom btn-light" (click) = "clickPatient()">
+			<input type="radio" name="options" id="option3" autocomplete="off">  
+				Demora Pacientes
+		</button>
+	</div>
+	<br>
+	<br>
+
+
+	<div>
+		<!-- Doctores -->
+		<div *ngIf="this.getDoctor()" class="input-group input-group-sm mb-3" >
+			<div class="input-group-prepend">
+				<div class="input-group-text">
+					Tipo de gráfico
+				</div>
+			</div>
+			<select ng-model="selectedDoctor" #doctor class="form-control" style="max-width: 300px;"(change) = "change(doctor.value)">
+				<option value="0">Ninguno</option>
+				<option value="1">Todos los doctores en un dia</option>
+				<option value="2">Todos los doctores en un rango de días</option>
+				<option value="3">Un doctor en un dia</option>
+				<option value="4">Un doctor en un rango de días</option>
+			</select>
+		</div>
+
+		<!-- Pacientes -->
+		<div *ngIf="this.getPatient()" class="input-group input-group-sm mb-3">
+			<div class="input-group-prepend">
+				<div class="input-group-text">
+					Tipo de gráfico
+				</div>
+			</div>
+			<select ng-model="selectedPatient" #patient class="form-control" style="max-width: 300px;" (change) = "change(patient.value)">
+				<option value="0">Ninguno</option>
+				<option value="1">Todos los doctores en un dia</option>
+				<option value="2">Todos los doctores en un rango de días</option>
+				<option value="3">Un doctor en un dia</option>
+				<option value="4">Un doctor en un rango de días</option>
+			</select>
+		</div>
+
+
+		<div class="input-group input-group-sm mb-3">
+			<!-- dataPickers -->
+			<form *ngIf="!anySel()" class="form-inline">
+				<div  *ngIf="!oneDay()" class="input-group-prepend">
+					<div class="input-group-text">
+						Desde
+					</div>
+				</div>
+				<div  *ngIf="oneDay()" class="input-group-prepend">
+					<div class="input-group-text">
+						Dia
+					</div>
+				</div>
+					<div class="form-group">
+						<div class="input-group">
+							<input class="form-control" placeholder="yyyy-mm-dd"
+							name="dpSince" [(ngModel)]="modelSince" ngbDatepicker #d="ngbDatepicker" (click)="d.toggle()">
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+								<img src="/assets/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+							</button>
+						</div>
+						</div>
+					</div>
+			</form>
+
+		    <form *ngIf="!anySel() && !oneDay()" class="form-inline" style="margin-left: 20px">
+		      <div class="input-group-prepend">
+		        <div class="input-group-text">
+		          Hasta
+		        </div>
+		      </div>
+		      <div class="form-group">
+		        <div class="input-group">
+		          <input class="form-control" placeholder="yyyy-mm-dd"
+		                 name="dpUntil;" [(ngModel)]="modelUntil" ngbDatepicker #d="ngbDatepicker" (click)="d.toggle()">
+		          <div class="input-group-append">
+		            <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+		              <img src="/assets/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+		            </button>
+		          </div>
+		        </div>
+		      </div>
+		    </form> 
+
+		    
+
+		    <!-- Seleccion de doctores -->
+
+		    <div *ngIf="chooseDoctor()" class="form-inline" style="margin-left: 30px">
+		      <div class="input-group-prepend">
+		        <div class="input-group-text">
+		          Medico
+		        </div>
+		      </div>
+		      <select ng-model="selectedDoctorName" #doctor class="form-control" style="max-width: 300px;" (change)="onChange(doctor.value)">
+		        <option>Ninguno</option>
+		        <option>Medico 1</option>
+		        <option>Medico 2</option>
+		        <option>Medico 3</option>
+		      </select>
+		    </div>
+	    </div>
+	</div>
+	<br>
+
+	<div class="buttonsZone">
+	  <div *ngIf="(this.getDoctor() || this.getPatient()) && !this.getDraw() && !anySel()" (click) = "clickDraw()">
+	    <button type="button" class="btn btn-success">
+	      Gráficar
+	    </button>
+	  </div>
+
+	  <div *ngIf="(this.getDoctor() || this.getPatient()) && this.getDraw()" (click)="clickDraw()">
+	    <button type="button" class="btn btn-success">
+	      Limpiar
+	    </button>
+	  </div>
+	</div> <!--buttonsZone-->
+
+	<br>
+	<hr>
+</div>

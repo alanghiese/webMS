@@ -1,0 +1,22 @@
+footer {
+    position: absolute;
+    bottom: 0%;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+    background-color: #ffa07a;
+    
+} 
+
+body {
+    background-color: #ffa07a;
+}
+.active{
+	
+    box-shadow: 1px 1px 3px;
+}

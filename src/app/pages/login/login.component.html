@@ -1,0 +1,36 @@
+<div class="loginForm">
+	<br>
+	<form #formLogin = "ngForm" (ngSubmit)="login(); formLogin.reset();">
+	  <div class="form-group">
+	    <label class="tittle">
+	    	<strong>Usuario</strong>
+	    </label>
+	    <br>
+	    <input type="text" class="inputclass"  placeholder="Ingrese el usuario"
+	    	name="user" #user="ngModel" [(ngModel)] = "acc.user" required>
+	  </div>
+	  <div class="form-group">
+	    <label class="tittle">
+	    	<strong>Contraseña</strong>
+	    </label>
+	    <br>
+	    <input type="password" class="inputclass" id="exampleInputPassword1" placeholder="Contraseña"
+	    	name="password" #password="ngModel" [(ngModel)] = "acc.password" required>
+	    <small id="emailHelp" class="form-text text-muted">
+	    	Nunca le des tus datos personales a nadie
+	    </small>
+	  </div>
+	  <div class="form-check">
+	    <input type="checkbox" class="form-check-input" name="save" #save="ngModel" [(ngModel)] = "acc.checked">
+	    <label class="form-check-label" for="exampleCheck1">
+	    	<strong>Mantener la sesion iniciada</strong>
+	    </label>
+	  </div>
+	  <button type="submit" class="btn btn-primary" [disabled]="!formLogin.form.valid">
+	  	Entrar
+	  </button>
+	</form>
+	<br>
+</div>
+
+
