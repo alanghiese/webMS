@@ -22,6 +22,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { TurnsfiltersComponent } from './components/turnsfilters/turnsfilters.component';
 import { SessionProvider } from './providers/session';
 import { DbPetitionsComponent } from './providers/dbPetitions';
+import { LoadingIMGComponent } from './components/loading-img/loading-img.component';
 
 
 
@@ -38,7 +39,8 @@ import { DbPetitionsComponent } from './providers/dbPetitions';
     UparrowComponent,
     CloseButtonComponent,
     LoginComponent,
-    TurnsfiltersComponent
+    TurnsfiltersComponent,
+    LoadingIMGComponent
   ],
   imports: [
     BrowserModule,

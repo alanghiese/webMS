@@ -1,32 +1,33 @@
 <div class="loginForm">
 	<br>
-	<form #formLogin = "ngForm" (ngSubmit)="login(); formLogin.reset();">
+	<form #formLogin = "ngForm" (ngSubmit)="login()">
 	  <div class="form-group">
 	    <label class="tittle">
 	    	<strong>Usuario</strong>
 	    </label>
 	    <br>
 	    <input type="text" class="inputclass"  placeholder="Ingrese el usuario"
-	    	name="user" #user="ngModel" [(ngModel)] = "acc.user" required>
+	    	name="user" #user="ngModel" [(ngModel)] = "acc.user" required [disabled]="loading">
 	  </div>
+	  <loading-img  *ngIf="this.loading"></loading-img>
 	  <div class="form-group">
 	    <label class="tittle">
 	    	<strong>Contraseña</strong>
 	    </label>
 	    <br>
 	    <input type="password" class="inputclass" id="exampleInputPassword1" placeholder="Contraseña"
-	    	name="password" #password="ngModel" [(ngModel)] = "acc.password" required>
+	    	name="password" #password="ngModel" [(ngModel)] = "acc.password" required [disabled]="loading">
 	    <small id="emailHelp" class="form-text text-muted">
 	    	Nunca le des tus datos personales a nadie
 	    </small>
 	  </div>
 	  <div class="form-check">
-	    <input type="checkbox" class="form-check-input" name="save" #save="ngModel" [(ngModel)] = "acc.checked">
+	    <input type="checkbox" class="form-check-input" name="save" #save="ngModel" [(ngModel)] = "acc.checked" [disabled]="loading">
 	    <label class="form-check-label" for="exampleCheck1">
 	    	<strong>Mantener la sesion iniciada</strong>
 	    </label>
 	  </div>
-	  <button type="submit" class="btn btn-primary" [disabled]="!formLogin.form.valid">
+	  <button type="submit" class="btn btn-primary" [disabled]="!formLogin.form.valid || loading">
 	  	Entrar
 	  </button>
 	</form>

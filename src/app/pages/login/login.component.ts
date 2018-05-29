@@ -15,6 +15,7 @@ import { UserCredentials } from '../../interfaces';
 export class LoginComponent implements OnInit {
 
   acc: User;
+  private loading: boolean = false;
 
   constructor(
 		private _route: ActivatedRoute,
@@ -32,9 +33,6 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('password',''); 
       this._appComponent.logged = false;
     }
-
-    
-    
   }
 
   account: UserCredentials = {
@@ -50,12 +48,14 @@ export class LoginComponent implements OnInit {
     this.account.enrollmentId = this.acc.user;
     this.account.password = this.acc.password;
     var resp;
+    this.loading = true;
     this._DbPetitionsComponent.login(this.account).subscribe(
       (loginresp) =>{
         resp = loginresp;
         console.log(resp);
         if (resp){
           this._appComponent.logged = true; 
+          this.loading = false;
           this._router.navigate(['home']);
         }
         else
