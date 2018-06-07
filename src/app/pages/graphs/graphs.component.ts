@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { I18n, CustomDatepickerI18n } from '../../providers/CustomDatepickerI18n';
 import { NgbDatepickerI18n, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { DbPetitionsComponent } from '../../providers/dbPetitions'
+import { AppComponent } from '../../app.component';
+
 
 
 import { turnosV0, UserCredentials } from '../../interfaces';
@@ -13,7 +14,7 @@ const now = new Date();
   selector: 'graphs',
   templateUrl: './graphs.component.html',
   styleUrls: ['./graphs.component.css'],
-  providers: [I18n, {provide: NgbDatepickerI18n, useClass: CustomDatepickerI18n}, DbPetitionsComponent] // define custom Ng
+  providers: [I18n, {provide: NgbDatepickerI18n, useClass: CustomDatepickerI18n}] // define custom Ng
 })
 export class GraphsComponent implements OnInit {
 
@@ -22,8 +23,7 @@ export class GraphsComponent implements OnInit {
 	constructor(
 		private _route: ActivatedRoute,
 		private _router: Router,
-		private _DbPetitionsComponent: DbPetitionsComponent
-
+		private appComponent: AppComponent
 	){
 		this.param = null;
 	}
@@ -39,16 +39,7 @@ export class GraphsComponent implements OnInit {
 
 	private doctor: boolean = false;
 	private patient: boolean = false;
-	private draw: boolean = false;
-	private modelSince: NgbDateStruct = {day: 1, month: now.getMonth() + 1, year: now.getFullYear() };
-	private modelUntil: NgbDateStruct = {day: 1, month: now.getMonth() + 2, year: now.getFullYear() };
-	private doctorSelected: String = 'Ninguno';
-	private type = "0";
 	private turnsV0_array: Array<turnosV0>;
-	private account: UserCredentials = {
-				enrollmentId: '',
-				password: ''
-			};
 
 	//para graficos temporales
 
@@ -93,16 +84,6 @@ export class GraphsComponent implements OnInit {
 
 
 	//funciones booleanas para comparar que tipo de grafico voy a tener que mostrar
-	public chooseDoctor():boolean{
-		return this.type == "3" || this.type == "4";
-	}
-	public oneDay():boolean{
-		return this.type == "1" || this.type == "3";
-	}
-
-	public anySel():boolean{
-		return this.type == "0";
-	}
 
 	public getTurn():boolean{
 		return this.param == 'turns'
@@ -115,11 +96,6 @@ export class GraphsComponent implements OnInit {
 
 	//funcionalidades de los botones
 	public clickDraw(){
-		this.draw = !this.draw;
-
-
-		
-
 
 		//dibujar dependiendo la opcion elegida
 		if (this.doctor){
@@ -131,38 +107,17 @@ export class GraphsComponent implements OnInit {
 	}
 
 
-	public change(value:any){
-		this.draw = false;
-		this.type = value;
-	}
-
 	public clickDoctor(){
-		this.clear();
 		this.doctor = !this.doctor;
 		this.patient = false;
-		this.draw = false;
-		this.type = "0";
 	}
 
 	public clickPatient(){
-		this.clear();
 		this.patient = !this.patient;
 		this.doctor = false;
-		this.draw = false;
-		this.type = "0";
 	}
 
-	public clear(){
-		this.patient = false;
-		this.doctor = false;
-		this.type = "0";
-		this.modelSince= { day: 1, month: now.getMonth() + 1, year: now.getFullYear() };
-		this.modelUntil= { day: 1, month: now.getMonth() + 2, year: now.getFullYear() };
-	}
 
-	public getDraw(): boolean{
-		return this.draw;
-	}
 
 	public getPatient(): boolean{
 		return this.patient;
@@ -174,11 +129,11 @@ export class GraphsComponent implements OnInit {
 	}
 
 
-	//seteo el valor del doctor 
-	public onChange(value:String){
-  		this.doctorSelected = value;
+	
+  	//filtrar
+  	filter(){
+  		console.log(this.appComponent.filter);
   	}
-
 
 	//para graficos de turnos
 

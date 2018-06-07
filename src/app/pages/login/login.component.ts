@@ -58,8 +58,10 @@ export class LoginComponent implements OnInit {
           this.loading = false;
           this._router.navigate(['home']);
         }
-        else
+        else{
+          this.loading = false;
           alert('Datos incorrectos');
+        }
       },
       (err) => console.log('ERROR'));
 

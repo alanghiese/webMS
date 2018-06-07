@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Filter } from './models/filter';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 })
 export class AppComponent {
 	logged:boolean;
+	filter: Filter;
 
 	constructor() {
 		if ((localStorage.getItem('checked') != null) && (localStorage.getItem('checked') == 'false'))
@@ -15,6 +17,8 @@ export class AppComponent {
 	    if ((localStorage.getItem('checked') != null) && (localStorage.getItem('checked') == 'true')){
 	        this.logged = true;
 	    }
+
+	    this.filter = new Filter('','','','','Ninguno','Ninguno','Ninguno','Ninguno');
 	}
 	
 }

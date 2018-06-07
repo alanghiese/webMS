@@ -19,10 +19,10 @@ import { Error404Component } from './pages/error404/error404.component';
 import { UparrowComponent } from './components/uparrow/uparrow.component';
 import { CloseButtonComponent } from './components/close-button/close-button.component';
 import { LoginComponent } from './pages/login/login.component';
-import { TurnsfiltersComponent } from './components/turnsfilters/turnsfilters.component';
 import { SessionProvider } from './providers/session';
 import { DbPetitionsComponent } from './providers/dbPetitions';
 import { LoadingIMGComponent } from './components/loading-img/loading-img.component';
+import { FiltersComponent } from './components/filters/filters.component';
 
 
 
@@ -39,8 +39,8 @@ import { LoadingIMGComponent } from './components/loading-img/loading-img.compon
     UparrowComponent,
     CloseButtonComponent,
     LoginComponent,
-    TurnsfiltersComponent,
-    LoadingIMGComponent
+    LoadingIMGComponent,
+    FiltersComponent
   ],
   imports: [
     BrowserModule,
