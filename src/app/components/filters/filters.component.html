@@ -57,7 +57,7 @@
 	</div> <!-- fin de la fila de arriba -->
 
 	<!-- Segunda fila -->
-	<div class="input-group input-group-sm " >
+	<div class="input-group input-group-sm " style="margin-top: 0px" >
 
 		<!-- Desde -->                                       
 		<div class="input-group mb-3" style="max-width: 240px; margin-right: 18px;">
@@ -112,4 +112,7 @@
 	
 </div> <!-- del primer div -->
 
+<span *ngIf = "!validDate()" style="color: red">
+	Cuidado: fechas invalidas.	
+</span>
 <hr>

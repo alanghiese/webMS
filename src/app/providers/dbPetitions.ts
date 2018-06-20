@@ -64,11 +64,12 @@ export class DbPetitionsComponent {
 
     const url = `${this.API_URL_BASE}/${this.API_ENDPOINTS.connectToClient}`;
 
-    return this.http.get<JSONResponse>(url, {params: params})
+    return this.http.get<Client>(url, {params: params}) //JSONResponse
       .pipe(
-        map(resp => resp.data),
+        map(resp => resp),//.data
         tap(resp => {
           console.log(`connected to client=${dataSource}`);
+          console.log(resp);
           this.session.setActiveClient(resp);
         }),
         catchError(this.handleAndThrow(`connect to client=${dataSource}`))

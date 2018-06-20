@@ -38,21 +38,31 @@ export class FiltersComponent implements OnInit {
 	lastday (y,m){
 		return  new Date(y, m +1, 0).getDate();
 	}
-	
 
-  ngOnInit() {}
 
-  	// excludeSurname: string = '';
-  	// foundSurname: string = '';
+  	ngOnInit() {}
 
-  //Hasta
+
+
+  	validDate():boolean{
+
+  		if (this.modelSince.year == this.modelUntil.year){
+  			if (this.modelSince.month == this.modelUntil.month){
+  				if (this.modelSince.day == this.modelUntil.day)
+  					return true;
+  				else return this.modelSince.day < this.modelUntil.day;
+  			}
+  			else return this.modelSince.month < this.modelUntil.month;
+
+  		}
+  		else return this.modelSince.year < this.modelUntil.year;
+	}
+
+  	//Hasta
 	onChangeUntil(value: Date) {
 		this.appComponent.filter.selUntil = this.modelUntil.day + '/' + this.modelUntil.month + '/' + this.modelUntil.year;
 
 	}
-
-
-
 
 
 	//Desde
@@ -65,13 +75,11 @@ export class FiltersComponent implements OnInit {
 
 
 	//Servicio
-	// selService: String = "Ninguno";
 	onChangeService(value: any) {
 		this.appComponent.filter.selService = value;
 	}
 
 	//Practice
-	// selPractice: String = "Ninguno";
 	onChangePractice(value: any) {
 		this.appComponent.filter.selPractice = value;
 	}
@@ -79,14 +87,12 @@ export class FiltersComponent implements OnInit {
 
 
 	//Cobertura
-	// selCoverage: String = "Ninguno";
 	onChangeCoverage(value: any) {
 		this.appComponent.filter.selCoverage = value;
 	}
 
 
 	//Doctor
-	// selDoctor: String = "Ninguno";
 	onChangeDoctor(value: any) {
 		this.appComponent.filter.selDoctor = value;
 	}

@@ -52,21 +52,38 @@ export class LoginComponent implements OnInit {
     this._DbPetitionsComponent.login(this.account).subscribe(
       (loginresp) =>{
         resp = loginresp;
-        console.log(resp);
+        // console.log(resp);
+
+       
+
+        this._DbPetitionsComponent.connectToClient('delCerro').subscribe();
         if (resp){
           this._appComponent.logged = true; 
           this.loading = false;
+
+          
+         
           this._router.navigate(['home']);
+
+          
         }
         else{
           this.loading = false;
           alert('Datos incorrectos');
         }
       },
-      (err) => console.log('ERROR'));
+      (err) => {
+        this.loading = false;
+        let msg = 'Ups! Algo salió mal, intente de nuevo';
+        if (err.message.includes('incorrecto'))
+          msg = 'Matrícula o contraseña incorrecta';
+        console.log(msg);
 
 
-    //esta llendo al home antes de terminar el login
+
+      });
+
+
     
     
   }

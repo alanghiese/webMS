@@ -1,7 +1,7 @@
 .CloseButton{
-    position: fixed;
-    top: 43%;
-    bottom: 90%;
+    position: absolute;
+    top: 200px;
+    /*bottom: 90%;*/
     right: 0;
     width: 35px;
     height: 35px;

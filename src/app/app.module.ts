@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 import { routing, appRoutingProviders } from './app.routing'
 
 //components and pages
@@ -24,6 +24,11 @@ import { DbPetitionsComponent } from './providers/dbPetitions';
 import { LoadingIMGComponent } from './components/loading-img/loading-img.component';
 import { FiltersComponent } from './components/filters/filters.component';
 
+import { dbPetitionsInterceptor } from './providers/dbPetitionsInterceptor';
+
+//pipes
+import { UPPERCASE } from './pipes/toUpperCase.pipe';
+
 
 
 @NgModule({
@@ -40,7 +45,8 @@ import { FiltersComponent } from './components/filters/filters.component';
     CloseButtonComponent,
     LoginComponent,
     LoadingIMGComponent,
-    FiltersComponent
+    FiltersComponent,
+    UPPERCASE
   ],
   imports: [
     BrowserModule,
@@ -53,7 +59,9 @@ import { FiltersComponent } from './components/filters/filters.component';
   providers: [
       appRoutingProviders,
       SessionProvider,
-      DbPetitionsComponent
+      DbPetitionsComponent,
+      { provide: HTTP_INTERCEPTORS, useClass: dbPetitionsInterceptor, multi: true }
+      
   ],
   bootstrap: [AppComponent]
 })

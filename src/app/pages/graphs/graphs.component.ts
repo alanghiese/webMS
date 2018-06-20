@@ -6,7 +6,7 @@ import { AppComponent } from '../../app.component';
 
 
 
-import { turnosV0, UserCredentials } from '../../interfaces';
+import { UserCredentials } from '../../interfaces';
 
 const now = new Date();
 
@@ -19,6 +19,9 @@ const now = new Date();
 export class GraphsComponent implements OnInit {
 
 	private param: string = 'Nombre por defecto';
+	private doctor: boolean = false;
+	private patient: boolean = false;
+
 	
 	constructor(
 		private _route: ActivatedRoute,
@@ -35,64 +38,7 @@ export class GraphsComponent implements OnInit {
 				this._router.navigate(['/notfound']);
 		});
 	}
-
-
-	private doctor: boolean = false;
-	private patient: boolean = false;
-	private turnsV0_array: Array<turnosV0>;
-
-	//para graficos temporales
-
-	//funciones estadisticas
-	//demora medico
-	private loadArrayM(array: Array<number>){
-		for (var i = 0; i < this.turnsV0_array.length; ++i) {
-			array[i] = this.turnsV0_array[i].campo4 - this.turnsV0_array[i].campo3; // aca tengo que suponer que el paciente nunca llega antes del turno?
-		}
-		return array;
-	}
-
-	public medicalDelay(){
-		var array:Array<number>;
-		return ( this.average( this.loadArrayM(array) ) );
-	}
-
-	//demora paciente
-	private loadArrayP(array: Array<number>){
-		for (var i = 0; i < this.turnsV0_array.length; ++i) {
-			array[i] = this.turnsV0_array[i].campo3 - this.turnsV0_array[i].campo2; // aca tengo que suponer que el paciente nunca llega antes del turno?
-		}
-		return array;
-	}
-
-	public patientDelay(){
-		var array:Array<number>;
-		return ( this.average( this.loadArrayP(array) ) );
-	}
-
-
-	//promedio
-	public average(array: Array<number>){ 
-		var avg=0;
-		for (var i = 0; i < array.length; ++i) {
-			avg = avg + array[i];
-		}
-		avg = avg / array.length;
-		return avg;
-	}
-
-
-
-	//funciones booleanas para comparar que tipo de grafico voy a tener que mostrar
-
-	public getTurn():boolean{
-		return this.param == 'turns'
-	}
-
-	public getTemporal():boolean{
-		return this.param == 'temporal'
-	}
-
+	
 
 	//funcionalidades de los botones
 	public clickDraw(){
@@ -134,6 +80,23 @@ export class GraphsComponent implements OnInit {
   	filter(){
   		console.log(this.appComponent.filter);
   	}
+
+
+
+	//funciones booleanas para comparar que tipo de grafico voy a tener que mostrar
+
+	public getTurn():boolean{
+		return this.param == 'turns'
+	}
+
+	public getTemporal():boolean{
+		return this.param == 'temporal'
+	}
+
+
+
+
+
 
 	//para graficos de turnos
 
