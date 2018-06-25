@@ -19,8 +19,7 @@ const now = new Date();
 export class GraphsComponent implements OnInit {
 
 	private param: string = 'Nombre por defecto';
-	private doctor: boolean = false;
-	private patient: boolean = false;
+	private graphtype: string = '1';
 
 	
 	constructor(
@@ -31,49 +30,10 @@ export class GraphsComponent implements OnInit {
 		this.param = null;
 	}
 
-	ngOnInit() {
-		this._route.params.forEach((params: Params) => {
-			this.param = params['param'];
-			if (this.param && !(this.param == 'temporal' || this.param == 'turns'))
-				this._router.navigate(['/notfound']);
-		});
-	}
+	ngOnInit() {}
 	
 
-	//funcionalidades de los botones
-	public clickDraw(){
-
-		//dibujar dependiendo la opcion elegida
-		if (this.doctor){
-			
-		}
-		else if (this.patient){
-
-		}
-	}
-
-
-	public clickDoctor(){
-		this.doctor = !this.doctor;
-		this.patient = false;
-	}
-
-	public clickPatient(){
-		this.patient = !this.patient;
-		this.doctor = false;
-	}
-
-
-
-	public getPatient(): boolean{
-		return this.patient;
-	}
-
-
-	public getDoctor(): boolean{
-		return this.doctor;
-	}
-
+	
 
 	
   	//filtrar
@@ -85,15 +45,17 @@ export class GraphsComponent implements OnInit {
 
 	//funciones booleanas para comparar que tipo de grafico voy a tener que mostrar
 
-	public getTurn():boolean{
-		return this.param == 'turns'
+	isTemp():boolean{
+		return this.graphtype == '0';
 	}
 
-	public getTemporal():boolean{
-		return this.param == 'temporal'
+	isDoctorDelay():boolean{
+		return this.graphtype == '1';
 	}
 
-
+	isPatientDelay():boolean{
+		return this.graphtype == '2';
+	}
 
 
 

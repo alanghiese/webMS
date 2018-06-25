@@ -8,7 +8,7 @@ import { Filter } from './models/filter';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-	logged:boolean;
+	logged:boolean = false;
 	filter: Filter;
 
 	constructor() {

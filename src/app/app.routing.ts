@@ -16,7 +16,6 @@ const appRoutes: Routes = [
 	{path: 'home', component: EmptyComponent},
 	{path: 'turns', component: TurnsComponent},
 	{path: 'graphs', component: GraphsComponent},
-	{path: 'graphs/:param', component: GraphsComponent},
 	{path: '**', component: Error404Component}
 ];
 
