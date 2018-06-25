@@ -9,12 +9,11 @@ footer {
 html {
     position: relative;
     min-height: 100%;
-    background-color: #ffa07a;
-    
+    background-color: rgb(255, 216, 177);
 } 
 
 body {
-    background-color: #ffa07a;
+    background-color:rgb(255, 216, 177);
 }
 .active{
 	
