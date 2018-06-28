@@ -12,11 +12,11 @@ export class AppComponent {
 	filter: Filter;
 
 	constructor() {
-		if ((localStorage.getItem('checked') != null) && (localStorage.getItem('checked') == 'false'))
-        	this.logged = false;
-	    if ((localStorage.getItem('checked') != null) && (localStorage.getItem('checked') == 'true')){
+	    if ((localStorage.getItem('checked') != null) && (localStorage.getItem('checked') == 'true') 
+	    	&& (localStorage.getItem('user') != null) && (localStorage.getItem('password') != null)){
 	        this.logged = true;
 	    }
+	    else this.logged = false;
 
 	    this.filter = new Filter('','','','','Ninguno','Ninguno','Ninguno','Ninguno');
 	}

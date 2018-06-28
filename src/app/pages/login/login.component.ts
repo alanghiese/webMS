@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
 
   acc: User;
   private loading: boolean = false;
+  
 
   constructor(
 		private _route: ActivatedRoute,
@@ -33,6 +34,15 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('password',''); 
       this._appComponent.logged = false;
     }
+    else if (localStorage.getItem('checked') != null && localStorage.getItem('checked') == 'true'){
+      this.acc.checked = localStorage.getItem('checked');
+      this.acc.user = localStorage.getItem('user');
+      this.acc.password = localStorage.getItem('password');
+      if (localStorage.getItem('user') != null && localStorage.getItem('password') != null)
+        this._appComponent.logged = true;
+      else
+        this.login();
+    }
   }
 
   account: UserCredentials = {
@@ -40,11 +50,12 @@ export class LoginComponent implements OnInit {
     password: ''
   };
 
-  login(){
-    // console.log(this.acc);
+  login(){ //formLogin: NgForm
+    /*
     localStorage.setItem('checked',this.acc.checked);
     localStorage.setItem('user',this.acc.user);
-    localStorage.setItem('password',this.acc.password);
+    localStorage.setItem('password',this.acc.password);*/
+
     this.account.enrollmentId = this.acc.user;
     this.account.password = this.acc.password;
     var resp;
@@ -54,18 +65,14 @@ export class LoginComponent implements OnInit {
         resp = loginresp;
         // console.log(resp);
 
-       
-
-        this._DbPetitionsComponent.connectToClient('delCerro').subscribe();
+        // this._DbPetitionsComponent.connectToClient('delCerro').subscribe();
         if (resp){
           this._appComponent.logged = true; 
           this.loading = false;
-
-          
-         
+          localStorage.setItem('checked',this.acc.checked);
+          localStorage.setItem('user',this.acc.user);
+          localStorage.setItem('password',this.acc.password)
           this._router.navigate(['home']);
-
-          
         }
         else{
           this.loading = false;
@@ -77,7 +84,9 @@ export class LoginComponent implements OnInit {
         let msg = 'Ups! Algo salió mal, intente de nuevo';
         if (err.message.includes('incorrecto'))
           msg = 'Matrícula o contraseña incorrecta';
-        console.log(msg);
+
+        alert(msg);
+        // console.log(msg);
 
 
 
