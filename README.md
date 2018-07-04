@@ -1,6 +1,7 @@
 # WebMS
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.5.
+`npm install -g @angular/cli`
 
 ## instal npm in project
 

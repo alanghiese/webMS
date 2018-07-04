@@ -3,3 +3,7 @@ export const STORAGE = {
   PASSWORD: 'password',
   REMEMBER_ME: 'remember_me',
 }
+
+
+// export const assetsBaseRute = '/webMS/assets/';
+// export const mainRute = '/webMS/'
