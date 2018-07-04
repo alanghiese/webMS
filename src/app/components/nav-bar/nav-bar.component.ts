@@ -14,10 +14,11 @@ export class NavBarComponent implements OnInit {
   }
 
   logout(){
-  	this._appComponent.logged = false;
     this._appComponent.filter.excludeSurname = '';
     this._appComponent.filter.foundSurname = '';
   	localStorage.clear();
+    localStorage.setItem('logged', 'false');
+    localStorage.setItem('loading','false');
   }
 
 }

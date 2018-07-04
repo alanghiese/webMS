@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { AppComponent } from '../../app.component';
+// import { AppComponent } from '../../app.component';
 import { STORAGE } from '../../constants';
 import { User } from './user';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
@@ -18,13 +18,12 @@ import { Observable } from 'rxjs';
 export class LoginComponent implements OnInit {
 
   acc: User;
-  private loading: boolean = false;
   
 
   constructor(
 		private _route: ActivatedRoute,
 		private _router: Router,
-    private _appComponent: AppComponent,
+    // private _appComponent: AppComponent,
     private _DbPetitionsComponent: DbPetitionsComponent
 	){
     this.acc = new User("","",false);
@@ -35,19 +34,12 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('checked','false');
         localStorage.setItem('user','');
         localStorage.setItem('password',''); 
-        this._appComponent.logged = false;
       }
       else if (localStorage.getItem('checked') != null && localStorage.getItem('checked') == 'true'){
         this.acc.checked = localStorage.getItem('checked');
         this.acc.user = localStorage.getItem('user');
         this.acc.password = localStorage.getItem('password');
-        if (localStorage.getItem('user') != null && localStorage.getItem('password') != null)
-          this._appComponent.logged = true;
-        
-        if (this._appComponent.logged)
-          this.login();
-        
-        
+        localStorage.setItem('logged', 'true');
       }
 
 
@@ -60,13 +52,12 @@ export class LoginComponent implements OnInit {
   };
 
 
-  login(){ //formLogin: NgForm
-
+  login(){ 
+    localStorage.setItem('loading','true');
     this.account.enrollmentId = this.acc.user;
     this.account.password = this.acc.password;
     var resp;
     
-    this.loading = true;
     this._DbPetitionsComponent.login(this.account).subscribe(
       (loginresp) =>{
         resp = loginresp;
@@ -80,8 +71,10 @@ export class LoginComponent implements OnInit {
     			localStorage.setItem('checked',this.acc.checked);
     			localStorage.setItem('user',this.acc.user);
     			localStorage.setItem('password',this.acc.password);
-          this._appComponent.logged = true;
-    			this.loading = false;
+          // this._appComponent.logged = true;
+          // if (localStorage.getItem('checked') != null && localStorage.getItem('checked') == 'true')
+          localStorage.setItem('logged', 'true');
+          localStorage.setItem('loading','false');
     			this._router.navigate(['home']);
 			
         }

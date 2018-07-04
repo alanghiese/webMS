@@ -1,16 +1,22 @@
-<div *ngIf="!logged" class="login">
+<div *ngIf="isLoading()">
+	<p>Loading..</p>
+</div>
+
+
+<div *ngIf="!isLoading()">
+<div *ngIf="!isLogged()" class="login">
 	<login></login>
 </div>
 
-<div *ngIf="logged" style="user-select: none;">
+<div *ngIf="isLogged()" style="user-select: none;">
 	<navBar class="fixed-top"></navBar>
 
 	<body>
 	   
 
 		<div class="row-md" >  
-
-		    <br>
+			
+			<br>
 		    <div class="col-md-1 buttons" style="border-right: 1px solid rgb(255, 204, 153); height: 82%">
 		        <buttons></buttons>
 		    </div>
@@ -28,5 +34,5 @@
 <Footer style="user-select: none;"></Footer>
 <uparrow></uparrow>
 
-
+</div>
 

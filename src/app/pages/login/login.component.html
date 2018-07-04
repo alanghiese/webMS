@@ -2,7 +2,7 @@
 
 	<br>
 
-	<form #formLogin = "ngForm" (ngSubmit)="login(formLogin)">
+	<form #formLogin = "ngForm" (ngSubmit)="login()">
 	  <div class="form-group">
 	    <label class="tittle">
 	    	<strong>Usuario</strong>
@@ -11,8 +11,6 @@
 	    <input type="text" class="inputclass"  placeholder="Ingrese el usuario"
 	    	name="user" #user="ngModel" [(ngModel)] = "acc.user" required [disabled]="loading">
 	  </div>
-
-	  <loading-img  *ngIf="this.loading"></loading-img>
 
 	  <div class="form-group">
 	    <label class="tittle">
