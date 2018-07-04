@@ -79,17 +79,17 @@ export class LoginComponent implements OnInit {
 			
         }
         else{
-          this.loading = false;
+          localStorage.setItem('loading','false');
           alert('Datos incorrectos');
         }
       },
       (err) => {
-        this.loading = false;
-        let msg = 'Ups! Algo salió mal, intente de nuevo';
-        if (err.message.includes('incorrecto'))
-          msg = 'Matrícula o contraseña incorrecta';
+          localStorage.setItem('loading','false');
+          let msg = 'Ups! Algo salió mal, intente de nuevo';
+          if (err.message.includes('incorrecto'))
+            msg = 'Matrícula o contraseña incorrecta';
 
-        alert(msg);
+          alert(msg);
         // console.log(msg);
 
       });    

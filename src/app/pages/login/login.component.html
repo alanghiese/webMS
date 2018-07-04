@@ -25,13 +25,13 @@
 	  </div>
 
 	  <div class="form-check">
-	    <input type="checkbox" class="form-check-input" name="save" id="exampleCheck1" #save="ngModel" [(ngModel)] = "acc.checked" [disabled]="loading">
+	    <input type="checkbox" class="form-check-input" name="save" id="exampleCheck1" #save="ngModel" [(ngModel)] = "acc.checked">
 	    <label class="form-check-label" for="exampleCheck1">
 	    	<strong>Mantener la sesion iniciada</strong>
 	    </label>
 	  </div>
 
-	  <button type="submit" class="btn btn-primary" [disabled]="!formLogin.form.valid || loading">
+	  <button type="submit" class="btn btn-primary" [disabled]="!formLogin.form.valid">
 	  	Entrar
 	  </button>
 	  
