@@ -72,6 +72,7 @@ export class DbPetitionsComponent {
           console.log(resp);
           this.session.setActiveClient(resp);
         }),
+        
         catchError(this.handleAndThrow(`connect to client=${dataSource}`))
       );
   }

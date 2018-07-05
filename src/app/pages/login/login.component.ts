@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-// import { AppComponent } from '../../app.component';
+import { AppComponent } from '../../app.component';
 import { STORAGE } from '../../constants';
 import { User } from './user';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
@@ -23,27 +23,47 @@ export class LoginComponent implements OnInit {
   constructor(
 		private _route: ActivatedRoute,
 		private _router: Router,
-    // private _appComponent: AppComponent,
+    private _appComponent: AppComponent,
     private _DbPetitionsComponent: DbPetitionsComponent
 	){
     this.acc = new User("","",false);
   }
 
+  back = {
+    chk: '',
+    usr: '',
+    psw: '',
+    logged: '',
+    loading: '',
+    relog: ''
+    };
+
   ngOnInit() {
-      if (localStorage.getItem('checked') == null){
-        localStorage.setItem('checked','false');
-        localStorage.setItem('user','');
-        localStorage.setItem('password',''); 
-      }
-      else if (localStorage.getItem('checked') != null && localStorage.getItem('checked') == 'true'){
-        this.acc.checked = localStorage.getItem('checked');
-        this.acc.user = localStorage.getItem('user');
-        this.acc.password = localStorage.getItem('password');
-        localStorage.setItem('logged', 'true');
-      }
+    // console.log('entre al login')
 
+    if (localStorage.getItem('checked') != null)
+      this.back.chk = localStorage.getItem('checked');
+    if (localStorage.getItem('user') != null)
+      this.back.usr = localStorage.getItem('user');
+    if (localStorage.getItem('password') != null)
+      this.back.psw = localStorage.getItem('password');
+    if (localStorage.getItem('loading') != null)
+      this.back.loading = localStorage.getItem('loading');
+    if (localStorage.getItem('logged') != null)
+      this.back.logged = localStorage.getItem('logged');
+    if (localStorage.getItem('relog') != null)
+      this.back.relog = localStorage.getItem('relog');
+    
+    // console.log(this.back.logged);
+    // console.log(this.back.chk);
 
-
+    if (this.back.relog == 'true'){
+      this.acc.checked = this.back.chk;
+      this.acc.password = this.back.psw;
+      this.acc.user = this.back.usr;
+      this.login();
+    }
+    
   }
 
   account: UserCredentials = {
@@ -52,29 +72,29 @@ export class LoginComponent implements OnInit {
   };
 
 
+
   login(){ 
     localStorage.setItem('loading','true');
     this.account.enrollmentId = this.acc.user;
     this.account.password = this.acc.password;
     var resp;
     
+    console.log('logging..');
     this._DbPetitionsComponent.login(this.account).subscribe(
       (loginresp) =>{
         resp = loginresp;
-        // console.log(resp);
-
-        //this._DbPetitionsComponent.connectToClient('delCerro').subscribe();
-        this._DbPetitionsComponent.getAppointments(new Date(),new Date()).subscribe();
-     
+       
         if (resp){
-
+          let client: any[];
+          client = resp.usuario.fuenteDatos;
+          this._appComponent.setClients(client);
+          // localStorage.clear();
     			localStorage.setItem('checked',this.acc.checked);
     			localStorage.setItem('user',this.acc.user);
     			localStorage.setItem('password',this.acc.password);
-          // this._appComponent.logged = true;
-          // if (localStorage.getItem('checked') != null && localStorage.getItem('checked') == 'true')
           localStorage.setItem('logged', 'true');
           localStorage.setItem('loading','false');
+          localStorage.setItem('relog',this.back.relog);
     			this._router.navigate(['home']);
 			
         }
