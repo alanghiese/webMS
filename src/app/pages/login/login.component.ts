@@ -74,6 +74,7 @@ export class LoginComponent implements OnInit {
 
 
   login(){ 
+    
     localStorage.setItem('loading','true');
     this.account.enrollmentId = this.acc.user;
     this.account.password = this.acc.password;
@@ -88,13 +89,13 @@ export class LoginComponent implements OnInit {
           let client: any[];
           client = resp.usuario.fuenteDatos;
           this._appComponent.setClients(client);
-          // localStorage.clear();
+          localStorage.clear();
     			localStorage.setItem('checked',this.acc.checked);
     			localStorage.setItem('user',this.acc.user);
     			localStorage.setItem('password',this.acc.password);
           localStorage.setItem('logged', 'true');
-          localStorage.setItem('loading','false');
           localStorage.setItem('relog',this.back.relog);
+          localStorage.setItem('loading','false');
     			this._router.navigate(['home']);
 			
         }
@@ -105,6 +106,7 @@ export class LoginComponent implements OnInit {
       },
       (err) => {
           localStorage.setItem('loading','false');
+          localStorage.setItem('logged','false');
           let msg = 'Ups! Algo salió mal, intente de nuevo';
           if (err.message.includes('incorrecto'))
             msg = 'Matrícula o contraseña incorrecta';

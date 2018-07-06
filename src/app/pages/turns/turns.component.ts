@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppComponent } from '../../app.component';
 import { UPPERCASE } from '../../pipes/toUpperCase.pipe';
 import { MathsFunctions } from '../../providers/mathsFunctions'
+import { Router } from '@angular/router';
 
 
 import { DbPetitionsFalseComponent } from '../../providers/dbPetitionsFalse'//datos falsos
@@ -26,7 +27,13 @@ export class TurnsComponent implements OnInit {
 	private sers: string[] = [];
 // fin de datos falsos
 
-	constructor(private appComponent: AppComponent, private _DbPetitionsFalseComponent: DbPetitionsFalseComponent, private maths: MathsFunctions) { }
+	constructor(
+		private appComponent: AppComponent, 
+		private _DbPetitionsFalseComponent: DbPetitionsFalseComponent, 
+		private maths: MathsFunctions,
+		private _router: Router
+		){}
+	
 	array: any;
 	ngOnInit() {
 		this._DbPetitionsFalseComponent.get().subscribe( (resp) => {
@@ -41,6 +48,8 @@ export class TurnsComponent implements OnInit {
 				
 			}
 		});
+		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
+        this._router.navigate(['login']);
 
 
 	}

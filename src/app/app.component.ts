@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router } from '@angular/router';
 import { Filter } from './models/filter';
 // import { LoginComponent } from './pages/login/login.component'
 
@@ -22,12 +22,13 @@ export class AppComponent {
   	};
 
 
-	constructor(/*private loginComponent:LoginComponent*/) {
+	constructor(private _router: Router) {
 
 		// if (localStorage.getItem('loading')){
 		// 	localStorage.removeItem('loading');
 		// 	localStorage.setItem('loading', 'true');
 		// }
+        // localStorage.setItem('loading','false');
 
 		if (localStorage.getItem('checked') != null)
 			this.back.chk = localStorage.getItem('checked');
@@ -40,8 +41,6 @@ export class AppComponent {
 		if (localStorage.getItem('logged') != null)
 			this.back.logged = localStorage.getItem('logged');
 
-		// console.log(this.back.logged);
-		// console.log(this.back.chk);
 		localStorage.clear();
 		
 		if (this.back.chk != 'true')
@@ -54,8 +53,9 @@ export class AppComponent {
         	localStorage.setItem('user',this.back.usr);
         	localStorage.setItem('checked',this.back.chk);
         	localStorage.setItem('password',this.back.psw);
-        	localStorage.setItem('loading','false');
-        	// console.log(this.back.logged);
+        	 // localStorage.setItem('loading','false');
+        	this._router.navigate(['login']);
+        	// console.log(this.back.loading);
 			// console.log(this.back.chk);
 
 	    }
@@ -64,9 +64,11 @@ export class AppComponent {
 	    	localStorage.setItem('logged', this.back.logged);
         	// localStorage.setItem('user',this.back.usr);
         	// localStorage.setItem('checked',this.back.chk);
-        	// localStorage.setItem('password',this.back.psw);
-        	localStorage.setItem('loading','false');
+        	// localStorage.setItem('password',this.back.psw);	
+        	// localStorage.setItem('loading','false');
 	    }
+	    localStorage.setItem('loading','false');
+	    this._router.navigate(['login']);
 
 	    
 
@@ -78,11 +80,15 @@ export class AppComponent {
 	}
 
 	getClients():any[]{
-		return this.clients;
+		if (this.clients)
+			return this.clients;
+		return null;
 	}
 
 	getCurrentClient(){
-		return this.clients[0];
+		if (this.clients)
+			return this.clients[0];
+		return null;
 	}
 	
 

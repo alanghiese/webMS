@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'empty',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EmptyComponent implements OnInit {
 
-  constructor(){}
+  constructor(private _router: Router){}
 
-  ngOnInit() {}
+  ngOnInit() {
+  	if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
+        this._router.navigate(['login']);
+
+  }
   
 
 }

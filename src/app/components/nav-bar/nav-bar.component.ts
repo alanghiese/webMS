@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppComponent } from '../../app.component';
-import { DbPetitionsComponent } from '../../providers/dbPetitions'
+import { DbPetitionsComponent } from '../../providers/dbPetitions';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,16 +11,21 @@ import { Router } from '@angular/router';
 })
 export class NavBarComponent implements OnInit {
 
-  user;
-  private clients: any;
+  user = null;
+  private clients: any[] = null;
 
   constructor(
               private _appComponent: AppComponent,
               private _dbPetitions: DbPetitionsComponent,
               private _router: Router
               ){ 
-    this.user = this._appComponent.getCurrentClient().nombreFuente;
-    this.clients = this._appComponent.getClients();
+
+          // console.log(this._appComponent.getClients());
+    if (this.clientsExists()){
+      this.user = this._appComponent.getCurrentClient().nombreFuente;
+      this.clients = this._appComponent.getClients(); 
+    }
+    
   }
 
   ngOnInit() {
@@ -47,7 +52,7 @@ export class NavBarComponent implements OnInit {
                 alert('Debe relogearse');
                 localStorage.clear();
                 localStorage.setItem('logged', 'false');
-                this._router.navigate(['']);
+                this._router.navigate(['login']);
               }
               else alert(r.error.message);
             }
@@ -56,6 +61,19 @@ export class NavBarComponent implements OnInit {
 
           }
         });
+  }
+
+  clientsExists(){
+    
+    if (this._appComponent.getClients()){
+      this.user = this._appComponent.getCurrentClient().nombreFuente;
+      this.clients = this._appComponent.getClients(); 
+    }
+    return (this.clients != null);
+  }
+
+  isLogged(){
+    return localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'true';
   }
 
 }

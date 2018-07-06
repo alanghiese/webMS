@@ -30,7 +30,10 @@ export class GraphsComponent implements OnInit {
 		this.param = null;
 	}
 
-	ngOnInit() {}
+	ngOnInit() {
+		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
+        	this._router.navigate(['login']);
+	}
 	
 
 	
