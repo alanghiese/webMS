@@ -22,13 +22,13 @@ import { CloseButtonComponent } from './components/close-button/close-button.com
 import { LoginComponent } from './pages/login/login.component';
 import { SessionProvider } from './providers/session';
 import { DbPetitionsComponent } from './providers/dbPetitions';
-import { LoadingIMGComponent } from './components/loading-img/loading-img.component';
 import { FiltersComponent } from './components/filters/filters.component';
 
 import { dbPetitionsInterceptor } from './providers/dbPetitionsInterceptor';
 
 //pipes
 import { UPPERCASE } from './pipes/toUpperCase.pipe';
+import { LoadingComponent } from './pages/loading/loading.component';
 
 
 
@@ -45,9 +45,9 @@ import { UPPERCASE } from './pipes/toUpperCase.pipe';
     UparrowComponent,
     CloseButtonComponent,
     LoginComponent,
-    LoadingIMGComponent,
     FiltersComponent,
-    UPPERCASE
+    UPPERCASE,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,

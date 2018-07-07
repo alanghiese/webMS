@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoginResponse, UserCredentials, JSONResponse, AppointmentQuery, Client, MedicalHistory } from '../interfaces';
+import { LoginResponse, UserCredentials, JSONResponse, AppointmentQuery, Client, MedicalHistory, turnosV0 } from '../interfaces';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -72,8 +72,18 @@ export class DbPetitionsComponent {
           console.log(resp);
           this.session.setActiveClient(resp);
         }),
+        
         catchError(this.handleAndThrow(`connect to client=${dataSource}`))
       );
+  }
+
+
+  getStatic(){
+    return this.http.get('http://medisoftware.com.ar/MediwareHub/getStatic.php')
+    .pipe(
+      map(resp=> {
+        return resp;
+      }));
   }
 
   /**
@@ -91,15 +101,15 @@ export class DbPetitionsComponent {
       .set("fechaHasta", this._formatDate(to))
       .set("nombreMedico", "")    // vacio, no hace falta setearlo
       .set("momentoDelDia", "");  // vacio, no hace falta setearlo
-    console.log(this.session);
+    //console.log(this.session);
     const url = `${this.API_URL_BASE}/${this.API_ENDPOINTS.getAppointments}`;
 
     return this.http.get<JSONResponse>(url, {params: params})
       .pipe(
-        map(resp => {
+        map(resp => {console.log(resp);
           return resp.data
         }),
-        tap(ap => console.log(`get appointments ${params}`)),
+        //tap(ap => console.log(`get appointments ${params}`)),
         catchError(this.handleAndThrow(`get appointments ${params}`))
       );
   }

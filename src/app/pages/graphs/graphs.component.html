@@ -1,13 +1,13 @@
 <closebutton></closebutton>
 
-<div class="row-md">
+<div class="row-md" style="margin-right: 15px">
 	<div class="input-group input-group-sm mb-3" >
 
 		<div class="input-group mb-3" style="max-width: 44%">
 			<div class="input-group-prepend">
 				<span class="input-group-text" id="basic-addon1"><strong>Tipo de gráfico</strong></span>
 			</div>
-			<select ng-model="selectedGraphType" #type (change)="onChange(type.value)" class="form-control"
+			<select ng-model="selectedGraphType" #type class="form-control"
 			[(ngModel)]="this.graphtype">
 				<option value=0> Estadisticas temporales </option>
 				<option value=1> Estadisticas de turnos por demora de medicos </option>

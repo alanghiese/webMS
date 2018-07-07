@@ -1,33 +1,34 @@
-<div *ngIf="!logged" class="login">
-	<login></login>
+<div *ngIf="isLoading()">
+	<loading></loading>
 </div>
 
-<div *ngIf="logged" style="user-select: none;">
-	<navBar class="fixed-top"></navBar>
 
+<div *ngIf="!isLoading()">
+	<navBar></navBar> <!-- class="fixed-top" -->
 	<body>
 	   
-
-		<div class="row-md" >  
-
-		    <br>
-
-		    <div class="col-md-1 buttons" style="border-right: 1px solid rgb(255, 204, 153); height: 82%">
+		
+		<div class="row" style="max-width: 100%">  
+			<!-- style="border-right: 1px solid rgb(255, 204, 153); height: 82%" -->
+			<br>
+		    <div class="col-md-1 buttons"> 
 		        <buttons></buttons>
 		    </div>
 		    	
-		    
-		    <div class="col-md-11 interfaces"  style="margin-left: 10%; width: 90%">
-		        <filters></filters>
-		        
-		        <router-outlet ></router-outlet>
+
+		    	<!--  style="margin-left: 10%; width: 90%"-->
+		    <div class="col-md-11 interfaces"> 
+		        <filters *ngIf="isLogged()"></filters>
+
+		        <router-outlet></router-outlet>
 		    </div>
+
 	    
 		</div>
+
 	</body>
+
+	<Footer style="user-select: none;"></Footer>
+
+	<uparrow></uparrow>
 </div>
-<Footer style="user-select: none;"></Footer>
-<uparrow></uparrow>
-
-
-

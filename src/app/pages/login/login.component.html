@@ -2,7 +2,7 @@
 
 	<br>
 
-	<form #formLogin = "ngForm" (ngSubmit)="login(formLogin)">
+	<form #formLogin = "ngForm" (ngSubmit)="login()">
 	  <div class="form-group">
 	    <label class="tittle">
 	    	<strong>Usuario</strong>
@@ -12,8 +12,6 @@
 	    	name="user" #user="ngModel" [(ngModel)] = "acc.user" required [disabled]="loading">
 	  </div>
 
-	  <loading-img  *ngIf="this.loading"></loading-img>
-
 	  <div class="form-group">
 	    <label class="tittle">
 	    	<strong>Contraseña</strong>
@@ -21,19 +19,19 @@
 	    <br>
 	    <input type="password" class="inputclass" id="pass" placeholder="Contraseña"
 	    	name="password" #password="ngModel" [(ngModel)] = "acc.password" required [disabled]="loading">
-	    <small id="emailHelp" class="form-text text-muted">
+	    <!-- <small id="emailHelp" class="form-text text-muted">
 	    	Nunca le des tus datos personales a nadie
-	    </small>
+	    </small> -->
 	  </div>
 
 	  <div class="form-check">
-	    <input type="checkbox" class="form-check-input" name="save" id="exampleCheck1" #save="ngModel" [(ngModel)] = "acc.checked" [disabled]="loading">
+	    <input type="checkbox" class="form-check-input" name="save" id="exampleCheck1" #save="ngModel" [(ngModel)] = "acc.checked">
 	    <label class="form-check-label" for="exampleCheck1">
 	    	<strong>Mantener la sesion iniciada</strong>
 	    </label>
 	  </div>
 
-	  <button type="submit" class="btn btn-primary" [disabled]="!formLogin.form.valid || loading">
+	  <button type="submit" class="btn btn-primary" [disabled]="!formLogin.form.valid">
 	  	Entrar
 	  </button>
 	  

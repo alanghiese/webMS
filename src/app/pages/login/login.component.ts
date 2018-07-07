@@ -6,6 +6,9 @@ import { User } from './user';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
 import { UserCredentials } from '../../interfaces';
 
+import { turnosV0 } from '../../interfaces';
+import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'login',
@@ -15,7 +18,6 @@ import { UserCredentials } from '../../interfaces';
 export class LoginComponent implements OnInit {
 
   acc: User;
-  private loading: boolean = false;
   
 
   constructor(
@@ -27,22 +29,41 @@ export class LoginComponent implements OnInit {
     this.acc = new User("","",false);
   }
 
+  back = {
+    chk: '',
+    usr: '',
+    psw: '',
+    logged: '',
+    loading: '',
+    relog: ''
+    };
+
   ngOnInit() {
-    if (localStorage.getItem('checked') == null){
-      localStorage.setItem('checked','false');
-      localStorage.setItem('user','');
-      localStorage.setItem('password',''); 
-      this._appComponent.logged = false;
+    // console.log('entre al login')
+
+    if (localStorage.getItem('checked') != null)
+      this.back.chk = localStorage.getItem('checked');
+    if (localStorage.getItem('user') != null)
+      this.back.usr = localStorage.getItem('user');
+    if (localStorage.getItem('password') != null)
+      this.back.psw = localStorage.getItem('password');
+    if (localStorage.getItem('loading') != null)
+      this.back.loading = localStorage.getItem('loading');
+    if (localStorage.getItem('logged') != null)
+      this.back.logged = localStorage.getItem('logged');
+    if (localStorage.getItem('relog') != null)
+      this.back.relog = localStorage.getItem('relog');
+    
+    // console.log(this.back.logged);
+    // console.log(this.back.chk);
+
+    if (this.back.relog == 'true'){
+      this.acc.checked = this.back.chk;
+      this.acc.password = this.back.psw;
+      this.acc.user = this.back.usr;
+      this.login();
     }
-    else if (localStorage.getItem('checked') != null && localStorage.getItem('checked') == 'true'){
-      this.acc.checked = localStorage.getItem('checked');
-      this.acc.user = localStorage.getItem('user');
-      this.acc.password = localStorage.getItem('password');
-      if (localStorage.getItem('user') != null && localStorage.getItem('password') != null)
-        this._appComponent.logged = true;
-      else
-        this.login();
-    }
+    
   }
 
   account: UserCredentials = {
@@ -50,50 +71,50 @@ export class LoginComponent implements OnInit {
     password: ''
   };
 
-  login(){ //formLogin: NgForm
-    /*
-    localStorage.setItem('checked',this.acc.checked);
-    localStorage.setItem('user',this.acc.user);
-    localStorage.setItem('password',this.acc.password);*/
 
+
+  login(){ 
+    
+    localStorage.setItem('loading','true');
     this.account.enrollmentId = this.acc.user;
     this.account.password = this.acc.password;
     var resp;
-    this.loading = true;
+    
+    console.log('logging..');
     this._DbPetitionsComponent.login(this.account).subscribe(
       (loginresp) =>{
         resp = loginresp;
-        // console.log(resp);
-
-        // this._DbPetitionsComponent.connectToClient('delCerro').subscribe();
+       
         if (resp){
-          this._appComponent.logged = true; 
-          this.loading = false;
-          localStorage.setItem('checked',this.acc.checked);
-          localStorage.setItem('user',this.acc.user);
-          localStorage.setItem('password',this.acc.password)
-          this._router.navigate(['home']);
+          let client: any[];
+          client = resp.usuario.fuenteDatos;
+          this._appComponent.setClients(client);
+          localStorage.clear();
+    			localStorage.setItem('checked',this.acc.checked);
+    			localStorage.setItem('user',this.acc.user);
+    			localStorage.setItem('password',this.acc.password);
+          localStorage.setItem('logged', 'true');
+          localStorage.setItem('relog',this.back.relog);
+          localStorage.setItem('loading','false');
+    			this._router.navigate(['home']);
+			
         }
         else{
-          this.loading = false;
+          localStorage.setItem('loading','false');
           alert('Datos incorrectos');
         }
       },
       (err) => {
-        this.loading = false;
-        let msg = 'Ups! Algo salió mal, intente de nuevo';
-        if (err.message.includes('incorrecto'))
-          msg = 'Matrícula o contraseña incorrecta';
+          localStorage.setItem('loading','false');
+          localStorage.setItem('logged','false');
+          let msg = 'Ups! Algo salió mal, intente de nuevo';
+          if (err.message.includes('incorrecto'))
+            msg = 'Matrícula o contraseña incorrecta';
 
-        alert(msg);
+          alert(msg);
         // console.log(msg);
 
-
-
-      });
-
-
-    
-    
+      });    
   }
+
 }
