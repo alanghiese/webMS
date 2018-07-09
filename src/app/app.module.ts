@@ -28,7 +28,6 @@ import { dbPetitionsInterceptor } from './providers/dbPetitionsInterceptor';
 
 //pipes
 import { UPPERCASE } from './pipes/toUpperCase.pipe';
-import { MainpageComponent } from './pages/mainpage/mainpage.component';
 import { LoadingComponent } from './pages/loading/loading.component';
 
 
@@ -48,7 +47,6 @@ import { LoadingComponent } from './pages/loading/loading.component';
     LoginComponent,
     FiltersComponent,
     UPPERCASE,
-    MainpageComponent,
     LoadingComponent
   ],
   imports: [

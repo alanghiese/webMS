@@ -4,28 +4,31 @@
 
 
 <div *ngIf="!isLoading()">
-	<navBar class="fixed-top"></navBar>
+
+	<navBar></navBar> <!-- class="fixed-top" -->
 	<body>
 	   
 		
-		<div class="row-md" >  
-			
+		<div class="row" style="max-width: 100%">  
+			<!-- style="border-right: 1px solid rgb(255, 204, 153); height: 82%" -->
 			<br>
-		    <div class="col-md-1 buttons" style="border-right: 1px solid rgb(255, 204, 153); height: 82%">
-		        <buttons ></buttons>
+		    <div class="col-md-1 buttons"> 
+		        <buttons></buttons>
 		    </div>
 		    	
-		    
-		    <div class="col-md-11 interfaces"  style="margin-left: 10%; width: 90%">
+
+		    	<!--  style="margin-left: 10%; width: 90%"-->
+		    <div class="col-md-11 interfaces"> 
 		        <filters *ngIf="isLogged()"></filters>
 
-		        <router-outlet ></router-outlet>
+		        <router-outlet></router-outlet>
 		    </div>
-
-	    
 		</div>
+
+
 	</body>
 
 	<Footer style="user-select: none;"></Footer>
-	<uparrow></uparrow>
 </div>
+	<uparrow></uparrow>
+
