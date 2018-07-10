@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { I18n, CustomDatepickerI18n } from '../../providers/CustomDatepickerI18n';
 import { NgbDateCustomParserFormatter } from '../../providers/NgbDateCustomParserFormatter';
 import { NgbDatepickerI18n, NgbDateStruct, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { AppComponent } from '../../app.component'
+import { AppComponent } from '../../app.component';
+import { DbPetitionsComponent } from '../../providers/dbPetitions';
 
 
 
@@ -15,17 +16,18 @@ const now = new Date();
   providers: [
   			I18n, 
   			{provide: NgbDatepickerI18n, useClass: CustomDatepickerI18n}, 
-  			{provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter}] // define custom Ng
+  			{provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter},// define custom Ng
+  			DbPetitionsComponent] 
 })
 export class FiltersComponent implements OnInit {
 
 
   	modelSince: NgbDateStruct = {day: 1, month: now.getMonth() + 1, year: now.getFullYear() };
 	modelUntil: NgbDateStruct// = {day: 0, month: now.getMonth() + 2, year: now.getFullYear() };
+	private doctors;
 
 
-
-  constructor(private appComponent: AppComponent) { 
+  constructor(private appComponent: AppComponent, private _DbPetitionsComponent: DbPetitionsComponent) { 
   	var lastDay = this.lastday(now.getFullYear(),now.getMonth());
 
 
@@ -41,6 +43,8 @@ export class FiltersComponent implements OnInit {
 
 
   	ngOnInit() {}
+
+  	
 
 
 
@@ -76,25 +80,37 @@ export class FiltersComponent implements OnInit {
 
 	//Servicio
 	onChangeService(value: any) {
-		this.appComponent.filter.selService = value;
+		if (value=='Ninguno')
+			this.appComponent.filter.selService = ''
+		else
+			this.appComponent.filter.selService = value;
 	}
 
 	//Practice
 	onChangePractice(value: any) {
-		this.appComponent.filter.selPractice = value;
+		if (value=='Ninguno')
+			this.appComponent.filter.selPractice = ''
+		else
+			this.appComponent.filter.selPractice = value;
 	}
 
 
 
 	//Cobertura
 	onChangeCoverage(value: any) {
-		this.appComponent.filter.selCoverage = value;
+		if (value=='Ninguno')
+			this.appComponent.filter.selCoverage = ''
+		else
+			this.appComponent.filter.selCoverage = value;
 	}
 
 
 	//Doctor
 	onChangeDoctor(value: any) {
-		this.appComponent.filter.selDoctor = value;
+		if (value=='Ninguno')
+			this.appComponent.filter.selDoctor = ''
+		else
+			this.appComponent.filter.selDoctor = value;
 	}
 
 	setData(){

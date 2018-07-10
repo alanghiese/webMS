@@ -4,7 +4,7 @@ import { AppComponent } from '../../app.component';
 import { STORAGE } from '../../constants';
 import { User } from './user';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
-import { UserCredentials } from '../../interfaces';
+import { UserCredentials, DoctorQuery } from '../../interfaces';
 
 import { turnosV0 } from '../../interfaces';
 import { Observable } from 'rxjs';
@@ -86,6 +86,8 @@ export class LoginComponent implements OnInit {
         resp = loginresp;
        
         if (resp){
+          // this._DbPetitionsComponent.getDoctors('').subscribe();
+
           let client: any[];
           client = resp.usuario.fuenteDatos;
           this._appComponent.setClients(client);

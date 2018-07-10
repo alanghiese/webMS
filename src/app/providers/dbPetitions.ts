@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoginResponse, UserCredentials, JSONResponse, AppointmentQuery, Client, MedicalHistory, turnosV0 } from '../interfaces';
+import { LoginResponse, UserCredentials, JSONResponse, AppointmentQuery, Client, MedicalHistory, turnosV0, DoctorQuery } from '../interfaces';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -17,6 +17,7 @@ export class DbPetitionsComponent {
   private API_ENDPOINTS = {
     login: 'login.php',
     connectToClient: 'conectarA.php',
+    getDoctors: 'mediwareHub.php',
     getAppointments: 'mediwareHub.php',
     getMedicalHistory: 'mediwarehub.php',
     searchPatient: 'mediwarehub.php',
@@ -86,6 +87,28 @@ export class DbPetitionsComponent {
       }));
   }
 
+
+
+  getDoctors(value) : Observable<DoctorQuery> {
+    let params = new HttpParams()
+      .set("accion", "getJSONMedicos")
+      .set("servicio", value); //value viene en blanco por defecto
+
+    const url = `${this.API_URL_BASE}/${this.API_ENDPOINTS.getDoctors}`;
+    return this.http.get<JSONResponse>(url, {params: params})
+      .pipe(
+        map(resp => {
+          // console.log(resp);
+          return resp.data;
+        }),
+        //tap(ap => console.log(`get Doctors ${params}`)),
+        catchError(this.handleAndThrow(`get doctors ${params}`))
+      );
+
+  }
+
+
+
   /**
     * Obtiene los turnos en el rango de fechas especificados.
     * @param userId - ID del medico devuelto en el login
@@ -106,7 +129,8 @@ export class DbPetitionsComponent {
 
     return this.http.get<JSONResponse>(url, {params: params})
       .pipe(
-        map(resp => {console.log(resp);
+        map(resp => {
+          // console.log(resp);
           return resp.data
         }),
         //tap(ap => console.log(`get appointments ${params}`)),

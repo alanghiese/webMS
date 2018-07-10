@@ -21,12 +21,8 @@
 				<span class="input-group-text" id="basic-addon1"><strong>Medico</strong></span>
 			</div>
 			<select ng-model="selectedDoctor" #doctor (change)="onChangeDoctor(doctor.value)" class="form-control" style="max-width: 200px;">
-				<option> Ninguno </option>
-				<option> Todos </option>
-				<option>1</option>
-				<option>2</option>
-				<option>3</option>
-				<option>4</option>
+				<option></option>
+				<option> {{ d.nombre }} </option>
 			</select>
 		</div>
 

@@ -72,7 +72,7 @@ export class AppComponent {
 
 	    
 
-	    this.filter = new Filter('','','','','Ninguno','Ninguno','Ninguno','Ninguno');
+	    this.filter = new Filter('','','','','','','','');
 	}
 
 	setClients(c:any[]){
