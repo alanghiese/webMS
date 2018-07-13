@@ -104,6 +104,8 @@ export class LoginComponent implements OnInit {
          //      alert(msg);
          //    }
          //    );
+          // this._DbPetitionsComponent.getDoctors('').subscribe();
+
 
           let client: any[];
           client = resp.usuario.fuenteDatos;

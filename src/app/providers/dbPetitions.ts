@@ -90,6 +90,7 @@ export class DbPetitionsComponent {
 
 
   getDoctors(value) : Observable<any> {
+
     let params = new HttpParams()
       .set("accion", "getJSONMedicos")
       .set("servicio", value); //value viene en blanco por defecto
