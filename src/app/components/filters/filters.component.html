@@ -16,18 +16,14 @@
 
 
 		<!-- Medico -->
-		<div class="input-group mb-3" style="max-width: 250px;margin-right: 18px">
+		<div *ngIf="bDoctors()" class="input-group mb-3" style="max-width: 250px;margin-right: 18px">
 			<div class="input-group-prepend">
 				<span class="input-group-text" id="basic-addon1"><strong>Medico</strong></span>
 			</div>
-			<select ng-model="selectedDoctor" #doctor (change)="onChangeDoctor(doctor.value)" class="form-control" style="max-width: 200px;">
-				<option> Ninguno </option>
-				<option> Todos </option>
-				<option>1</option>
-				<option>2</option>
-				<option>3</option>
-				<option>4</option>
+			<select *ngFor="let doc of doctors " ng-model="selectedDoctor" #doctor (change)="onChangeDoctor(doctor.value)" class="form-control" style="max-width: 200px;">
+				<option>bDoctors</option>
 			</select>
+
 		</div>
 
 

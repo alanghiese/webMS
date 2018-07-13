@@ -55,6 +55,23 @@ export interface AppointmentQuery {
   [key: string]: string | Appointment
 }
 
+export interface DoctorQuery {
+  [key: string]: string | Doctor
+}
+
+export interface Doctor {
+  TIPOMATRIC: string,
+  MATRICULA: string,
+  DURATURNO: number,
+  LeyendaWeb: string,
+  categoria: string,
+  especialid: string,
+  codigo: string,
+  nombre: string,
+  cantcons: number,
+  restriccionesOS: any[]
+}
+
 export interface Appointment {
   id: number,                 // id del turno
   numero: number,             // id del paciente

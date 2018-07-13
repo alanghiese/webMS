@@ -4,7 +4,7 @@ import { AppComponent } from '../../app.component';
 import { STORAGE } from '../../constants';
 import { User } from './user';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
-import { UserCredentials } from '../../interfaces';
+import { UserCredentials, DoctorQuery } from '../../interfaces';
 
 import { turnosV0 } from '../../interfaces';
 import { Observable } from 'rxjs';
@@ -84,8 +84,27 @@ export class LoginComponent implements OnInit {
     this._DbPetitionsComponent.login(this.account).subscribe(
       (loginresp) =>{
         resp = loginresp;
-       
+
         if (resp){
+          
+         // this._appComponent.doctors =
+         //  this._DbPetitionsComponent.getDoctors('')
+         //  .subscribe(
+         //    (dResp) => {
+         //      let docs;
+         //      docs = dResp;
+         //      console.log(dResp);
+         //      if (dResp)
+         //        console.log(dResp);
+         //      else
+         //        console.log('no muestro dResp');
+         //    },
+         //    (err)=>{
+         //      let msg = 'Ups! Algo salió mal, intente de nuevo';
+         //      alert(msg);
+         //    }
+         //    );
+
           let client: any[];
           client = resp.usuario.fuenteDatos;
           this._appComponent.setClients(client);
