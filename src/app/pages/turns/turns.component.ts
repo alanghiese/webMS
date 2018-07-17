@@ -45,7 +45,8 @@ export class TurnsComponent implements OnInit {
 				if (resp){
 					// console.log(array);
 					console.log('cargado!');
-					this.prepareArray(array);
+					// console.log(resp);
+					this.prepareArray(array,this.turns);
 					// console.log(this.turns);
 					this.prepararArreglos(this.turns); 
 					this.extraerCoberturas(this.turns);
@@ -68,32 +69,49 @@ export class TurnsComponent implements OnInit {
 
 
 	}
-
-	prepareArray(array){
-		let c: string;
-		for (var i in array) {
-			if (parseInt(i))
-				c = i;
+	prepareArray(array,arraySol){
+		let intC;
+		if(!array.length){
+			let c;
+			for (var i in array) {
+				if (parseInt(i))
+					c = i;
+			}
+		intC = parseInt(c);
 		}
-		let intC = parseInt(c);
+		else intC = array.length;
 		// console.log(c);
 
-		for (let k = 0; k < intC; k++) {
+		for (let k = 0; k < intC ; k++) {
 			// console.log(array[k]);
-			this.turns.push(array[k]);
+			arraySol.push(array[k]);
 		}
+	}
+
+	getNumberOfTurns():number{
+		if (this.valueGroupBy == 'Cobertura')
+			return this.cob.length;
+		else if (this.valueGroupBy == 'Servicio')
+			return this.ser.length;
+		return 0;
 	}
 	
 
 	prepararArreglos(array:turnosV0[]){
-		for (var i = 0; i <= this.turns.length-1; ++i) {
+		
+		this.cob=[];
+		this.ser=[];
+		
+		for (var i = 0; i < array.length; ++i) {
 			this.cob[i] = array[i].campo6;
 			// this.ser[i] = array[i].servicio;
 		}
 	}
 
 	extraerCoberturas(array:turnosV0[]){
-		for (var i = 0; i <= array.length-1; ++i) {
+		
+		this.cobs=[];
+		for (var i = 0; i < array.length; ++i) {
 			let founded:boolean = false;
 			for (var k = 0; k <= this.cobs.length-1; ++k) {
 				if (this.cobs[k]==array[i].campo6)
@@ -106,6 +124,8 @@ export class TurnsComponent implements OnInit {
 	}
 
 	// extraerServicios(array:turnosV0[]){
+		
+		//this.sers=[];
 	// 	for (var i = 0; i <= array.length-1; ++i) {
 	// 		let founded:boolean = false;
 	// 		for (var k = 0; k <= this.sers.length-1; ++k) {
@@ -119,9 +139,70 @@ export class TurnsComponent implements OnInit {
 	// }
 
 
+
+
 	filter(){
+		let doctorsTurns: turnosV0[] = [];
+		this.filterDoctors(doctorsTurns);
+
+		let datesTurns: turnosV0[] = [];
+		this.filterDates(datesTurns,doctorsTurns);
+
+		this.prepararArreglos(datesTurns); 
+		this.extraerCoberturas(datesTurns);
+		// this.extraerServicios(newTurns);
 		console.log(this.appComponent.filter);
 	}
+
+	filterDoctors(array){
+		if (this.appComponent.filter.selDoctor != ''){
+			for (let k = 0; k < this.turns.length ; k++) {
+				if (this.turns[k].campo2 >= this.appComponent.filter.selSince)
+					array.push(this.turns[k]);
+			}
+		}
+		else {
+			for (let k = 0; k < this.turns.length ; k++) {
+				array.push(this.turns[k]);
+			}
+		}
+	}
+
+	filterDates(array,arrayToCompare:turnosV0[]){
+		let since = this.convertToDate(this.appComponent.filter.selSince);
+		let until = this.convertToDate(this.appComponent.filter.selUntil);
+		
+		since.setHours(0);
+		since.setMilliseconds(0);
+		since.setMinutes(0);
+		since.setSeconds(0);
+		until.setHours(23,59,59);
+
+		for (let k = 0; k < arrayToCompare.length ; k++) {
+			
+			let date = new Date(arrayToCompare[k].fecha1);
+			if (date >= since && date <= until)
+				array.push(this.turns[k]);
+		}
+	}
+
+	convertToDate(date:String):Date{
+		// console.log(date);
+		let d = new Date();
+		//YYYY-MM-DD
+		let second = date.lastIndexOf('-');
+		let first = date.indexOf('-')
+		let year = parseInt(date.substr(0,first));
+		let month = parseInt(date.substr(first+1,second))-1;
+		let day = parseInt(date.substr(second+1,date.length));
+
+		d.setFullYear(year);
+		d.setMonth(month);
+		d.setDate(day);
+		return d;
+
+	}
+
 
 	onChangeGroupBy(value:any){
 		this.valueGroupBy = value;

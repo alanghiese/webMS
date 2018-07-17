@@ -56,10 +56,18 @@ export class NavBarComponent implements OnInit {
               }
               else alert(r.error.message);
             }
-            else alert ('cambiado con exito a: ' + value);
+            else {
+              alert ('cambiado con exito a: ' + value);
+              localStorage.setItem('reload','true');
+            }
             localStorage.setItem('loading','false');
 
-          }
+          }},
+        (err)=>{
+                alert('El cliente no existe')
+                localStorage.clear();
+                localStorage.setItem('logged', 'false');
+                this._router.navigate(['login']);
         });
   }
 

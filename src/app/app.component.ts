@@ -1,17 +1,18 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Filter } from './models/filter';
-// import { LoginComponent } from './pages/login/login.component'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']/*,
-  providers: [ LoginComponent ]*/
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
 	filter: Filter;
 	clients: any[];
+	doctors: any[] = null;	
+	services: any[] = null;
+	coverages: any[]; //POR EL MOMENTO NO TENGO CON QUE SETEARLO (SERVICIO)
 	now: boolean = false;
 
 	back = {
@@ -24,12 +25,6 @@ export class AppComponent {
 
 
 	constructor(private _router: Router) {
-
-		// if (localStorage.getItem('loading')){
-		// 	localStorage.removeItem('loading');
-		// 	localStorage.setItem('loading', 'true');
-		// }
-        // localStorage.setItem('loading','false');
 
 		if (localStorage.getItem('checked') != null)
 			this.back.chk = localStorage.getItem('checked');
@@ -54,19 +49,12 @@ export class AppComponent {
         	localStorage.setItem('user',this.back.usr);
         	localStorage.setItem('checked',this.back.chk);
         	localStorage.setItem('password',this.back.psw);
-        	 // localStorage.setItem('loading','false');
         	this._router.navigate(['login']);
-        	// console.log(this.back.loading);
-			// console.log(this.back.chk);
 
 	    }
 	    else {
 
 	    	localStorage.setItem('logged', this.back.logged);
-        	// localStorage.setItem('user',this.back.usr);
-        	// localStorage.setItem('checked',this.back.chk);
-        	// localStorage.setItem('password',this.back.psw);	
-        	// localStorage.setItem('loading','false');
 	    }
 	    localStorage.setItem('loading','false');
 	    this._router.navigate(['login']);
@@ -76,6 +64,16 @@ export class AppComponent {
 	    this.filter = new Filter('','','','','','','','');
 	}
 
+	setCoverages(c:any[]){
+		this.coverages = c;
+	}
+
+	getCoverages():any[]{
+		if (this.coverages)
+			return this.coverages;
+		return [''];
+	}
+
 	setClients(c:any[]){
 		this.clients = c;
 	}
@@ -83,13 +81,33 @@ export class AppComponent {
 	getClients():any[]{
 		if (this.clients)
 			return this.clients;
-		return null;
+		return [''];
+	}
+
+	setDoctors(d:any[]){
+		this.doctors = d;
+	}
+
+	getDoctors():any[]{
+		if (this.doctors)
+			return this.doctors;
+		return [''];
+	}
+
+	setServices(s:any[]){
+		this.services = s;
+	}
+
+	getServices():any[]{
+		if (this.services)
+			return this.services;
+		return [''];
 	}
 
 	getCurrentClient(){
 		if (this.clients)
 			return this.clients[0];
-		return null;
+		return 'null';
 	}
 	
 

@@ -37,11 +37,11 @@
 
     <div *ngIf="clientsExists() && isLogged()" class="input-group" style="max-width: 250px; margin-right: 18px;">
       <div class="input-group-prepend">
-        <span class="input-group-text">Cambiar cliente</span>
+        <span class="input-group-text" title="Cambiar la fuente de datos">Cambiar cliente</span>
       </div>
-      <select class="form-control" #client (change)="changeClient(client.value)" style="max-width: 200px;" *ngFor="let c of clients">
+      <select class="form-control" #client (change)="changeClient(client.value)" style="max-width: 200px;"  title="Cambiar la fuente de datos">
         <!-- <option>{{ this.user }}</option> -->
-        <option> {{ c.nombreFuente }} </option>
+        <option *ngFor="let c of clients"> {{ c.nombreFuente }} </option>
       </select>
     </div>
 

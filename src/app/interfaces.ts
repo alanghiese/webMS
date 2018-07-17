@@ -153,8 +153,8 @@ export interface turnosV0{
   tema:any;
   subtema:any;
   nomUsuario:any;
-  Fecha1:any;
-  Fecha2:any;
+  fecha1:any;
+  fecha2:any;
   campo1:any;
   valor1:any;
   campo2:any;

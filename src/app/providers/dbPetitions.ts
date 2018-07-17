@@ -42,7 +42,7 @@ export class DbPetitionsComponent {
         map(resp => resp.data),
         tap(resp => {
           console.log(`logged in with user id=${credentials.enrollmentId}`);
-          // console.log(JSON.stringify(resp))
+          // console.log(resp)
           this.session.setSession(resp);
           // console.log(this.session);
         }),

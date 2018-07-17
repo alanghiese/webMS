@@ -24,18 +24,18 @@ export class FiltersComponent implements OnInit {
 
   	modelSince: NgbDateStruct = {day: 1, month: now.getMonth() + 1, year: now.getFullYear() };
 	modelUntil: NgbDateStruct// = {day: 0, month: now.getMonth() + 2, year: now.getFullYear() };
-	private doctors = null;
-	private services = null;
-	private loadedDoctors: boolean = false;
-	private loadedServices: boolean = false;
+	private doctors:any = null;
+	private services:any = null;
+  private coverages:any = null;
 
-	constructor(private appComponent: AppComponent, private _DbPetitionsComponent: DbPetitionsComponent) { 
+	constructor(
+		private appComponent: AppComponent, 
+		private _DbPetitionsComponent: DbPetitionsComponent){ 
+
 	  	var lastDay = this.lastday(now.getFullYear(),now.getMonth());
-
-
 		this.modelUntil = {day: lastDay, month: now.getMonth() + 1, year: now.getFullYear() };
-	  	this.appComponent.filter.selUntil = this.modelUntil.day + '/' + this.modelUntil.month + '/' + this.modelUntil.year;
-	  	this.appComponent.filter.selSince = this.modelSince.day + '/' + this.modelSince.month + '/' + this.modelSince.year;
+	  	this.appComponent.filter.selUntil = this.modelUntil.year + '-' + this.modelUntil.month + '-' + this.modelUntil.day;
+	  	this.appComponent.filter.selSince = this.modelSince.year + '-' + this.modelSince.month + '-' + this.modelSince.day;
   	}
 
 	lastday (y,m){
@@ -44,65 +44,47 @@ export class FiltersComponent implements OnInit {
 
 	
   	ngOnInit() {
+  		localStorage.setItem('reload','false');
+  		this.doctors = this.appComponent.getDoctors();
+  		this.services = this.appComponent.getServices();
+      this.coverages = this.appComponent.getCoverages();
+      if (!this.coverages)
+        this.coverages = [];
+  		if (!this.doctors)
+  			this.doctors = [];
+  		if (!this.services)
+  			this.services = [];
+  	}
+
+
+  	//para cuando cambia de usuario
+  	reload(){
   		this._DbPetitionsComponent.getDoctors('').subscribe(
   		(resp)=>{
-  			if (resp)
-  				console.log(resp);
-  			else
-  				console.log('doctors don\'t work'); //LUEGO QUITAR ESTO 
-  			this.doctors = resp;
-  			this.loadedDoctors = true;
-  			// if (this.doctors)
-  			// 	console.log(this.doctors);
+  			// if (resp)
+  			// 	console.log(resp);
   			// else
-  			// 	console.log('don\'t work');
-  			// console.log('3')
+  			// 	console.log('doctors don\'t work'); 
+  			this.doctors = resp.data;
   		});
 
   		this._DbPetitionsComponent.getServices().subscribe(
   		(resp)=>{
-  			if (resp)
-  				console.log(resp);
-  			else
-  				console.log('services don\'t work'); //LUEGO QUITAR ESTO 
-  			this.services = resp;
-  			this.loadedServices = true;
-  			// if (this.doctors)
-  			// 	console.log(this.doctors);
+  			// if (resp)
+  			// 	console.log(resp);
   			// else
-  			// 	console.log('don\'t work');
-  			// console.log('3')
+  			// 	console.log('services don\'t work');
+  			this.services = resp.data;
   		});
-
-  	}
-  	bServices(){
-  		if (!this.loadedServices)
-  			return false;
-  		if (!this.services.data || this.services.data == ''){
-  			console.log('No hay servicios');
-  			this.services.data = [{SERVICIO:''}];
-  		}
-  		if (this.services.data){
-  			return true;
-  		}
-  		else 
-  			return false;
-  	}
-  	
-  	bDoctors(){
-  		if (!this.loadedDoctors)
-  			return false;
-  		if (!this.doctors.data || this.doctors.data == ''){
-  			console.log('No hay doctores');
-  			this.doctors.data = [''];
-  		}
-  		if (this.doctors.data){
-  			return true;
-  		}
-  		else 
-  			return false;
   	}
 
+  	needReload():boolean{
+  		if (localStorage.getItem('reload') == 'true'){
+  			this.reload();
+  			localStorage.setItem('reload','false');
+  		}
+  		return true;
+  	}
 
 
   	validDate():boolean{
@@ -121,14 +103,14 @@ export class FiltersComponent implements OnInit {
 
   	//Hasta
 	onChangeUntil(value: Date) {
-		this.appComponent.filter.selUntil = this.modelUntil.day + '/' + this.modelUntil.month + '/' + this.modelUntil.year;
+		this.appComponent.filter.selUntil = this.modelUntil.year + '-' + this.modelUntil.month + '-' + this.modelUntil.day;
 
 	}
 
 
 	//Desde
 	onChangeSince(value: any) {
-		this.appComponent.filter.selSince = this.modelSince.day + '/' + this.modelSince.month + '/' + this.modelSince.year;
+		this.appComponent.filter.selSince = this.modelSince.year + '-' + this.modelSince.month + '-' + this.modelSince.day;
 	}
 
 

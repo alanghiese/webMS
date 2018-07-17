@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'realTime',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RealTimeComponent implements OnInit {
 
-  constructor() {}
+  constructor(private _router: Router) {}
 
   ngOnInit() {
+  	if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
+        this._router.navigate(['login']);
   }
 
 }

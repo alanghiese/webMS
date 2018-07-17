@@ -86,26 +86,13 @@ export class LoginComponent implements OnInit {
         resp = loginresp;
 
         if (resp){
-          
-         // this._appComponent.doctors =
-         //  this._DbPetitionsComponent.getDoctors('')
-         //  .subscribe(
-         //    (dResp) => {
-         //      let docs;
-         //      docs = dResp;
-         //      console.log(dResp);
-         //      if (dResp)
-         //        console.log(dResp);
-         //      else
-         //        console.log('no muestro dResp');
-         //    },
-         //    (err)=>{
-         //      let msg = 'Ups! Algo salió mal, intente de nuevo';
-         //      alert(msg);
-         //    }
-         //    );
-          // this._DbPetitionsComponent.getDoctors('').subscribe();
-
+          let doctors: any[];
+          let services: any[];
+          doctors = resp.conexion.data.medicos;
+          services = resp.conexion.data.servicios;
+          this._appComponent.setDoctors(doctors);
+          this._appComponent.setServices(services);
+         
 
           let client: any[];
           client = resp.usuario.fuenteDatos;
