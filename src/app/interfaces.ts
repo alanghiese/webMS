@@ -59,6 +59,10 @@ export interface DoctorQuery {
   [key: string]: string | Doctor
 }
 
+export interface TurnosV0Query {
+  [key: string]: string | turnosV0
+}
+
 export interface Doctor {
   TIPOMATRIC: string,
   MATRICULA: string,
@@ -156,7 +160,7 @@ export interface turnosV0{
   campo2:any;
   valor2:any;
   campo3:any;
-  valor3:any;
+  valor3:any;  
   campo4:any;
   valor4:any;
   campo5:any;

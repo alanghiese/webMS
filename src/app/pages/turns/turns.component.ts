@@ -3,109 +3,121 @@ import { AppComponent } from '../../app.component';
 import { UPPERCASE } from '../../pipes/toUpperCase.pipe';
 import { MathsFunctions } from '../../providers/mathsFunctions'
 import { Router } from '@angular/router';
+import { DbPetitionsComponent } from '../../providers/dbPetitions';
+import { turnosV0 } from '../../interfaces';
 
 
-import { DbPetitionsFalseComponent } from '../../providers/dbPetitionsFalse'//datos falsos
-import { falseUser } from '../../models/falseUser'//datos falsos
-import { datos } from '../../models/falseDatos' //datos falsos
 
 @Component({
   selector: 'turns',
   templateUrl: './turns.component.html',
   styleUrls: ['./turns.component.css'],
-  providers: [ DbPetitionsFalseComponent, MathsFunctions ]
+  providers: [ 
+  				MathsFunctions,
+  				DbPetitionsComponent
+  			 ]
 })
 export class TurnsComponent implements OnInit {
 
 	private valueGroupBy: any = "Cobertura";
 
-//datos falsos
-	private datoss: datos[] = [];
+	private turns: turnosV0[] = [];
 	private cob:string[] = [];
 	private ser:string[] = [];
 	private cobs: string[] = [];
 	private sers: string[] = [];
-// fin de datos falsos
 
 	constructor(
 		private appComponent: AppComponent, 
-		private _DbPetitionsFalseComponent: DbPetitionsFalseComponent, 
 		private maths: MathsFunctions,
-		private _router: Router
+		private _router: Router,
+		private _dbPetitions: DbPetitionsComponent
 		){}
-	
-	array: any;
+
 	ngOnInit() {
-		this._DbPetitionsFalseComponent.get().subscribe( (resp) => {
-			this.array = resp;
-			// console.log(this.array)
-			if (resp){
-				this.prepararArreglo(this.array);//datos falsos
-				// console.log(this.datoss);
-				this.prepararArreglos(); //datos falsos
-				this.extraerCoberturas();//datos falsos
-				this.extraerServicios();//datos falsos
-				
-			}
-		});
+		let array: any;
 		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
-        this._router.navigate(['login']);
+        	this._router.navigate(['login']);
+    	else
+			this._dbPetitions.getStatic().subscribe( (resp) => {
+				array = resp;
+				console.log('cargando datos en el arreglo...')
+				if (resp){
+					// console.log(array);
+					console.log('cargado!');
+					this.prepareArray(array);
+					// console.log(this.turns);
+					this.prepararArreglos(this.turns); 
+					this.extraerCoberturas(this.turns);
+					// this.extraerServicios();
+					
+				}
+			},
+			(err)=>{
+				let msg = 'Ups! Algo salió mal, intente de nuevo';
+	          	if (err.message.includes('session expired')){
+	          		msg = 'Debe volver a iniciar sesion';
+	          		localStorage.setItem('logged','false');
+	          		this._router.navigate(['login']);
+	          	}
+	            
 
-
-	}
-
-
-	//zona falsa
-	prepararArreglo(array: Array<falseUser>){//datos falsos
-		for (var i = 0; i <= array.length-1; ++i) {
-			let now = new Date();
-			let a: datos = {
-				id: array[i].id,
-				name: array[i].name,
-				username: array[i].username,
-				email: array[i].email,
-				cobertura:  Math.round((Math.random()*10)/3+1),//en lugar de 3 iria la cantidad de cpbertura/servicios que haya
-				fecha: now.getDay() + '/' + now.getMonth() + '/' + now.getFullYear(),
-				servicio:  Math.round((Math.random()*10)/3+1)//en lugar de 3 iria la cantidad de cpbertura/servicios que haya
+	          	alert(msg);
 			}
-			this.datoss[i] = a;
+			);
+
+
+	}
+
+	prepareArray(array){
+		let c: string;
+		for (var i in array) {
+			if (parseInt(i))
+				c = i;
+		}
+		let intC = parseInt(c);
+		// console.log(c);
+
+		for (let k = 0; k < intC; k++) {
+			// console.log(array[k]);
+			this.turns.push(array[k]);
+		}
+	}
+	
+
+	prepararArreglos(array:turnosV0[]){
+		for (var i = 0; i <= this.turns.length-1; ++i) {
+			this.cob[i] = array[i].campo6;
+			// this.ser[i] = array[i].servicio;
 		}
 	}
 
-	prepararArreglos(){//datos falsos
-		for (var i = 0; i <= this.datoss.length-1; ++i) {
-			this.cob[i] = this.datoss[i].cobertura;
-			this.ser[i] = this.datoss[i].servicio;
-		}
-	}
-
-	extraerCoberturas(){//datos falsos
-		for (var i = 0; i <= this.datoss.length-1; ++i) {
+	extraerCoberturas(array:turnosV0[]){
+		for (var i = 0; i <= array.length-1; ++i) {
 			let founded:boolean = false;
 			for (var k = 0; k <= this.cobs.length-1; ++k) {
-				if (this.cobs[k]==this.datoss[i].cobertura)
+				if (this.cobs[k]==array[i].campo6)
 					founded = true;
 			}
 			if (!founded)
-				this.cobs.push(this.datoss[i].cobertura);
+				this.cobs.push(array[i].campo6);
 			else founded = false;
 		}
 	}
 
-	extraerServicios(){//datos falsos
-		for (var i = 0; i <= this.datoss.length-1; ++i) {
-			let founded:boolean = false;
-			for (var k = 0; k <= this.sers.length-1; ++k) {
-				if (this.sers[k]==this.datoss[i].servicio)
-					founded = true;
-			}
-			if (!founded)
-				this.sers.push(this.datoss[i].servicio);
-			else founded = false;
-		}
-	}
+	// extraerServicios(array:turnosV0[]){
+	// 	for (var i = 0; i <= array.length-1; ++i) {
+	// 		let founded:boolean = false;
+	// 		for (var k = 0; k <= this.sers.length-1; ++k) {
+	// 			if (this.sers[k]==array[i].servicio)
+	// 				founded = true;
+	// 		}
+	// 		if (!founded)
+	// 			this.sers.push(array[i].servicio);
+	// 		else founded = false;
+	// 	}
+	// }
 
-//fin de zona falsa
 
 	filter(){
 		console.log(this.appComponent.filter);
@@ -115,9 +127,6 @@ export class TurnsComponent implements OnInit {
 		this.valueGroupBy = value;
 	}
 
-	all():boolean{
-		return this.valueGroupBy == "Todo";
-	}
 
 	coverage():boolean{
 		return this.valueGroupBy == "Cobertura";

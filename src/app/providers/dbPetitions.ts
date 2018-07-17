@@ -79,8 +79,8 @@ export class DbPetitionsComponent {
   }
 
 
-  getStatic(){
-    return this.http.get('http://medisoftware.com.ar/MediwareHub/getStatic.php')
+  getStatic():Observable<any>{
+    return this.http.get<JSONResponse>('http://medisoftware.com.ar/MediwareHub/getStatic.php')
     .pipe(
       map(resp=> {
         return resp;
@@ -104,6 +104,24 @@ export class DbPetitionsComponent {
         }),
         //tap(ap => console.log(`get Doctors ${params}`)),
         catchError(this.handleAndThrow(`get doctors ${params}`))
+      );
+
+  }
+
+  getServices() : Observable<any> {
+
+    let params = new HttpParams()
+      .set("accion", "getJSONServicios"); //value viene en blanco por defecto
+
+    const url = `${this.API_URL_BASE}/${this.API_ENDPOINTS.getDoctors}`;
+    return this.http.get<JSONResponse>(url, {params: params})
+      .pipe(
+        map(resp => {
+          // console.log(resp);
+          return resp;
+        }),
+        //tap(ap => console.log(`get Doctors ${params}`)),
+        catchError(this.handleAndThrow(`get servicios ${params}`))
       );
 
   }

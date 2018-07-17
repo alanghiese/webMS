@@ -1,13 +1,17 @@
 <div class="col">   
-	<button type="button" class="btn-circle" role="button" title="Gráficos estadisticos" [routerLink] = "['graphs']" [routerLinkActive] = "[ 'active' ]">
+	<button type="button" (click) = "onChange('0')" class="btn-circle" role="button" title="Gráficos estadisticos" [routerLink] = "['graphs']" [routerLinkActive] = "[ 'active' ]">
 		<img src="/MediwareHub/webMS/assets/btnGraph.png" alt="Gráficos" style="margin-left:-10px; margin-top: -3px"/>
 	</button>
 
-	<button type="button" class="btn-circle" role="button" title="Mostrar turnos" [routerLink] = "['turns']" [routerLinkActive] = "[ 'active' ]">
+	<button type="button" (click) = "onChange('0')" class="btn-circle" role="button" title="Mostrar turnos" [routerLink] = "['turns']" [routerLinkActive] = "[ 'active' ]">
 		<img src="/MediwareHub/webMS/assets/btnTurn.png" alt="Turnos" style="margin-left:-10px; margin-top: -3px"/>
 	</button>
 
-	<button type="button" class="btn-circle" role="button" title="Limpiar pantalla" [routerLink] = "['home']">
+	<button type="button" (click) = "onChange('1')" class="btn-circle" role="button" title="Ver en tiempo real" [routerLink] = "['now']" [routerLinkActive] = "[ 'active' ]">
+		<img src="/MediwareHub/webMS/assets/btnNow.png" alt="Tiempo real" style="margin-left:-10px; margin-top: -3px"/>
+	</button>
+
+	<button type="button" (click) = "onChange('0')" class="btn-circle" role="button" title="Limpiar pantalla" [routerLink] = "['home']">
 		<img src="/MediwareHub/webMS/assets/close.png" alt="Limpiar" style="margin-left:-10px; margin-top: -3px"/>
 	</button>
 

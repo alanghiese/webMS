@@ -6,7 +6,7 @@
 	<div class="input-group input-group-sm mb-3" >
 
 		<!-- Desde -->                                       
-		<div class="input-group mb-3" style="max-width: 240px; margin-right: 18px;">
+		<div *ngIf="!appComponent.now" class="input-group mb-3" style="max-width: 240px; margin-right: 18px;">
 			<div class="input-group-prepend">
 				<span class="input-group-text" id="basic-addon1"><strong>Desde</strong></span>
 			</div>
@@ -20,25 +20,19 @@
 			<div class="input-group-prepend">
 				<span class="input-group-text" id="basic-addon1"><strong>Medico</strong></span>
 			</div>
-				<select *ngFor="let doc of doctors " ng-model="selectedDoctor" #doctor (change)="onChangeDoctor(doctor.value)" class="form-control" style="max-width: 200px;">
-					<option>bDoctors</option>
+				<select ng-model="selectedDoctor" #doctor (change)="onChangeDoctor(doctor.value)" class="form-control" style="max-width: 200px;">
+					<option *ngFor="let doc of doctors.data ">{{ doc.nombre }}</option>
 				</select>
-
 		</div>
 
 
 		<!-- Servicio -->
-		<div class="input-group mb-3" style="max-width: 250px;margin-right: 18px">
+		<div *ngIf="bServices()" class="input-group mb-3" style="max-width: 250px;margin-right: 18px">
 			<div class="input-group-prepend">
 				<span class="input-group-text" id="basic-addon1"><strong>Servicio</strong></span>
 			</div>
 			<select ng-model="selectedService" #service (change)="onChangeService(service.value)" class="form-control" style="max-width: 200px;">
-				<option> Ninguno </option>
-				<option> Todos </option>
-				<option>1</option>
-				<option>2</option>
-				<option>3</option>
-				<option>4</option>
+				<option *ngFor="let ser of services.data "> {{ ser.SERVICIO }} </option>
 			</select>
 		</div>
 
@@ -56,8 +50,8 @@
 	<!-- Segunda fila -->
 	<div class="input-group input-group-sm " style="margin-top: -30px" >
 
-		<!-- Desde -->                                       
-		<div class="input-group mb-3" style="max-width: 240px; margin-right: 18px;">
+		<!-- Hasta -->                                       
+		<div *ngIf="!appComponent.now" class="input-group mb-3" style="max-width: 240px; margin-right: 18px;">
 			<div class="input-group-prepend">
 				<span class="input-group-text" id="basic-addon1"><strong>Hasta</strong></span>
 			</div>

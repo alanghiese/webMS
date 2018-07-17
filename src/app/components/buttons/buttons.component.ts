@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppComponent } from '../../app.component';
 
 @Component({
   selector: 'buttons',
@@ -7,9 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ButtonsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private appComponent: AppComponent) {}
 
   ngOnInit() {
+  }
+
+  onChange(value){
+  	if (value=='1')
+  		this.appComponent.now = true;
+  	else
+  		this.appComponent.now = false;
+
   }
 
 }

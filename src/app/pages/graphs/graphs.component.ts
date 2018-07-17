@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { I18n, CustomDatepickerI18n } from '../../providers/CustomDatepickerI18n';
 import { NgbDatepickerI18n, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from '../../app.component';
@@ -18,7 +18,7 @@ const now = new Date();
 })
 export class GraphsComponent implements OnInit {
 
-	private param: string = 'Nombre por defecto';
+
 	private graphtype: string = '1';
 
 	
@@ -26,9 +26,7 @@ export class GraphsComponent implements OnInit {
 		private _route: ActivatedRoute,
 		private _router: Router,
 		private appComponent: AppComponent
-	){
-		this.param = null;
-	}
+	){}
 
 	ngOnInit() {
 		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')

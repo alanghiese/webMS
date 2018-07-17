@@ -25,14 +25,15 @@ export class FiltersComponent implements OnInit {
   	modelSince: NgbDateStruct = {day: 1, month: now.getMonth() + 1, year: now.getFullYear() };
 	modelUntil: NgbDateStruct// = {day: 0, month: now.getMonth() + 2, year: now.getFullYear() };
 	private doctors = null;
-
+	private services = null;
+	private loadedDoctors: boolean = false;
+	private loadedServices: boolean = false;
 
 	constructor(private appComponent: AppComponent, private _DbPetitionsComponent: DbPetitionsComponent) { 
 	  	var lastDay = this.lastday(now.getFullYear(),now.getMonth());
 
 
 		this.modelUntil = {day: lastDay, month: now.getMonth() + 1, year: now.getFullYear() };
-
 	  	this.appComponent.filter.selUntil = this.modelUntil.day + '/' + this.modelUntil.month + '/' + this.modelUntil.year;
 	  	this.appComponent.filter.selSince = this.modelSince.day + '/' + this.modelSince.month + '/' + this.modelSince.year;
   	}
@@ -41,29 +42,63 @@ export class FiltersComponent implements OnInit {
 		return  new Date(y, m +1, 0).getDate();
 	}
 
-	private r: any;
+	
   	ngOnInit() {
   		this._DbPetitionsComponent.getDoctors('').subscribe(
   		(resp)=>{
-  			console.log('1');
   			if (resp)
   				console.log(resp);
   			else
-  				console.log('don\'t work');
-  			console.log('2');
+  				console.log('doctors don\'t work'); //LUEGO QUITAR ESTO 
   			this.doctors = resp;
-  			if (this.doctors)
-  				console.log(this.doctors);
-  			else
-  				console.log('don\'t work');
-  			console.log('3')
+  			this.loadedDoctors = true;
+  			// if (this.doctors)
+  			// 	console.log(this.doctors);
+  			// else
+  			// 	console.log('don\'t work');
+  			// console.log('3')
   		});
-  	}
 
+  		this._DbPetitionsComponent.getServices().subscribe(
+  		(resp)=>{
+  			if (resp)
+  				console.log(resp);
+  			else
+  				console.log('services don\'t work'); //LUEGO QUITAR ESTO 
+  			this.services = resp;
+  			this.loadedServices = true;
+  			// if (this.doctors)
+  			// 	console.log(this.doctors);
+  			// else
+  			// 	console.log('don\'t work');
+  			// console.log('3')
+  		});
+
+  	}
+  	bServices(){
+  		if (!this.loadedServices)
+  			return false;
+  		if (!this.services.data || this.services.data == ''){
+  			console.log('No hay servicios');
+  			this.services.data = [{SERVICIO:''}];
+  		}
+  		if (this.services.data){
+  			return true;
+  		}
+  		else 
+  			return false;
+  	}
   	
   	bDoctors(){
-  		if (this.doctors.data)
-  			return this.doctors.data != null;
+  		if (!this.loadedDoctors)
+  			return false;
+  		if (!this.doctors.data || this.doctors.data == ''){
+  			console.log('No hay doctores');
+  			this.doctors.data = [''];
+  		}
+  		if (this.doctors.data){
+  			return true;
+  		}
   		else 
   			return false;
   	}

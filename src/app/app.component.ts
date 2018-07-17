@@ -11,7 +11,8 @@ import { Filter } from './models/filter';
 })
 export class AppComponent {
 	filter: Filter;
-	clients:any[];
+	clients: any[];
+	now: boolean = false;
 
 	back = {
     chk: '',
