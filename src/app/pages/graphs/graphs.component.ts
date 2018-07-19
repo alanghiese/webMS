@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { I18n, CustomDatepickerI18n } from '../../providers/CustomDatepickerI18n';
-import { NgbDatepickerI18n, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from '../../app.component';
 
 
@@ -13,8 +11,7 @@ const now = new Date();
 @Component({
   selector: 'graphs',
   templateUrl: './graphs.component.html',
-  styleUrls: ['./graphs.component.css'],
-  providers: [I18n, {provide: NgbDatepickerI18n, useClass: CustomDatepickerI18n}] // define custom Ng
+  styleUrls: ['./graphs.component.css']
 })
 export class GraphsComponent implements OnInit {
 
@@ -31,6 +28,9 @@ export class GraphsComponent implements OnInit {
 	ngOnInit() {
 		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
         	this._router.navigate(['login']);
+        let backURL = this._router.url;
+		localStorage.setItem('url', backURL);
+		clearTimeout(this.appComponent.interval);
 	}
 	
 

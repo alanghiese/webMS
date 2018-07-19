@@ -54,16 +54,27 @@ export class LoginComponent implements OnInit {
     if (localStorage.getItem('relog') != null)
       this.back.relog = localStorage.getItem('relog');
     
-    // console.log(this.back.logged);
-    // console.log(this.back.chk);
+
+
+    this._router.navigate([localStorage.getItem('url')]) //NO VA CUANDO VUELVO EL LOGIN A LA NORMALIDAD
 
     if (this.back.relog == 'true'){
       this.acc.checked = this.back.chk;
       this.acc.password = this.back.psw;
       this.acc.user = this.back.usr;
-      this.login();
+      if (localStorage.getItem('url')){
+        // this.login();    DESCOMENTAR CUANDO ANDE EL LOGIN
+        this._router.navigate([localStorage.getItem('url')])
+      }
+      else
+        console.log('ASD');
+        // this.login();  DESCOMENTAR CUANDO ANDE EL LOGIN
     }
-    
+
+    localStorage.setItem('logged','true'); //CAMBIAR A TRUE CUANDO ANDE EL LOGIN
+    localStorage.setItem('loading','false');
+    clearInterval(this._appComponent.interval);
+
   }
 
   account: UserCredentials = {
@@ -124,5 +135,8 @@ export class LoginComponent implements OnInit {
 
       });    
   }
+
+
+  
 
 }

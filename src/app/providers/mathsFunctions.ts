@@ -8,13 +8,13 @@ export class MathsFunctions{
 	constructor(){}
 
 
-	public calculatePercentage(array: Array<any>, valueToCompare){
+	public calculatePercentage(array: Array<any>, valueToCompare):number{
 		let counter = 0;
 		for (var i = 0; i <= array.length-1; i++) {
 			if (array[i] == valueToCompare)
 				counter++;
 		}
-		return counter * 100 / array.length;
+		return parseFloat((counter * 100 / array.length).toFixed(2));
 	}
 
 	public count(array: Array<any>, valueToCompare){
@@ -24,6 +24,7 @@ export class MathsFunctions{
 				counter++;
 		}
 		return counter;
+		
 	}
 
 
@@ -62,7 +63,7 @@ export class MathsFunctions{
 
 
 	//promedio
-	public average(array: Array<number>){ 
+	private average(array: Array<number>){ 
 		var avg=0;
 		for (var i = 0; i < array.length; ++i) {
 			avg = avg + array[i];

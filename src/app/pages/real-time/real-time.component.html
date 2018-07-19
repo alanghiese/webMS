@@ -1,4 +1,108 @@
-<h1>
-  Estadisticas en tiempo real
-</h1>
-<span><i>La pagina se refrescara cada 5 minutos</i></span>
+<div class="row-md">
+	<h1>
+	  Estadisticas en tiempo real
+	</h1>
+
+	<div class="input-group input-group-sm mb-3">
+		<div class="input-group mb-3" style="max-width: 350px;">
+			<div class="input-group-prepend">
+				<span class="input-group-text" id="basic-addon1" title="Tiempo de recarga">
+					<strong>Tiempo (en minutos) de recarga</strong>
+				</span>
+			</div>
+			<select ng-model="time" #time (change)="setTime(time.value)" title="Tiempo de recarga"
+			class="form-control" style="max-width: 200px;">
+				<option>5</option>
+				<option>10</option>
+				<option>15</option>
+				<option>20</option>
+			</select>
+		</div>
+		<button class="btn btn-warning mb-3" style="background-color: rgb(255, 179, 102); border: 0px; color: white; color:black; margin-left: 10px"
+		(click) = "refresh()" >
+			Actualizar ahora
+		</button>
+	</div>
+
+</div>
+
+
+
+
+<div class="input-group mb-6" style="margin-bottom: 50px;">
+	
+	<div style="width: 49%"> 
+		
+
+	    <div>
+	      <div style="display: block">
+	        <canvas baseChart
+	                [datasets]="barChartData"
+	                [labels]="barChartLabels"
+	                [options]="barChartOptions"
+	                [colors]="chartColors"
+	                [legend]="barChartLegend"
+	                [chartType]="barChartType"
+	                (chartHover)="chartHovered($event)"
+	                (chartClick)="chartClicked($event)"></canvas>
+	      </div>
+	      <button class="btn btn-warning my-2 my-sm-0" style="background-color: rgb(255, 179, 102); border: 0px; color: white; color:black"
+	      data-toggle="modal" data-target="#exampleModal">
+	      	<b>AGRANDAR</b>
+	      </button>
+	    </div>
+
+
+	</div>
+
+	<div style="width: 49%">
+		<p style="font-size: 20px"><strong>INDICADORES:</strong></p>
+		<p>Pacientes en sala de espera:</p>
+		<p>Pacientes restantes:</p>
+		<p>Pacientes atendidos:</p>
+	</div>
+
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Grafico de demora de medicos</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+		
+		<div>
+	      <div style="display: block">
+	        <canvas baseChart
+	                [datasets]="barChartData"
+	                [labels]="barChartLabels"
+	                [options]="barChartOptions2"
+	                [colors]="chartColors"
+	                [legend]="barChartLegend"
+	                [chartType]="barChartType"
+	                (chartHover)="chartHovered($event)"
+	                (chartClick)="chartClicked($event)">
+            </canvas>
+	      </div>
+	    </div>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<span><i>La pagina se refrescara cada {{ this.timeToRefresh / 60000 }} minuto/s.</i></span>
+
+<span><i> {{ this.lastUpdate }} </i> </span>

@@ -14,17 +14,21 @@ export class AppComponent {
 	services: any[] = null;
 	coverages: any[]; //POR EL MOMENTO NO TENGO CON QUE SETEARLO (SERVICIO)
 	now: boolean = false;
+	interval; //para el intervalo de datos en el momento
 
 	back = {
     chk: '',
     usr: '',
     psw: '',
     logged: '',
-    loading: ''
+    loading: '',
+    url: ''
   	};
 
 
 	constructor(private _router: Router) {
+		alert('EN EL LOGIN MODIFIQUE COSAS PARA QUE SE LO SALTEE, VER login.component.ts' + '\n' + '\n'
+			+ 'PD: este alert esta en app.component.ts');
 
 		if (localStorage.getItem('checked') != null)
 			this.back.chk = localStorage.getItem('checked');
@@ -36,6 +40,8 @@ export class AppComponent {
 			this.back.loading = localStorage.getItem('loading');
 		if (localStorage.getItem('logged') != null)
 			this.back.logged = localStorage.getItem('logged');
+		if (localStorage.getItem('url') != null)
+			this.back.url = localStorage.getItem('url');
 
 		localStorage.clear();
 		
@@ -49,12 +55,14 @@ export class AppComponent {
         	localStorage.setItem('user',this.back.usr);
         	localStorage.setItem('checked',this.back.chk);
         	localStorage.setItem('password',this.back.psw);
+        	localStorage.setItem('url',this.back.url);
         	this._router.navigate(['login']);
 
 	    }
 	    else {
 
 	    	localStorage.setItem('logged', this.back.logged);
+        	localStorage.setItem('url',this.back.url);
 	    }
 	    localStorage.setItem('loading','false');
 	    this._router.navigate(['login']);
