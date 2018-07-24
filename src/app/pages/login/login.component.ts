@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { AppComponent } from '../../app.component';
-import { STORAGE } from '../../constants';
+import { STORAGE, back } from '../../constants';
 import { User } from './user';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
 import { UserCredentials, DoctorQuery } from '../../interfaces';
@@ -29,49 +29,33 @@ export class LoginComponent implements OnInit {
     this.acc = new User("","",false);
   }
 
-  back = {
-    chk: '',
-    usr: '',
-    psw: '',
-    logged: '',
-    loading: '',
-    relog: ''
-    };
-
   ngOnInit() {
-    // console.log('entre al login')
 
     if (localStorage.getItem('checked') != null)
-      this.back.chk = localStorage.getItem('checked');
+      back.chk = localStorage.getItem('checked');
     if (localStorage.getItem('user') != null)
-      this.back.usr = localStorage.getItem('user');
+      back.usr = localStorage.getItem('user');
     if (localStorage.getItem('password') != null)
-      this.back.psw = localStorage.getItem('password');
+      back.psw = localStorage.getItem('password');
     if (localStorage.getItem('loading') != null)
-      this.back.loading = localStorage.getItem('loading');
+      back.loading = localStorage.getItem('loading');
     if (localStorage.getItem('logged') != null)
-      this.back.logged = localStorage.getItem('logged');
+      back.logged = localStorage.getItem('logged');
     if (localStorage.getItem('relog') != null)
-      this.back.relog = localStorage.getItem('relog');
+      back.relog = localStorage.getItem('relog');
+    if (localStorage.getItem('url') != null)
+      back.url = localStorage.getItem('url');
     
 
 
-    this._router.navigate([localStorage.getItem('url')]) //NO VA CUANDO VUELVO EL LOGIN A LA NORMALIDAD
-
-    if (this.back.relog == 'true'){
-      this.acc.checked = this.back.chk;
-      this.acc.password = this.back.psw;
-      this.acc.user = this.back.usr;
-      if (localStorage.getItem('url')){
-        // this.login();    DESCOMENTAR CUANDO ANDE EL LOGIN
-        this._router.navigate([localStorage.getItem('url')])
-      }
-      else
-        console.log('ASD');
-        // this.login();  DESCOMENTAR CUANDO ANDE EL LOGIN
+    if (back.relog == 'true'){
+      this.acc.checked = back.chk;
+      this.acc.password = back.psw;
+      this.acc.user = back.usr;
+      this.login();  
     }
 
-    localStorage.setItem('logged','true'); //CAMBIAR A TRUE CUANDO ANDE EL LOGIN
+    localStorage.setItem('logged','false'); 
     localStorage.setItem('loading','false');
     clearInterval(this._appComponent.interval);
 
@@ -104,7 +88,7 @@ export class LoginComponent implements OnInit {
           this._appComponent.setDoctors(doctors);
           this._appComponent.setServices(services);
          
-
+         
           let client: any[];
           client = resp.usuario.fuenteDatos;
           this._appComponent.setClients(client);
@@ -113,9 +97,13 @@ export class LoginComponent implements OnInit {
     			localStorage.setItem('user',this.acc.user);
     			localStorage.setItem('password',this.acc.password);
           localStorage.setItem('logged', 'true');
-          localStorage.setItem('relog',this.back.relog);
+          localStorage.setItem('relog',back.relog);
           localStorage.setItem('loading','false');
-    			this._router.navigate(['home']);
+          localStorage.setItem('url',back.url);
+          if (localStorage.getItem('url') != null)  
+            this._router.navigate([localStorage.getItem('url')]);
+    			else 
+            this._router.navigate(['home']);
 			
         }
         else{

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Filter } from './models/filter';
+import { back } from './constants';
 
 @Component({
   selector: 'app-root',
@@ -16,55 +17,45 @@ export class AppComponent {
 	now: boolean = false;
 	interval; //para el intervalo de datos en el momento
 
-	back = {
-    chk: '',
-    usr: '',
-    psw: '',
-    logged: '',
-    loading: '',
-    url: ''
-  	};
 
 
 	constructor(private _router: Router) {
-		alert('EN EL LOGIN MODIFIQUE COSAS PARA QUE SE LO SALTEE, VER login.component.ts' + '\n' + '\n'
-			+ 'PD: este alert esta en app.component.ts');
-
+	
 		if (localStorage.getItem('checked') != null)
-			this.back.chk = localStorage.getItem('checked');
+			back.chk = localStorage.getItem('checked');
 		if (localStorage.getItem('user') != null)
-			this.back.usr = localStorage.getItem('user');
+			back.usr = localStorage.getItem('user');
 		if (localStorage.getItem('password') != null)
-			this.back.psw = localStorage.getItem('password');
+			back.psw = localStorage.getItem('password');
 		if (localStorage.getItem('loading') != null)
-			this.back.loading = localStorage.getItem('loading');
+			back.loading = localStorage.getItem('loading');
 		if (localStorage.getItem('logged') != null)
-			this.back.logged = localStorage.getItem('logged');
+			back.logged = localStorage.getItem('logged');
 		if (localStorage.getItem('url') != null)
-			this.back.url = localStorage.getItem('url');
+			back.url = localStorage.getItem('url');
 
 		localStorage.clear();
+		// console.log(this.back.url);
 		
-		if (this.back.chk != 'true')
-			this.back.logged = 'false';
+		if (back.chk != 'true')
+			back.logged = 'false';
 		
-	    if (this.back.chk == 'true' && this.back.logged == 'true'){
+	    if (back.chk == 'true' && back.logged == 'true'){
 	    	
         	localStorage.setItem('logged', 'false');
         	localStorage.setItem('relog', 'true');
-        	localStorage.setItem('user',this.back.usr);
-        	localStorage.setItem('checked',this.back.chk);
-        	localStorage.setItem('password',this.back.psw);
-        	localStorage.setItem('url',this.back.url);
+        	localStorage.setItem('user',back.usr);
+        	localStorage.setItem('checked',back.chk);
+        	localStorage.setItem('password',back.psw);
+        	localStorage.setItem('url',back.url);
         	this._router.navigate(['login']);
 
 	    }
 	    else {
 
-	    	localStorage.setItem('logged', this.back.logged);
-        	localStorage.setItem('url',this.back.url);
+	    	localStorage.setItem('logged', back.logged);
+        	localStorage.setItem('url',back.url);
 	    }
-	    localStorage.setItem('loading','false');
 	    this._router.navigate(['login']);
 
 	    
@@ -121,10 +112,10 @@ export class AppComponent {
 
 	isLogged():boolean{
 		if (localStorage.getItem('logged') != null)
-			this.back.logged = localStorage.getItem('logged');
+			back.logged = localStorage.getItem('logged');
 
-		if (this.back.logged != '')
-			return this.back.logged == 'true';
+		if (back.logged != '')
+			return back.logged == 'true';
 		else
 			return false;
 
@@ -135,10 +126,10 @@ export class AppComponent {
 
 	isLoading(){
 		if (localStorage.getItem('loading') != null)
-			this.back.loading = localStorage.getItem('loading');
+			back.loading = localStorage.getItem('loading');
 
-		if (this.back.loading != '')
-			return this.back.loading == 'true';
+		if (back.loading != '')
+			return back.loading == 'true';
 		else
 			return false;
 	}

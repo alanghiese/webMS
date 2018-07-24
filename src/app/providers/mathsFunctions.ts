@@ -32,44 +32,49 @@ export class MathsFunctions{
 
 
 	
-	private turnsV0_array: Array<turnosV0>;
-
 	//funciones estadisticas
-	//demora medico
-	private loadArrayM(array: Array<number>){
-		for (var i = 0; i < this.turnsV0_array.length; ++i) {
-			array[i] = this.turnsV0_array[i].campo4 - this.turnsV0_array[i].campo3; // aca tengo que suponer que el paciente nunca llega antes del turno?
+	
+	avgDoctor(doctor: string, array: turnosV0[]){
+		let aux: turnosV0[] = [];
+		for (var i = 0; i < array.length; i++) {
+			if (array[i].campo1 == doctor)
+				aux.push(array[i]);
 		}
-		return array;
-	}
+		let avg = 0;
+		for (var k = 0; k < aux.length; k++) {
 
-	public medicalDelay(){
-		var array:Array<number>;
-		return ( this.average( this.loadArrayM(array) ) );
-	}
+			let hour = Math.abs(parseInt(aux[k].campo4.substr(0,1)) - parseInt(aux[k].fecha1.substr(0,1)))*60;
+			let minuts = Math.abs(parseInt(aux[k].campo4.substr(3,4)) - parseInt(aux[k].fecha1.substr(3,4)));
+			// console.log(minuts);
+			if (hour == 60)
+				hour = 0;
+			
+			avg = avg + hour + minuts;
 
-	//demora paciente
-	private loadArrayP(array: Array<number>){
-		for (var i = 0; i < this.turnsV0_array.length; ++i) {
-			array[i] = this.turnsV0_array[i].campo3 - this.turnsV0_array[i].campo2; // aca tengo que suponer que el paciente nunca llega antes del turno?
 		}
-		return array;
-	}
-
-	public patientDelay(){
-		var array:Array<number>;
-		return ( this.average( this.loadArrayP(array) ) );
+		return parseInt((avg / aux.length).toFixed(2));
 	}
 
 
-	//promedio
-	private average(array: Array<number>){ 
-		var avg=0;
-		for (var i = 0; i < array.length; ++i) {
-			avg = avg + array[i];
+	avgPatient(doctor: string, array: turnosV0[]){
+		let aux: turnosV0[] = [];
+		for (var i = 0; i < array.length; i++) {
+			if (array[i].campo1 == doctor)
+				aux.push(array[i]);
 		}
-		avg = avg / array.length;
-		return avg;
+		let avg = 0;
+		for (var k = 0; k < aux.length; k++) {
+
+			let hour = Math.abs(parseInt(aux[k].campo4.substr(0,1)) - parseInt(aux[k].campo3.substr(0,1)))*60;
+			let minuts = Math.abs(parseInt(aux[k].campo4.substr(3,4)) - parseInt(aux[k].campo3.substr(3,4)));
+			// console.log(minuts);
+			if (hour == 60)
+				hour = 0;
+			
+			avg = avg + hour + minuts;
+
+		}
+		return parseInt((avg / aux.length).toFixed(2));
 	}
 
 

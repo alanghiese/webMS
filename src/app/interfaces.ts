@@ -157,14 +157,16 @@ export interface turnosV0{
   fecha2:any;
   campo1:any;
   valor1:any;
-  campo2:any;
+  campo2:string;
   valor2:any;
-  campo3:any;
+  campo3:string;
   valor3:any;  
-  campo4:any;
+  campo4:string;
   valor4:any;
   campo5:any;
   valor5:any;
   campo6:any;
   valor6:any;
+  campo7:any;
+  valor7:any;
 }

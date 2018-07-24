@@ -3,27 +3,52 @@
 <div class="row-md" style="margin-right: 15px">
 	<div class="input-group input-group-sm mb-3" >
 
-		<div class="input-group mb-3" style="max-width: 44%">
+		<div class="input-group mb-3" style="max-width: 50%">
 			<div class="input-group-prepend">
 				<span class="input-group-text" id="basic-addon1"><strong>Tipo de gráfico</strong></span>
 			</div>
 			<select ng-model="selectedGraphType" #type class="form-control"
 			[(ngModel)]="this.graphtype">
-				<option value=0> Estadisticas temporales </option>
-				<option value=1> Estadisticas de turnos por demora de medicos </option>
-				<option value=2> Estadisticas de turnos por demora de pacientes </option>
+				<option value=0> Estadisticas de horarios ofrecidos/turnos atendidos </option>
+				<option value=1> Estadisticas de turnos por demora de medicos/pacientes </option>
 			</select>
 		</div>
 
 		<div>
 			<button type="button" class="btn btn-success" (click)="filter()" style="margin-left: 30px">
-			Visualizar
-		</button>
-		</div>
+				Visualizar
+			</button>
 
+			<button type="button" class="btn btn-success" (click)="stackBars()" style="margin-left: 30px">
+				Juntar/Separar Barras
+			</button>
+
+		</div>
+		<div class="input-group mb-3" style="max-width: 50%">
+			<div class="form-check">
+	    		<input type="checkbox" class="form-check-input" name="save" id="chk" [(ngModel)] = "keepData">
+	    	<label class="form-check-label" for="chk">
+	    		Mantener los datos
+	    	</label>
+	  </div>
+		</div>
 	</div>
 </div>
 <hr>
+
+<div *ngIf = "isDoctorsLoaded() && isDelay()" >
+  <div style="display: block">
+    <canvas baseChart
+            [datasets]="datasOfTheDoctors"
+            [labels]="nameOfTheDoctors"
+            [options]="barChartOptions"
+            [legend]="barChartLegend"
+            [chartType]="barChartType"
+            (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)"></canvas>
+  </div>
+  
+</div>
 
 
 
@@ -57,16 +82,5 @@
 	</table>
 
 
-	<div>
-	  <div style="display: block; max-width: 70%">
-	    <canvas baseChart
-	            [datasets]="barChartData"
-	            [labels]="barChartLabels"
-	            [options]="barChartOptions"
-	            [legend]="barChartLegend"
-	            [chartType]="barChartType"
-	            (chartHover)="chartHovered($event)"
-	            (chartClick)="chartClicked($event)"></canvas>
-	  </div>
-	</div>	
+	
 </div>

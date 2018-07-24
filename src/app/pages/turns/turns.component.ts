@@ -39,10 +39,12 @@ export class TurnsComponent implements OnInit {
 
 	ngOnInit() {
 		let array: any;
+		let from = new Date();
+		let to = new Date();
 		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
         	this._router.navigate(['login']);
     	else
-			this._dbPetitions.getStatic().subscribe( (resp) => {
+			this._dbPetitions.getStatistics(from, to).subscribe( (resp) => {
 				array = resp;
 				console.log('cargando datos en el arreglo...')
 				if (resp){
@@ -76,7 +78,7 @@ export class TurnsComponent implements OnInit {
 
 
 	}
-	prepareArray(array,arraySol){
+	prepareArray(array: turnosV0[],arraySol){
 		let intC;
 		if(!array.length){
 			let c;
@@ -193,7 +195,7 @@ export class TurnsComponent implements OnInit {
 	filterDoctors(array){
 		if (this.appComponent.filter.selDoctor != ''){
 			for (let k = 0; k < this.turns.length ; k++) {
-				if (this.turns[k].campo2 >= this.appComponent.filter.selSince)
+				if (this.turns[k].campo1 == this.appComponent.filter.selDoctor)
 					array.push(this.turns[k]);
 			}
 		}

@@ -27,6 +27,7 @@ export class FiltersComponent implements OnInit {
 	private doctors:any = null;
 	private services:any = null;
   private coverages:any = null;
+  private showMeBool = false;
 
 	constructor(
 		private appComponent: AppComponent, 
@@ -56,6 +57,13 @@ export class FiltersComponent implements OnInit {
   			this.services = [];
   	}
 
+    showMe(){
+      return this.showMeBool;
+    }
+
+    hide(){
+      this.showMeBool = !this.showMeBool;
+    }
 
   	//para cuando cambia de usuario
   	reload(){

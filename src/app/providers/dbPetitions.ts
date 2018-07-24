@@ -18,7 +18,8 @@ export class DbPetitionsComponent {
     login: 'login.php',
     connectToClient: 'conectarA.php',
     getDoctors: 'mediwareHub.php',
-    getAppointments: 'mediwareHub.php',
+    getTurnsDoctors: 'mediwareHub.php',
+    getStatistics: 'mediwareHub.php',
     getMedicalHistory: 'mediwarehub.php',
     searchPatient: 'mediwarehub.php',
     addMedicalHistoryEntry: 'mediwarehub.php'
@@ -79,8 +80,14 @@ export class DbPetitionsComponent {
   }
 
 
-  getStatic():Observable<any>{
-    return this.http.get<JSONResponse>('http://medisoftware.com.ar/MediwareHub/getStatic.php')
+  getStatistics(from:Date, to: Date):Observable<any>{
+    let params = new HttpParams()
+      .set("accion", "getEstadisticas")
+      .set("clave",'turnosV0')
+      .set("desde", this._formatDate(from))
+      .set("hasta", this._formatDate(to));  
+    const url = `${this.API_URL_BASE}/${this.API_ENDPOINTS.getStatistics}`;
+    return this.http.get<JSONResponse>(url, {params: params})
     .pipe(
       map(resp=> {
         return resp;
@@ -107,6 +114,32 @@ export class DbPetitionsComponent {
       );
 
   }
+  //TENDRIA QUE VER COMO HACER ANDAR LOS PARAMETROS Y DE DONDE CONSEGUIR EL CODIGOMEDICO
+  getTurnsDoctors(nombreMedico: string, codigoMedico: string,fechaDesde: Date,fechaHasta: Date,momentoDelDia: string ) : Observable<any> {
+    //momentoDelDia (maniana|tarde|todo)
+    
+    let params = new HttpParams()
+    .set("accion", "getJSONTurnos")
+    .set("nombreMedico",nombreMedico)
+    .set("codigoMedico",codigoMedico)
+    .set("fechaDesde",this._formatDate(fechaDesde))
+    .set("fechaHasta",this._formatDate(fechaHasta))
+    .set("momentoDelDia",momentoDelDia);
+
+    const url = `${this.API_URL_BASE}/${this.API_ENDPOINTS.getTurnsDoctors}`;
+    return this.http.get<JSONResponse>(url, {params: params})
+      .pipe(
+        map(resp => {
+          console.log(resp);
+          return resp;
+        }),
+        //tap(ap => console.log(`get Doctors ${params}`)),
+        catchError(this.handleAndThrow(`get turn doctors ${params}`))
+      );
+
+  }
+
+  
 
   getServices() : Observable<any> {
 
@@ -128,34 +161,7 @@ export class DbPetitionsComponent {
 
 
 
-  /**
-    * Obtiene los turnos en el rango de fechas especificados.
-    * @param userId - ID del medico devuelto en el login
-    * @param from - fecha desde
-    * @param to - fecha hasta
-    */
-  getAppointments(from: Date, to: Date): Observable<AppointmentQuery> {
-    
-    let params = new HttpParams()
-      .set("accion", "getJSONTurnos")
-      .set("codigoMedico", this.session.getUserCode().toString())
-      .set("fechaDesde", this._formatDate(from))
-      .set("fechaHasta", this._formatDate(to))
-      .set("nombreMedico", "")    // vacio, no hace falta setearlo
-      .set("momentoDelDia", "");  // vacio, no hace falta setearlo
-    //console.log(this.session);
-    const url = `${this.API_URL_BASE}/${this.API_ENDPOINTS.getAppointments}`;
-
-    return this.http.get<JSONResponse>(url, {params: params})
-      .pipe(
-        map(resp => {
-          // console.log(resp);
-          return resp.data
-        }),
-        //tap(ap => console.log(`get appointments ${params}`)),
-        catchError(this.handleAndThrow(`get appointments ${params}`))
-      );
-  }
+  
 
   
 

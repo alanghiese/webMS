@@ -41,10 +41,10 @@ export class RealTimeComponent implements OnInit {
   }
 
   refresh(){
-        this.dbPetitions.getStatic().subscribe((resp)=>{
-          let r = resp;
-          console.log(r);
-        })
+        // this.dbPetitions.getStatic().subscribe((resp)=>{
+        //   let r = resp;
+        //   console.log(r);
+        // })
         let now = new Date();
         this.lastUpdate ='Ultima actualizacion a las: ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
         // document.getElementById("number").innerHTML = (Math.random()*100).toString();
