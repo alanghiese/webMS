@@ -41,11 +41,11 @@
 			<select ng-model="selectedService" #service (change)="onChangeService(service.value)" title="Filtrar por servicio"
 			class="form-control" style="max-width: 200px;">
 				<option></option>
-				<option *ngFor="let ser of services "> {{ ser.SERVICIO }} </option>
+				<option *ngFor="let ser of services "> {{ ser }} </option>
 			</select>
 		</div>
 
-		<!-- Buscar por apellido -->                                        <!-- aun sin funcionalidad -->
+		<!-- Buscar por apellido -->                                       
 		<div class="input-group mb-3" style="max-width: 250px;margin-right: 18px">
 			<div class="input-group-prepend">
 				<span class="input-group-text" id="basic-addon1" title="Buscar por apellido"><strong>Buscar</strong></span>
@@ -78,7 +78,8 @@
 			</div>
 			<select  ng-model="selectedCoverage" #coverage (change)="onChangeCoverage(coverage.value)" title="Filtrar por cobertura"
 			class="form-control" style="max-width: 200px;">
-				<option>AUN NO TENGO CON QUE SETEARLO (SERVICIO)</option>
+				<option></option>
+				<option>SIN COBERTURA</option>
 				<option *ngFor="let cov of coverages "> {{ cov }} </option>
 			</select>
 		</div>

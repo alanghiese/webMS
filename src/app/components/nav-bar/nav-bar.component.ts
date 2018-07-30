@@ -25,6 +25,7 @@ export class NavBarComponent implements OnInit {
       this.user = this._appComponent.getCurrentClient().nombreFuente;
       this.clients = this._appComponent.getClients(); 
     }
+
     
   }
 
@@ -37,6 +38,7 @@ export class NavBarComponent implements OnInit {
   	localStorage.clear();
     localStorage.setItem('logged', 'false');
     localStorage.setItem('loading','false');
+    localStorage.setItem('relog','false');
   }
 
   changeClient(value){

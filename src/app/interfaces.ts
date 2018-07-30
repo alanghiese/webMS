@@ -151,7 +151,7 @@ export interface Patient {
 export interface turnosV0{
   id:any;
   tema:any;
-  subtema:any;
+  subTema:any;
   nomUsuario:any;
   fecha1:any;
   fecha2:any;
@@ -169,4 +169,17 @@ export interface turnosV0{
   valor6:any;
   campo7:any;
   valor7:any;
+}
+
+export interface coverageObject{
+  codigo;
+  estado;
+  gerenciadora;
+  label;
+  nombre;
+  value;
+}
+
+export interface serviceObject{
+  SERVICIO;
 }

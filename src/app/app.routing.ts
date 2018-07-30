@@ -8,6 +8,7 @@ import { EmptyComponent } from './pages/empty/empty.component';
 import { Error404Component } from './pages/error404/error404.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RealTimeComponent } from './pages/real-time/real-time.component'
+import { ContactComponent } from './pages/contact/contact.component'
 
 
 
@@ -21,6 +22,7 @@ const appRoutes: Routes = [
 	{path: 'graphs', component: GraphsComponent},
 	{path: 'now', component: RealTimeComponent},
 	{path: 'login', component: LoginComponent},
+	{path: 'contact', component: ContactComponent},
 	{path: '**', component: Error404Component}
 ];
 

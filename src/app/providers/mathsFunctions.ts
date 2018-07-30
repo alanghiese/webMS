@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
 import { turnosV0, UserCredentials } from '../interfaces';
+import { SUBTOPIC } from '../constants';
 
 
-@Injectable()
+
 export class MathsFunctions{
 	
 	constructor(){}
@@ -19,7 +19,7 @@ export class MathsFunctions{
 
 	public count(array: Array<any>, valueToCompare){
 		let counter = 0;
-		for (var i = 0; i <= array.length-1; i++) {
+		for (var i = 0; i < array.length; i++) {
 			if (array[i] == valueToCompare)
 				counter++;
 		}
@@ -33,7 +33,31 @@ export class MathsFunctions{
 
 	
 	//funciones estadisticas
+
+	countWebTurns(doctor: string, array: turnosV0[]){
+		let count: number = 0;
+		for (var i = 0; i < array.length; i++) {
+			if (array[i].campo1 == doctor){
+				if (array[i].subTema == SUBTOPIC.WEB)
+					count++;
+			}
+		}
+		return count;
+	}
 	
+
+	countDesktopTurns(doctor: string, array: turnosV0[]){
+		let count: number = 0;
+		for (var i = 0; i < array.length; i++) {
+			if (array[i].campo1 == doctor){
+				if (array[i].subTema == SUBTOPIC.DESKTOP)
+					count++;
+			}
+		}
+		return count;
+	}
+
+
 	avgDoctor(doctor: string, array: turnosV0[]){
 		let aux: turnosV0[] = [];
 		for (var i = 0; i < array.length; i++) {
@@ -52,7 +76,10 @@ export class MathsFunctions{
 			avg = avg + hour + minuts;
 
 		}
-		return parseInt((avg / aux.length).toFixed(2));
+		let result = parseInt((avg / aux.length).toFixed(2));
+		if (result)
+			return result;
+		return 0;
 	}
 
 
@@ -74,7 +101,10 @@ export class MathsFunctions{
 			avg = avg + hour + minuts;
 
 		}
-		return parseInt((avg / aux.length).toFixed(2));
+		let result = parseInt((avg / aux.length).toFixed(2));
+		if (result)
+			return result;
+		return 0;
 	}
 
 

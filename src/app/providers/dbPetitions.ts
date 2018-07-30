@@ -79,6 +79,15 @@ export class DbPetitionsComponent {
       );
   }
 
+  getStatic():Observable<any>{
+    return this.http.get<JSONResponse>('http://medisoftware.com.ar/MediwareHub/getStatic.php')
+    .pipe(
+      map(resp=> {
+        return resp;
+      }));
+  }
+
+
 
   getStatistics(from:Date, to: Date):Observable<any>{
     let params = new HttpParams()
@@ -94,6 +103,18 @@ export class DbPetitionsComponent {
       }));
   }
 
+
+  getActualStatistics():Observable<any>{
+    let params = new HttpParams()
+      .set("accion", "getEstadisticas")
+      .set("clave",'turnosV0');  
+    const url = `${this.API_URL_BASE}/${this.API_ENDPOINTS.getStatistics}`;
+    return this.http.get<JSONResponse>(url, {params: params})
+    .pipe(
+      map(resp=> {
+        return resp;
+      }));
+  }
 
 
   getDoctors(value) : Observable<any> {

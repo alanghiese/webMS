@@ -5,6 +5,7 @@ import { STORAGE, back } from '../../constants';
 import { User } from './user';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
 import { UserCredentials, DoctorQuery } from '../../interfaces';
+import { ERR_UPS } from '../../constants';
 
 import { turnosV0 } from '../../interfaces';
 import { Observable } from 'rxjs';
@@ -55,8 +56,9 @@ export class LoginComponent implements OnInit {
       this.login();  
     }
 
+    this._appComponent.setNotFilter(false);
     localStorage.setItem('logged','false'); 
-    localStorage.setItem('loading','false');
+    // localStorage.setItem('loading','false');
     clearInterval(this._appComponent.interval);
 
   }
@@ -83,12 +85,13 @@ export class LoginComponent implements OnInit {
         if (resp){
           let doctors: any[];
           let services: any[];
+          let coverages: any[];
           doctors = resp.conexion.data.medicos;
           services = resp.conexion.data.servicios;
+          coverages = resp.conexion.data.coberturas;
           this._appComponent.setDoctors(doctors);
           this._appComponent.setServices(services);
-         
-         
+          this._appComponent.setCoverages(coverages);
           let client: any[];
           client = resp.usuario.fuenteDatos;
           this._appComponent.setClients(client);
@@ -108,13 +111,13 @@ export class LoginComponent implements OnInit {
         }
         else{
           localStorage.setItem('loading','false');
-          alert('Datos incorrectos');
+          alert(ERR_UPS);
         }
       },
       (err) => {
           localStorage.setItem('loading','false');
           localStorage.setItem('logged','false');
-          let msg = 'Ups! Algo salió mal, intente de nuevo';
+          let msg = ERR_UPS;
           if (err.message.includes('incorrecto'))
             msg = 'Matrícula o contraseña incorrecta';
 

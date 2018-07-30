@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AppComponent } from '../../app.component';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
-import { MathsFunctions } from '../../providers/mathsFunctions';
 import { turnosV0 } from '../../interfaces';
-import { nameAVG } from './regNameAVG';
+import { nameAVG } from '../../models/regNameAVG';
+import { prepareArrays } from '../../providers/prepareArrays';
 
 
 
@@ -17,8 +17,7 @@ const now = new Date();
 @Component({
   selector: 'graphs',
   templateUrl: './graphs.component.html',
-  styleUrls: ['./graphs.component.css'],
-  providers: [ MathsFunctions ]
+  styleUrls: ['./graphs.component.css']
 })
 export class GraphsComponent implements OnInit {
 
@@ -26,199 +25,168 @@ export class GraphsComponent implements OnInit {
 	private graphtype: string = '1';
 	private turnsCompleteds: turnosV0[] = [];
 	private delays: nameAVG[] = [];
-	private doctorsLoaded: boolean = false;
-	private keepData: boolean;
+	private keepData: boolean = false;
+	private backSince = null;
+	private backUntil = null;
+	private preparingTurns: boolean = false;
+	private totalTurns: number = 0;
+	private showTableB: boolean = false;
+	private stack = false;
+	private prepareArrays: prepareArrays;
+
 	
 	constructor(
 		private _route: ActivatedRoute,
 		private _router: Router,
 		private appComponent: AppComponent,
-		private dbPetitions: DbPetitionsComponent,
-		private math: MathsFunctions
+		private dbPetitions: DbPetitionsComponent
 	){}
 
 	ngOnInit() {
+		this.prepareArrays = new prepareArrays();
+
 		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
         	this._router.navigate(['login']);
         else{
         	console.log('cargar turnos');
+        	this.preparingTurns = true;
         	// this.dbPetitions.getTurnsDoctors('','',new Date(),new Date(),'').subscribe();
-        	let from = new Date();
-        	from.setDate(19);
-        	from.setMonth(6);
-        	from.setFullYear(2018);
-        	this.dbPetitions.getStatistics(from,from).subscribe((resp)=>{
+        	let from = this.convertToDate(this.appComponent.filter.selSince);
+        	let to = this.convertToDate(this.appComponent.filter.selUntil);
+        	from.setHours(0);
+			from.setMilliseconds(0);
+			from.setMinutes(0);
+			to.setHours(0);
+			to.setMilliseconds(0);
+			to.setMinutes(0);
+
+        	// this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
+        	this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
         		if (resp){
-        			// console.log(resp)
-        			this.prepareArray(resp);
-        			console.log(this.turnsCompleteds);
-        			this.prepareArrayDoctors(this.turnsCompleteds);
-        			this.doctorsAverage(this.turnsCompleteds);
-        			this.prepareGraphicDelay(this.delays);
-        			this.doctorsLoaded = true;
-        			// console.log(this.doctors);
+        			this.prepareArrays.prepareArray(resp);
+        			// console.log(this.turnsCompleteds);
+        			this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
+        			this.prepareArrays.prepareArrayDoctors(this.turnsCompleteds);
+        			this.prepareArrays.doctorsAverage(this.turnsCompleteds);
+	        		this.delays = this.prepareArrays.getDelays();
+	        		// console.log(this.delays)
+	        		this.filterFunction();
+        			// this.prepareGraphicDelay(this.delays);
+					// this.prepareGraphicTurns();
+        			this.totalTurns = this.turnsCompleteds.length;
+
+        			this.preparingTurns = false;
         		}
-        	});
+        	},
+        	(err)=>{
+				let msg = 'Ups! Algo salió mal, intente de nuevo';
+	          	if (err.message.includes('session expired')){
+	          		msg = 'Debe volver a iniciar sesion';
+	          		localStorage.setItem('logged','false');
+	          		this._router.navigate(['login']);
+	          	}
+	            
+
+	          	alert(msg);
+			});
+
         }
-
-
+        this.appComponent.setNotFilter(false);
+        this.backSince = this.appComponent.filter.selSince;
+        this.backUntil = this.appComponent.filter.selUntil;
         let backURL = this._router.url;
 		localStorage.setItem('url', backURL);
 		clearTimeout(this.appComponent.interval);
 		
 	}
 
-	isDoctorsLoaded():boolean{
-		return this.doctorsLoaded;
+	turnsReady():boolean{
+		return !this.preparingTurns;
 	}
 	
 
-	prepareArray(array: turnosV0[]){
-		this.turnsCompleteds = [];
-		let intC;
-		if(!array.length){
-			let c;
-			for (var i in array) {
-				if (parseInt(i))
-					c = i;
-			}
-		intC = parseInt(c);
-		}
-		else intC = array.length;
-		for (var k = 0; k < intC; k++) {
-			if(array[k].campo3 != '' && array[k].campo4 != '')
-				this.turnsCompleteds.push(array[k]);
-		}
+
+
+	hideOrShowTable(){
+		this.showTableB = !this.showTableB;
 	}
 
-	prepareArrayDoctors(array:turnosV0[]){
-		let founded: boolean = false;
-		this.delays = [];
-		if (array.length > 0)
-			this.delays.push({name: array[0].campo1, avgDoctor: 0, avgPatient: 0});
-
-		for (var i = 1; i < array.length; i++) {
-			for (var k = 0; k < this.delays.length; k++) 
-				if (this.delays[k].name == array[i].campo1)
-					founded = true;
-
-			if (!founded)
-				this.delays.push({name:array[i].campo1, avgDoctor: 0, avgPatient: 0});
-			founded = false;
-		}
+	showTable(){
+		return this.showTableB;
 	}
 
-	doctorsAverage(fullTurns:turnosV0[]){
-		
-		for (var i = 0; i < this.delays.length; i++) {
-			this.delays[i].avgDoctor = this.math.avgDoctor(this.delays[i].name,fullTurns);
-			this.delays[i].avgPatient = this.math.avgPatient(this.delays[i].name,fullTurns);
-		}
-	}
+
 
 
 	
   	//filtrar
   	filter(){
-  		this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
-  									this.convertToDate(this.appComponent.filter.selUntil)
-  		).subscribe((resp)=>{
-        		if (resp){
-        			console.log(resp)
-        			this.prepareArray(resp);
-        			// console.log(this.turnsCompleteds);
+  		// this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
+  		// 							this.convertToDate(this.appComponent.filter.selUntil)
+  		// ).subscribe((resp)=>{ // va esto si es en tiempo real
+  		if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
+  			this.preparingTurns = true;
+	  		this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+	        		if (resp){
+	        			// console.log(resp)
+	        			this.prepareArrays.prepareArray(resp);
+	        			// console.log(this.turnsCompleteds);
+	        			this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
+	        			this.delays = this.prepareArrays.getDelays();
 
-        			//FILTROS
-        			let backDelays: any[] = [];
-					if (this.keepData)
-						backDelays = this.delays;
+	        			this.filterFunction();
+	        			this.backSince = this.appComponent.filter.selSince;
+	        			this.backUntil = this.appComponent.filter.selUntil;
+	        			this.preparingTurns = false;
 
-			  		let datesTurns: turnosV0[] = [];
-					this.filterDates(datesTurns,this.turnsCompleteds);//si no uso el estatico no deberia ser necesario esto
+	        		}
+	        	});
+  		}
+	  	else{
+	  		this.preparingTurns = true;
+	  		this.filterFunction();
+	  		this.preparingTurns = false;
+	  	}
 
-			  		let doctorsTurns: turnosV0[] = [];
+  		// console.log(this.appComponent.filter);
+  	}
 
-					this.filterDoctors(doctorsTurns,datesTurns);
+  	filterFunction(){
+  		//FILTROS
+		let backDelays: any[] = [];
+		if (this.keepData)
+			backDelays = this.delays;
+		
+		let arraySol = this.appComponent.filter.filter(this.turnsCompleteds);
 
-					let servicesTurn: turnosV0[] = [];
-					this.filterService(servicesTurn,doctorsTurns);
-					//FIN DE FILTROS
-					console.log(servicesTurn);
+		if (this.keepData)
+			this.totalTurns = this.totalTurns + arraySol.length;
+		else
+			this.totalTurns = arraySol.length;
+		
+		this.prepareArrays.prepareArrayDoctors(arraySol);
+		this.prepareArrays.doctorsAverage(arraySol);
+	    this.delays = this.prepareArrays.getDelays();
 
-        			this.prepareArrayDoctors(servicesTurn);
-					this.doctorsAverage(servicesTurn);
-					if (this.keepData)
-						for (var i = 0; i < backDelays.length; i++) {
-							if (!this.contains(this.delays, backDelays[i]))
-								this.delays.push(backDelays[i]);
-						}
-					this.prepareGraphicDelay(this.delays);
-        		}
-        	});
-
-  		console.log(this.appComponent.filter);
+		if (this.keepData)
+			for (var i = 0; i < backDelays.length; i++) {
+				if (!this.contains(this.delays, backDelays[i]))
+					this.delays.push(backDelays[i]);
+			}
+		this.prepareGraphicDelay(this.delays);
+		this.prepareGraphicTurns();
   	}
 
   	contains(array: nameAVG[], valueToCompare: nameAVG){
   		let founded = false;
   		for (var i = 0; i < array.length; i++) {
-  			if (array[i].name == valueToCompare.name)
+  			if (array[i].name.toUpperCase() == valueToCompare.name.toUpperCase())
   				founded = true;
   		}
   		return founded;
   	}
 
-  	filterDoctors(array: turnosV0[], full: turnosV0[]){
-  		
-  		if (this.appComponent.filter.selDoctor != ''){
-			for (let k = 0; k < full.length ; k++) {
-				if (full[k].campo1 == this.appComponent.filter.selDoctor){
-					array.push(full[k]);
-				}
-			}
-		}
-		else {
-			for (let k = 0; k < full.length ; k++) {
-				array.push(full[k]);
-			}
-		}
-  	}
-
-  	filterService(array: turnosV0[], full: turnosV0[]){
-  		
-
-  		if (this.appComponent.filter.selService != ''){
-			for (let k = 0; k < full.length ; k++) {
-				console.log(full[k].campo7)
-				if (full[k].campo7 == this.appComponent.filter.selService)
-					array.push(full[k]);
-			}
-		}
-		else {
-			for (let k = 0; k < full.length ; k++) {
-				array.push(full[k]);
-			}
-		}
-  	}
-
-  	filterDates(array,arrayToCompare:turnosV0[]){
-		let since = this.convertToDate(this.appComponent.filter.selSince);
-		let until = this.convertToDate(this.appComponent.filter.selUntil);
-		
-		since.setHours(0);
-		since.setMilliseconds(0);
-		since.setMinutes(0);
-		since.setSeconds(0);
-		until.setHours(23,59,59);
-
-		for (let k = 0; k < arrayToCompare.length ; k++) {
-			
-			let date = new Date(arrayToCompare[k].fecha1);
-			if (date >= since && date <= until)
-				array.push(this.turnsCompleteds[k]);
-		}
-	}
-
+  	
 	convertToDate(date:String):Date{
 		// console.log(date);
 		let d = new Date();
@@ -238,18 +206,6 @@ export class GraphsComponent implements OnInit {
 
 
 
-	//funciones booleanas para comparar que tipo de grafico voy a tener que mostrar
-
-	isTemp():boolean{
-		return this.graphtype == '0';
-	}
-
-	isDelay():boolean{
-		return this.graphtype == '1';
-	}
-
-
-
 
 	//para graficos de demora de medicos
 
@@ -258,77 +214,110 @@ export class GraphsComponent implements OnInit {
 
 
 	clearCharts() {
-    this.nameOfTheDoctors= [];
-    this.datasOfTheDoctors= [
-      {data: [], label: 'label1'},
-      {data: [], label: 'label2'}
-    	];
+		while (this.nameOfTheDoctors.length > 0)
+			this.nameOfTheDoctors.pop();
+	    this.datasOfTheDoctors= [
+	      {data: [], label: 'label1'},
+	      {data: [], label: 'label2'}
+	    	];
+	    this.dataTurns= [
+	      {data: [], label: 'label1'},
+	      {data: [], label: 'label2'}
+	    	];
  	}
 
+
+	private auxCountWeb = [];
+	private auxCountDesktop = [];
 	prepareGraphicDelay(array: nameAVG[]){
-		// this.nameOfTheDoctors = [];
-		// this.datasOfTheDoctors = [];
 		this.clearCharts();
+		// console.log(this.nameOfTheDoctors);
 		let auxAVGDoctors = [];
 		let auxAVGPatients = [];
+		this.auxCountDesktop = [];
+		this.auxCountWeb = [];
+
 		for (var i = 0; i < array.length; i++) {
-			this.nameOfTheDoctors.push(array[i].name);
-			auxAVGDoctors.push(array[i].avgDoctor);
-			auxAVGPatients.push(array[i].avgPatient);
+			if (array[i].avgDoctor != 0 || array[i].avgPatient != 0){
+				this.nameOfTheDoctors.push(array[i].name);
+				auxAVGDoctors.push(array[i].avgDoctor);
+				auxAVGPatients.push(array[i].avgPatient);
+				this.auxCountDesktop.push(array[i].countDesktop);
+				this.auxCountWeb.push(array[i].countWeb);	
+			}
+			
 		}
-		for (var k = 0; k < this.nameOfTheDoctors.length; k++) {
-			// console.log(this.nameOfTheDoctors[k].split(" ").join("\n"));	
-			this.nameOfTheDoctors[k] = this.nameOfTheDoctors[k].split(" ").join("\n");//.replace(" ", "\n");
-		}
+		
 		this.datasOfTheDoctors = [
 						{data: auxAVGDoctors , label: 'Demora de doctores (en minutos)'},
 						{data: auxAVGPatients , label: 'Demora de pacientes (en minutos)'}
 						];
+		this.dataTurns = [
+							{data: this.auxCountDesktop , label: 'Cantidad de turnos por escritorio'},
+							{data: this.auxCountWeb , label: 'Cantidad de turnos por web'}
+						];
+						
+						
 
 	}
+	private minMax = [];
+	private avgs = [];
+	prepareGraphicTurns(){
+		let a = 0;
+
+		for (var i = 0; i < this.auxCountDesktop.length; i++) {
+			a = a + this.auxCountDesktop[i]
+		}
 
 
-	//para graficos de turnos
-	private stack = false;
-	stackBars(){
-		this.stack = !this.stack;
+		let b = 0;
+		for (var k = 0; k < this.auxCountWeb.length; k++) {
+			b = b + this.auxCountWeb[k]
+		}
 		
-		this.barChartOptions = {
-	    scaleShowVerticalLines: false,
-	    responsive: true,
-	    scales: {
-	    			yAxes: [{
-                		ticks: {
-                    		beginAtZero: true,
-                    		maxTicksLimit: 5,
-                    		// Create scientific notation labels
-                    		callback: function(value, index, values) {
-                        		return value + ' minutos';
-                    		}
-                }
-            }],
-		        	xAxes: [{
-		            ticks: {
-		                display: true,
-		                // beginAtZero: true,
-		                autoSkip: false,
-                		// stepSize: 1,
-                		// min: 0,
-                		
-                		maxRotation: 90,
-                		minRotation: 90,
-		                callback: function(value, index, values){
-		                	return value.split(" ").join("\n");
-		                }
-		            	},
-		            	stacked: this.stack
-
-		        	}]
-		    	}
-
-	};	
+		this.pieChartData = [b,a];
+		this.minMax = this.getMinAndMax();
+		this.avgs = this.getAVGs();
 	}
-	public barChartOptions:any = {
+	
+	getMinAndMax():number[]{
+		let minWeb = this.auxCountWeb[0];
+		let minDesktop = this.auxCountDesktop[0];
+
+		let maxWeb = this.auxCountWeb[0];
+		let maxDesktop = this.auxCountDesktop[0];
+
+		for (var i = 1; i < this.auxCountWeb.length; i++) {
+			if (this.auxCountWeb[i]>maxWeb)
+				maxWeb = this.auxCountWeb[i]
+			if (this.auxCountWeb[i]<minWeb)
+				minWeb = this.auxCountWeb[i]
+
+			if (this.auxCountDesktop[i]>maxDesktop)
+				maxDesktop = this.auxCountDesktop[i]
+			if (this.auxCountDesktop[i]<minDesktop)
+				minDesktop = this.auxCountDesktop[i]
+		}
+
+
+		return [minWeb,minDesktop,maxWeb,maxDesktop];
+	}
+
+	getAVGs():any[]{
+		let avgWeb = 0;
+		let avgDesktop = 0;
+		for (var i = 0; i < this.auxCountWeb.length; i++) {
+			avgWeb = avgWeb + this.auxCountWeb[i];
+			avgDesktop = avgDesktop + this.auxCountDesktop[i];
+		}
+		avgWeb = parseInt((avgWeb/this.auxCountWeb.length).toFixed(2));
+		avgDesktop = parseInt((avgDesktop/this.auxCountDesktop.length).toFixed(2));
+		return [avgWeb,avgDesktop];
+	}
+
+
+
+	public optionsDelays:any = {
 	    scaleShowVerticalLines: false,
 	    responsive: true,
 	    scales: {
@@ -363,10 +352,130 @@ export class GraphsComponent implements OnInit {
 
 	};
 
+	//para grafico de turnos medico a medico
+	private dataTurns:any[] = [];
+	public optionsTurns:any = {
+	    scaleShowVerticalLines: false,
+	    responsive: true,
+	    scales: {
+	    			yAxes: [{
+                		ticks: {
+                    		beginAtZero: true,
+                    		maxTicksLimit: 5,
+                    		// Create scientific notation labels
+                    		callback: function(value, index, values) {
+                        		return value + ' turnos';
+                    		}
+                }
+            }],
+		        	xAxes: [{
+		            ticks: {
+		                display: true,
+		                // beginAtZero: true,
+		                autoSkip: false,
+                		// stepSize: 1,
+                		// min: 0,
+                		
+                		maxRotation: 90,
+                		minRotation: 90,
+		                callback: function(value, index, values){
+		                	return value.split(" ").join("\n");
+		                }
+		            	},
+		            	stacked: this.stack
+
+		        	}]
+		    	}
+
+	};
+
+	
+	//para grafico de turnos global
+
+	public pieChartLabels:string[] = ['Turnos Web', 'Turnos Escritorio'];
+  	public pieChartData:number[] = [];
+  	public pieChartType:string = 'pie';
+
+
+
+	//configuraciones generales para cualquier grafico
 	public barChartType:string = 'bar';
 	public barChartLegend:boolean = true;
 
 	
+	
+	stackBars(){
+		this.stack = !this.stack;
+		
+		this.optionsDelays = {
+		    scaleShowVerticalLines: false,
+		    responsive: true,
+		    scales: {
+		    			yAxes: [{
+	                		ticks: {
+	                    		beginAtZero: true,
+	                    		maxTicksLimit: 5,
+	                    		// Create scientific notation labels
+	                    		callback: function(value, index, values) {
+	                        		return value + ' minutos';
+	                    		}
+	                }
+	            }],
+			        	xAxes: [{
+			            ticks: {
+			                display: true,
+			                // beginAtZero: true,
+			                autoSkip: false,
+	                		// stepSize: 1,
+	                		// min: 0,
+	                		
+	                		maxRotation: 90,
+	                		minRotation: 90,
+			                callback: function(value, index, values){
+			                	return value.split(" ").join("\n");
+			                }
+			            	},
+			            	stacked: this.stack
+
+			        	}]
+			    	}
+			};	
+
+		this.optionsTurns = {
+		    scaleShowVerticalLines: false,
+		    responsive: true,
+		    scales: {
+		    			yAxes: [{
+	                		ticks: {
+	                    		beginAtZero: true,
+	                    		maxTicksLimit: 5,
+	                    		// Create scientific notation labels
+	                    		callback: function(value, index, values) {
+	                        		return value + ' turnos';
+	                    		}
+	                }
+	            }],
+			        	xAxes: [{
+			            ticks: {
+			                display: true,
+			                // beginAtZero: true,
+			                autoSkip: false,
+	                		// stepSize: 1,
+	                		// min: 0,
+	                		
+	                		maxRotation: 90,
+	                		minRotation: 90,
+			                callback: function(value, index, values){
+			                	return value.split(" ").join("\n");
+			                }
+			            	},
+			            	stacked: this.stack
+
+			        	}]
+			    	}
+			};
+
+	}
 
 	// events
 	public chartClicked(e:any):void {
@@ -377,5 +486,29 @@ export class GraphsComponent implements OnInit {
 		console.log(e);
 	}
  
+
+
+
+
+
+	getTotalTurns(){
+		return this.totalTurns;
+	}
+
+
+	//funciones booleanas para comparar que tipo de grafico voy a tener que mostrar
+
+	isTemp():boolean{
+		return this.graphtype == '0';
+	}
+
+	isDelay():boolean{
+		return this.graphtype == '1';
+	}
+
+	isWebVsDesktop():boolean{
+		return this.graphtype == '2';
+	}
+
 
 }

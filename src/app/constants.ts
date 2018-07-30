@@ -14,5 +14,12 @@ export const back = {
     url: ''
   	};
 
+export const ERR_UPS = 'Ups! Algo salió mal, intente de nuevo';
+
+export const SUBTOPIC = {
+        WEB: 'MediWeb',
+        DESKTOP: 'escritorio'
+};
+
 // export const assetsBaseRute = '/webMS/assets/';
 // export const mainRute = '/webMS/'

@@ -11,9 +11,11 @@
 			[(ngModel)]="this.graphtype">
 				<option value=0> Estadisticas de horarios ofrecidos/turnos atendidos </option>
 				<option value=1> Estadisticas de turnos por demora de medicos/pacientes </option>
+				<option value=2> Estadisticas de turnos WEB vs Escritorio </option>
 			</select>
 		</div>
 
+		
 		<div>
 			<button type="button" class="btn btn-success" (click)="filter()" style="margin-left: 30px">
 				Visualizar
@@ -27,60 +29,192 @@
 		<div class="input-group mb-3" style="max-width: 50%">
 			<div class="form-check">
 	    		<input type="checkbox" class="form-check-input" name="save" id="chk" [(ngModel)] = "keepData">
-	    	<label class="form-check-label" for="chk">
-	    		Mantener los datos
-	    	</label>
-	  </div>
+		    	<label class="form-check-label" for="chk">
+		    		Mantener los datos
+		    	</label>
+	  		</div>
 		</div>
+
+		
+
 	</div>
 </div>
 <hr>
 
-<div *ngIf = "isDoctorsLoaded() && isDelay()" >
-  <div style="display: block">
-    <canvas baseChart
-            [datasets]="datasOfTheDoctors"
-            [labels]="nameOfTheDoctors"
-            [options]="barChartOptions"
-            [legend]="barChartLegend"
-            [chartType]="barChartType"
-            (chartHover)="chartHovered($event)"
-            (chartClick)="chartClicked($event)"></canvas>
-  </div>
-  
+<div *ngIf="!turnsReady()" style="margin-top: -15%">
+	<loading></loading>
 </div>
 
+<div id="c">
+<div  *ngIf="turnsReady()">
+	<span><i><small>Cantidad de turnos cargados: {{ getTotalTurns() }}</small></i></span>
+	<br>
+	<span><i><small>Se muestran solo los doctores que tengan turnos cargados</small></i></span>
+	
+	<div *ngIf = "isDelay()" >
+		<div  style="display: block">
+			<canvas baseChart
+			    [datasets]="datasOfTheDoctors"
+			    [labels]="nameOfTheDoctors"
+			    [options]="optionsDelays"
+			    [legend]="barChartLegend"
+			    [chartType]="barChartType"
+			    (chartHover)="chartHovered($event)"
+			    (chartClick)="chartClicked($event)">
+		    </canvas>
+		</div>
+	  
+	</div>
 
 
+	<div *ngIf="this.isTemp()">	
 
+		
 
+		<table class="table table-hover">
+		  <thead>
+		    <tr>
+		      <th>Medico</th>
+		      <th>Horarios ofrecidos</th>
+		      <th>Turnos tomados</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		      <td>doctor1</td>
+		      <td>40</td>
+		      <td>43</td>
+		    </tr>
+		    <tr>
+		      <td>doctor2</td>
+		      <td>22</td>
+		      <td>31</td>
+		    </tr>
+		  </tbody>
+		</table>
+	</div>
 
-
-
-
-<div *ngIf="this.isTemp()">	
-	<table class="table table-hover">
-	  <thead>
-	    <tr>
-	      <th>Medico</th>
-	      <th>Horarios ofrecidos</th>
-	      <th>Turnos tomados</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr>
-	      <td>doctor1</td>
-	      <td>40</td>
-	      <td>43</td>
-	    </tr>
-	    <tr>
-	      <td>doctor2</td>
-	      <td>22</td>
-	      <td>31</td>
-	    </tr>
-	  </tbody>
-	</table>
-
+	<div *ngIf="this.isWebVsDesktop()">
+		
+		<div  style="display: block">
+			<canvas baseChart
+			    [datasets]="dataTurns"
+			    [labels]="nameOfTheDoctors"
+			    [options]="optionsTurns"
+			    [legend]="barChartLegend"
+			    [chartType]="barChartType"
+			    (chartHover)="chartHovered($event)"
+			    (chartClick)="chartClicked($event)">
+		    </canvas>
+		</div>
+		<div class="row m-0">
+			<h5>Tabla de valores WEB vs ESCRITORIO</h5> 
+			<span *ngIf="showTable()" (click)="hideOrShowTable()" style="cursor: pointer; margin-left: 10px">>Ocultar<</span>
+			<span *ngIf="!showTable()" (click)="hideOrShowTable()" style="cursor: pointer; margin-left: 10px">>Mostrar<</span>
+		</div>
+		<table *ngIf="showTable()" class="table table-hover">
+		  <thead>
+		    <tr>
+		      <th>Medico</th>
+		      <th>Turnos WEB</th>
+		      <th>Turnos ESCRITORIO</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr *ngFor="let doc of delays">
+		      <td>{{ doc.name }}</td>
+		      <td>{{ doc.countWeb }}</td>
+		      <td>{{ doc.countDesktop }}</td>
+		    </tr>
+		  </tbody>
+		</table>
 
 	
+	
+    
+
+		
+
+		<!-- Modal -->
+		<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Grafico de cantidad de turnos totales <small>(no se le aplica filtros)</small> </h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        
+				
+				<div style="display: block">
+			      <canvas baseChart
+			              [data]="pieChartData"
+			              [labels]="pieChartLabels"
+			              [chartType]="pieChartType"
+			              (chartHover)="chartHovered($event)"
+			              (chartClick)="chartClicked($event)"></canvas>
+			    </div>
+
+
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+
+
+		<div class="row m-0">
+			<div>
+				<h5>Tabla de valores totales WEB vs ESCRITORIO</h5> 
+			</div>
+			<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModal" style="margin-left: 15px" >
+				Ver grafico de turnos totales
+			</button>
+			
+		</div>
+		<br>
+		<table class="table table-hover">
+		  <thead>
+		    <tr>
+		    	<th></th>
+		      	<th>Turnos WEB</th>
+		      	<th>Turnos ESCRITORIO</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		    	<td>Promedios</td>
+		      	<td> {{ this.avgs[0] }} </td>
+		      	<td> {{ this.avgs[1] }} </td>
+		    </tr>
+		    <tr>
+		    	<td>Maximos</td>
+		      	<td> {{ this.minMax[2] }} </td>
+		      	<td> {{ this.minMax[3] }} </td>
+		    </tr>
+		    <tr>
+		    	<td>Minimos</td>
+		      	<td> {{ this.minMax[0] }} </td>
+		      	<td> {{ this.minMax[1] }} </td>
+		    </tr>
+		    <tr>
+		    	<td>Totales</td>
+		      	<td> {{ this.pieChartData[0] }} </td>
+		      	<td> {{ this.pieChartData[1] }} </td>
+		    </tr>
+		  </tbody>
+		</table>
+
+	</div>
+
 </div>
+</div>
+
+
+
+

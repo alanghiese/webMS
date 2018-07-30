@@ -1,11 +1,12 @@
 <nav class="navbar navbar-expand-lg navbar-dark  bg-orange">
-  <a class="navbar-brand" style="font-size: 25px; color: white">Medical <small> Software</small></a>
+  <a class="navbar-brand" style="font-size: 25px; color: black">Medical Software</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
+      <a  title="Contacto" [routerLink] = "['contact']"  style="margin-left: : 30px; font-size: 20px; color: black"> <small>Contacto</small> </a>
      <!--  <li class="nav-item active">
         <a class="nav-link arrow" href="#">↑</a>
       </li> -->
@@ -27,22 +28,28 @@
         <a class="nav-link disabled" href="#">Disabled</a>
       </li> -->
     </ul>
-    <div *ngIf="clientsExists() && isLogged()">
+    
+
+   <!--  <div *ngIf="clientsExists() && isLogged()">
       <span>Conectado a: </span>
       <span style="margin-left: 10px; margin-right: 30px;"><strong>{{ this.user }}</strong></span>
-    </div>
+    </div> -->
 
    
 
 
-    <div *ngIf="clientsExists() && isLogged()" class="input-group" style="max-width: 250px; margin-right: 18px;">
-      <div class="input-group-prepend">
-        <span class="input-group-text" title="Cambiar la fuente de datos">Cambiar cliente</span>
+    <div *ngIf="clientsExists() && isLogged()" class="input-group" style="max-width: 250px;">
+      <div class="btn-group">
+        <button type="button" class="btn dropdown-toggle dropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Conectado a <strong>{{ this.user }}</strong>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right dropdownContainer">
+          <button class="dropdown-item userConnected" type="button" *ngFor="let c of clients" #client (click)="changeClient(c.nombreFuente)"> 
+            {{ c.nombreFuente }} 
+          </button>
+        </div>
       </div>
-      <select class="form-control" #client (change)="changeClient(client.value)" style="max-width: 200px;"  title="Cambiar la fuente de datos">
-        <!-- <option>{{ this.user }}</option> -->
-        <option *ngFor="let c of clients"> {{ c.nombreFuente }} </option>
-      </select>
+
     </div>
 
    
@@ -53,7 +60,7 @@
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form> -->
 
-      <button *ngIf="isLogged()" class="btn btn-warning my-2 my-sm-0" style="background-color: rgb(255, 179, 102); border: 0px; color: white" 
+      <button *ngIf="isLogged()" class="btn btn-warning my-2 my-sm-0" style="background-color: rgb(255, 179, 102); border: 0px; color: black" 
       [routerLink] = "['login']" (click) = "logout()">
         SALIR
       </button>

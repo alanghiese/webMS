@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Filter } from './models/filter';
 import { back } from './constants';
+import { coverageObject, serviceObject } from './interfaces'
 
 @Component({
   selector: 'app-root',
@@ -11,10 +12,11 @@ import { back } from './constants';
 export class AppComponent {
 	filter: Filter;
 	clients: any[];
-	doctors: any[] = null;	
-	services: any[] = null;
-	coverages: any[]; //POR EL MOMENTO NO TENGO CON QUE SETEARLO (SERVICIO)
+	doctors: any[] = [];	
+	services: any[] = [];
+	coverages: any[] = [];
 	now: boolean = false;
+	notFilter: boolean = localStorage.getItem('url') != null && (localStorage.getItem('url') == '/contact' || localStorage.getItem('url') == '/home');
 	interval; //para el intervalo de datos en el momento
 
 
@@ -63,8 +65,19 @@ export class AppComponent {
 	    this.filter = new Filter('','','','','','','','');
 	}
 
-	setCoverages(c:any[]){
-		this.coverages = c;
+	isNotFilter():boolean{
+		return this.notFilter;
+	}
+
+	setNotFilter(value: boolean){
+		this.notFilter = value;
+	}
+
+	setCoverages(c:coverageObject[]){
+		for (var i = 0; i < c.length; i++) {
+			if (c[i] != null)
+				this.coverages.push(c[i].nombre);
+		}
 	}
 
 	getCoverages():any[]{
@@ -93,8 +106,11 @@ export class AppComponent {
 		return [''];
 	}
 
-	setServices(s:any[]){
-		this.services = s;
+	setServices(s:serviceObject[]){
+		for (var i = 0; i < s.length; i++) {
+			if (s[i] != null)
+				this.services.push(s[i].SERVICIO);
+		}
 	}
 
 	getServices():any[]{

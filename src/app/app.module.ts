@@ -30,6 +30,7 @@ import { dbPetitionsInterceptor } from './providers/dbPetitionsInterceptor';
 import { UPPERCASE } from './pipes/toUpperCase.pipe';
 import { LoadingComponent } from './pages/loading/loading.component';
 import { RealTimeComponent } from './pages/real-time/real-time.component';
+import { ContactComponent } from './pages/contact/contact.component';
 
 
 
@@ -49,7 +50,8 @@ import { RealTimeComponent } from './pages/real-time/real-time.component';
     FiltersComponent,
     UPPERCASE,
     LoadingComponent,
-    RealTimeComponent
+    RealTimeComponent,
+    ContactComponent
   ],
   imports: [
     BrowserModule,

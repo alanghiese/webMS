@@ -27,29 +27,43 @@
 </div>
 
 
+<div *ngIf="!turnsReady()" style="margin-top: -15%">
+		<loading></loading>
+	</div>
 
-
-<div class="input-group mb-6" style="margin-bottom: 50px;">
+<div *ngIf="turnsReady()" class="input-group mb-6" style="margin-bottom: 50px;">
+	
 	
 	<div style="width: 49%"> 
 		
 
 	    <div>
-	      <div style="display: block">
-	        <canvas baseChart
-	                [datasets]="barChartData"
-	                [labels]="barChartLabels"
-	                [options]="barChartOptions"
-	                [colors]="chartColors"
-	                [legend]="barChartLegend"
-	                [chartType]="barChartType"
-	                (chartHover)="chartHovered($event)"
-	                (chartClick)="chartClicked($event)"></canvas>
-	      </div>
-	      <button class="btn btn-warning my-2 my-sm-0" style="background-color: rgb(255, 179, 102); border: 0px; color: white; color:black"
+	       <div>
+				<span><i><small>Cantidad de turnos cargados: {{ getTotalTurns() }}</small></i></span>
+				<br>
+				<span><i><small>Se muestran solo los doctores que tengan turnos cargados</small></i></span>
+				
+				<div>
+					<div  style="display: block" data-toggle="modal" data-target="#exampleModal">
+						<canvas baseChart
+						    [datasets]="datasOfTheDoctors"
+						    [labels]="nameOfTheDoctors"
+						    [options]="optionsDelays"
+						    [legend]="barChartLegend"
+						    [chartType]="barChartType"
+						    (chartHover)="chartHovered($event)"
+						    (chartClick)="chartClicked($event)">
+					    </canvas>
+					</div>
+				  
+				</div>
+			</div>
+			<br>
+	      <span><i><small>clic en la grafica para expandir</small></i></span>
+	      <!-- <button class="btn btn-warning my-2 my-sm-0" style="background-color: rgb(255, 179, 102); border: 0px; color: white; color:black"
 	      data-toggle="modal" data-target="#exampleModal">
 	      	<b>AGRANDAR</b>
-	      </button>
+	      </button> -->
 	    </div>
 
 
@@ -67,38 +81,44 @@
 
 
 <!-- Modal -->
-<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
+<div class="modal fade bd-example-modal-lg sizeBox" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class=" modal-dialog modal-lg modify">
+    <div class="modal-content ">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Grafico de demora de medicos</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         
 		
-		<div>
-	      <div style="display: block">
-	        <canvas baseChart
-	                [datasets]="barChartData"
-	                [labels]="barChartLabels"
-	                [options]="barChartOptions2"
-	                [colors]="chartColors"
-	                [legend]="barChartLegend"
-	                [chartType]="barChartType"
-	                (chartHover)="chartHovered($event)"
-	                (chartClick)="chartClicked($event)">
-            </canvas>
-	      </div>
-	    </div>
-
+		<div style="display: block" data-toggle="modal" data-target="#exampleModal">
+	        <div  *ngIf="turnsReady()">
+				<span><i><small>Cantidad de turnos cargados: {{ getTotalTurns() }}</small></i></span>
+				<br>
+				<span><i><small>Se muestran solo los doctores que tengan turnos cargados</small></i></span>
+				
+				<div>
+					<div  style="display: block">
+						<canvas baseChart
+						    [datasets]="datasOfTheDoctors"
+						    [labels]="nameOfTheDoctors"
+						    [options]="optionsDelays"
+						    [legend]="barChartLegend"
+						    [chartType]="barChartType"
+						    (chartHover)="chartHovered($event)"
+						    (chartClick)="chartClicked($event)">
+					    </canvas>
+					</div>
+				  
+				</div>
+			</div>
 
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" title="Cerrar">Cerrar</button>
+      </div> -->
     </div>
   </div>
 </div>

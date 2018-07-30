@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AppComponent } from '../../app.component';
-import { UPPERCASE } from '../../pipes/toUpperCase.pipe';
 import { MathsFunctions } from '../../providers/mathsFunctions'
 import { Router } from '@angular/router';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
@@ -29,6 +28,10 @@ export class TurnsComponent implements OnInit {
 	private nameOfServices: string[] = [];
 	private finalCoverage: tuple[] = []; 
 	private finalService: tuple[] = []; 
+	private backSince = null;
+	private backUntil = null;
+	private preparingTurns: boolean = false;
+	private keepData: boolean = false;
 
 	constructor(
 		private appComponent: AppComponent, 
@@ -41,22 +44,27 @@ export class TurnsComponent implements OnInit {
 		let array: any;
 		let from = new Date();
 		let to = new Date();
-		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
+		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false'){
         	this._router.navigate(['login']);
-    	else
-			this._dbPetitions.getStatistics(from, to).subscribe( (resp) => {
+		}
+    	else{
+    		this.preparingTurns = true;
+			// this._dbPetitions.getStatistics(from, to).subscribe( (resp) => {
+			this._dbPetitions.getStatic().subscribe( (resp) => {
 				array = resp;
 				console.log('cargando datos en el arreglo...')
 				if (resp){
 					// console.log(array);
 					console.log('cargado!');
 					// console.log(resp);
-					this.prepareArray(array,this.turns);
+					this.prepareArray(array);
 					// console.log(this.turns);
 					this.prepararArreglos(this.turns); 
-					this.extraerCoberturas(this.turns);
-					// this.extraerServicios();
+					this.nameOfCoverages = this.appComponent.getCoverages();
+					this.nameOfServices = this.appComponent.getServices();
 					this.finalizeArrays();
+					this.filterFunction();
+					this.preparingTurns = false;
 					
 				}
 			},
@@ -70,15 +78,21 @@ export class TurnsComponent implements OnInit {
 	            
 
 	          	alert(msg);
-			}
-			);
+			});
+    		}
+
+    	
+    	this.appComponent.setNotFilter(false);
+        this.backSince = this.appComponent.filter.selSince;
+        this.backUntil = this.appComponent.filter.selUntil;
 		let backURL = this._router.url;
 		localStorage.setItem('url', backURL);
 		clearInterval(this.appComponent.interval);
 
 
 	}
-	prepareArray(array: turnosV0[],arraySol){
+	prepareArray(array: turnosV0[]){
+		this.turns = [];
 		let intC;
 		if(!array.length){
 			let c;
@@ -91,10 +105,8 @@ export class TurnsComponent implements OnInit {
 		else intC = array.length;
 		// console.log(c);
 
-		for (let k = 0; k < intC ; k++) {
-			// console.log(array[k]);
-			arraySol.push(array[k]);
-		}
+		for (let k = 0; k < intC ; k++)
+			this.turns.push(array[k]);		
 	}
 
 	getNumberOfTurns():number{
@@ -114,115 +126,183 @@ export class TurnsComponent implements OnInit {
 		
 		for (var i = 0; i < array.length; ++i) {
 			this.allCoverages[i] = array[i].campo6;
-			// this.allServices[i] = array[i].servicio;
+			this.allServices[i] = array[i].campo7;
 		}
 	}
 
-	extraerCoberturas(array:turnosV0[]){
-		
-		this.nameOfCoverages=[];
-		for (var i = 0; i < array.length; ++i) {
-			let founded:boolean = false;
-			for (var k = 0; k <= this.nameOfCoverages.length-1; ++k) {
-				if (this.nameOfCoverages[k]==array[i].campo6)
-					founded = true;
-			}
-			if (!founded)
-				this.nameOfCoverages.push(array[i].campo6);
-			else founded = false;
-		}
-	}
 
-	// extraerServicios(array:turnosV0[]){
-		
-		//this.nameOfServices=[];
-	// 	for (var i = 0; i <= array.length-1; ++i) {
-	// 		let founded:boolean = false;
-	// 		for (var k = 0; k <= this.nameOfServices.length-1; ++k) {
-	// 			if (this.nameOfServices[k]==array[i].servicio)
-	// 				founded = true;
-	// 		}
-	// 		if (!founded)
-	// 			this.nameOfServices.push(array[i].servicio);
-	// 		else founded = false;
-	// 	}
-	// }
+	
 
-
+	private userPersentage: string = '';
+	private stackP: boolean = true;
 	finalizeArrays(){
 		this.finalCoverage = [];
 		this.finalService = [];
+		let sumP = 0;
+		let sumC = 0;
+
 		for (var i=0; i<this.nameOfCoverages.length; i++){
 			let t = new tuple('',0,0);
 			t.name = this.nameOfCoverages[i];
 			t.percentage = this.maths.calculatePercentage(this.allCoverages,this.nameOfCoverages[i]);
 			t.count = this.maths.count(this.allCoverages,this.nameOfCoverages[i]);
-			this.finalCoverage.push(t);
+			sumC = sumC + t.count;
+			sumP = sumP + t.percentage
+			if (t.count != 0)
+				this.finalCoverage.push(t);
 		}
-		// for (var i=0; i<this.nameOfServices.length; i++){
-		// 	let t:tuple;
-		// 	t.name = this.nameOfServices[i];
-		// 	t.percentage = this.maths.calculatePercentage(this.allServices,this.nameOfServices[i]);
-		// 	t.count = this.maths.count(this.allServices,this.nameOfServices[i]);
-		// 	this.finalCoverage.push(t);
-		// }
 
-
-		this.finalCoverage.sort(
-			function(a,b){
-				return b.percentage - a.percentage;
-			}
-		);
-
-
-	}
-
-
-	filter(){
-		let doctorsTurns: turnosV0[] = [];
-		this.filterDoctors(doctorsTurns);
-
-		let datesTurns: turnosV0[] = [];
-		this.filterDates(datesTurns,doctorsTurns);
-
-		this.prepararArreglos(datesTurns); 
-		this.extraerCoberturas(datesTurns);
-		// this.extraerServicios(newTurns);
-		this.finalizeArrays();
-		console.log(this.appComponent.filter);
-	}
-
-	filterDoctors(array){
-		if (this.appComponent.filter.selDoctor != ''){
-			for (let k = 0; k < this.turns.length ; k++) {
-				if (this.turns[k].campo1 == this.appComponent.filter.selDoctor)
-					array.push(this.turns[k]);
-			}
-		}
-		else {
-			for (let k = 0; k < this.turns.length ; k++) {
-				array.push(this.turns[k]);
-			}
-		}
-	}
-
-	filterDates(array,arrayToCompare:turnosV0[]){
-		let since = this.convertToDate(this.appComponent.filter.selSince);
-		let until = this.convertToDate(this.appComponent.filter.selUntil);
 		
-		since.setHours(0);
-		since.setMilliseconds(0);
-		since.setMinutes(0);
-		since.setSeconds(0);
-		until.setHours(23,59,59);
 
-		for (let k = 0; k < arrayToCompare.length ; k++) {
-			
-			let date = new Date(arrayToCompare[k].fecha1);
-			if (date >= since && date <= until)
-				array.push(this.turns[k]);
+		for (var k=0; k<this.nameOfServices.length; k++){
+			let t = new tuple('',0,0);
+			t.name = this.nameOfServices[k];
+			t.percentage = this.maths.calculatePercentage(this.allServices,this.nameOfServices[k]);
+			t.count = this.maths.count(this.allServices,this.nameOfServices[k]);
+			if (t.count != 0)
+				this.finalService.push(t);
+		}
+
+		if (this.finalCoverage.length>0)
+			this.finalCoverage.sort(
+				function(a,b){
+					return b.percentage - a.percentage;
+				}
+			);
+
+		if (this.finalService.length>0)
+			this.finalService.sort(
+				function(a,b){
+					return b.percentage - a.percentage;
+				}
+			);
+
+		let t = new tuple('Sin cobertura', parseFloat((100 - sumP).toFixed(2)), this.getNumberOfTurns() - sumC);
+		this.finalCoverage.push(t);
+
+
+		if (this.stackP){
+			let coverageCeil = 0;
+			let serviceCeil = 0;
+			if (this.finalCoverage.length>1)
+				coverageCeil = Math.ceil(this.finalService[Math.floor(this.finalService.length/2)].percentage);
+			if (this.finalService.length>1)
+				serviceCeil = Math.ceil(this.finalService[Math.floor(this.finalService.length/2)].percentage);
+
+			if (this.userPersentage != ''){
+				coverageCeil = parseFloat(this.userPersentage);
+				serviceCeil  = parseFloat(this.userPersentage);
+			}
+			this.stackPercentages(coverageCeil,serviceCeil);
 		}
 	}
+
+	stackPercentages(coverageCeil,serviceCeil){
+		let arrAux = this.finalCoverage;
+		let percentageAux = 0;
+		let countAux = 0;
+		if (this.finalCoverage.length > 1){
+			this.finalCoverage = [];
+			for (var i = 0; i < arrAux.length; i++) {
+				if (arrAux[i].percentage >= coverageCeil){
+					this.finalCoverage.push(arrAux[i]);
+				}
+				else{
+					percentageAux = percentageAux + arrAux[i].percentage;
+					countAux = countAux + arrAux[i].count;	
+				}
+			}
+			this.finalCoverage.push(new tuple('Turnos con porcentajes menores a '+coverageCeil+'%',parseFloat(percentageAux.toFixed(2)),countAux));
+		}
+		arrAux = this.finalService;
+		percentageAux = 0;
+		countAux = 0;
+		if (this.finalService.length > 1){
+			this.finalService = [];
+			for (var i = 0; i < arrAux.length; i++) {
+				if (arrAux[i].percentage >= serviceCeil){
+					this.finalService.push(arrAux[i]);
+				}
+				else{
+					percentageAux = percentageAux + arrAux[i].percentage;
+					countAux = countAux + arrAux[i].count;	
+				}
+			}
+			this.finalService.push(new tuple('Turnos con porcentajes menores a '+serviceCeil+'%',percentageAux,countAux));
+		}
+	}
+
+	//filtrar
+  	filter(){
+  		// this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
+  		// 							this.convertToDate(this.appComponent.filter.selUntil)
+  		// ).subscribe((resp)=>{ // va esto si es en tiempo real
+  		if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
+  			this.preparingTurns = true;
+	  		this._dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+	        		if (resp){
+	        			// console.log(resp)
+	        			this.prepareArray(resp);
+	        			// console.log(this.turnsCompleteds);
+
+	        			this.filterFunction();
+	        			this.backSince = this.appComponent.filter.selSince;
+	        			this.backUntil = this.appComponent.filter.selUntil;
+	        			this.preparingTurns = false;
+
+	        		}
+	        	},
+			(err)=>{
+				let msg = 'Ups! Algo salió mal, intente de nuevo';
+	          	if (err.message.includes('session expired')){
+	          		msg = 'Debe volver a iniciar sesion';
+	          		localStorage.setItem('logged','false');
+	          		this._router.navigate(['login']);
+	          	}
+	            
+
+	          	alert(msg);
+			});
+  		}
+	  	else{
+	  		this.preparingTurns = true;
+	  		this.filterFunction();
+	  		this.preparingTurns = false;
+	  	}
+
+  		// console.log(this.appComponent.filter);
+  	}
+
+  	filterFunction(){
+  		//FILTROS
+		let backCoverages: any[] = [];
+		let backServices: any[] = [];
+		if (this.keepData){
+			backCoverages = this.allCoverages;
+			backServices = this.allServices;
+		}
+		
+		let arraySol = this.appComponent.filter.filter(this.turns);
+
+		this.prepararArreglos(arraySol); 
+		// console.log(this.keepData)
+		if (this.keepData){
+			for (var i = 0; i < backCoverages.length; i++) {
+				this.allCoverages.push(backCoverages[i]);
+			}
+			for (var i = 0; i < backServices.length; i++) {
+				this.allServices.push(backServices[i]);
+			}
+		}
+
+
+		this.finalizeArrays();
+
+
+  	}
+
+  	
+
 
 	convertToDate(date:String):Date{
 		// console.log(date);
@@ -241,6 +321,9 @@ export class TurnsComponent implements OnInit {
 
 	}
 
+	turnsReady(){
+		return !this.preparingTurns;
+	}
 
 	onChangeGroupBy(value:any){
 		this.valueGroupBy = value;

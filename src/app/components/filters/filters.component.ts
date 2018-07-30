@@ -4,6 +4,7 @@ import { NgbDateCustomParserFormatter } from '../../providers/NgbDateCustomParse
 import { NgbDatepickerI18n, NgbDateStruct, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from '../../app.component';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
+import { UPPERCASE } from '../../pipes/toUpperCase.pipe';
 
 
 
