@@ -21,5 +21,11 @@ export const SUBTOPIC = {
         DESKTOP: 'escritorio'
 };
 
+export const STATE_TURN = {
+        MISSING: '',
+        ATTENDED: 'A',
+        WAITING: 'S'
+}
+
 // export const assetsBaseRute = '/webMS/assets/';
 // export const mainRute = '/webMS/'

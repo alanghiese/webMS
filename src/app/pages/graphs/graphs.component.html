@@ -12,6 +12,7 @@
 				<option value=0> Estadisticas de horarios ofrecidos/turnos atendidos </option>
 				<option value=1> Estadisticas de turnos por demora de medicos/pacientes </option>
 				<option value=2> Estadisticas de turnos WEB vs Escritorio </option>
+				<option value=3> Estadisticas de estado de turnos </option>
 			</select>
 		</div>
 
@@ -45,7 +46,7 @@
 	<loading></loading>
 </div>
 
-<div id="c">
+
 <div  *ngIf="turnsReady()">
 	<span><i><small>Cantidad de turnos cargados: {{ getTotalTurns() }}</small></i></span>
 	<br>
@@ -212,8 +213,24 @@
 
 	</div>
 
+	<div *ngIf="this.isState()">
+		
+
+	    <div style="display: block">
+	      <canvas baseChart
+	              [data]="stateData"
+	              [labels]="stateLabels"
+	              [chartType]="pieChartType"
+	              (chartHover)="chartHovered($event)"
+	              (chartClick)="chartClicked($event)"></canvas>
+	    </div>
+
+
+	</div>
+
+
 </div>
-</div>
+
 
 
 

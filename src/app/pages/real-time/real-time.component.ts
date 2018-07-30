@@ -6,6 +6,7 @@ import { DbPetitionsComponent } from '../../providers/dbPetitions'
 import { turnosV0 } from '../../interfaces';
 import { nameAVG } from '../../models/regNameAVG';
 import { prepareArrays } from '../../providers/prepareArrays';
+import { STATE_TURN } from '../../constants';
 
 @Component({
   selector: 'realTime',
@@ -21,6 +22,7 @@ export class RealTimeComponent implements OnInit {
   private prepareArrays: prepareArrays;
   private keepData: boolean = false;
   private stack = false;
+  private stateData: number[] = [0,0,0]; //ausentes, atendidos, esperando 
 
   constructor(
               private _router: Router,
@@ -108,6 +110,19 @@ export class RealTimeComponent implements OnInit {
     return !this.preparingTurns;
   }
 
+  getStatesOfTurns(){
+      let aux: number[] = [0,0,0];
+      for (var i = 0; i < this.turnsCompleteds.length; i++) {
+        if (this.turnsCompleteds[i].campo5 == STATE_TURN.MISSING)
+          aux[0] = aux[0] + 1;
+        else if (this.turnsCompleteds[i].campo5 == STATE_TURN.ATTENDED) 
+          aux[1] = aux[1] + 1;
+        else
+          aux[2] = aux[2] + 1;
+      }
+      this.stateData = aux;
+    }
+
   refresh(){
       // this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
       //               this.convertToDate(this.appComponent.filter.selUntil)
@@ -164,7 +179,8 @@ export class RealTimeComponent implements OnInit {
           this.delays.push(backDelays[i]);
       }
     this.prepareGraphicDelay(this.delays);
-    }
+    this.getStatesOfTurns();
+  }
 
     contains(array: nameAVG[], valueToCompare: nameAVG){
       let founded = false;

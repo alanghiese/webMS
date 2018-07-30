@@ -5,6 +5,7 @@ import { DbPetitionsComponent } from '../../providers/dbPetitions';
 import { turnosV0 } from '../../interfaces';
 import { nameAVG } from '../../models/regNameAVG';
 import { prepareArrays } from '../../providers/prepareArrays';
+import { STATE_TURN } from '../../constants';
 
 
 
@@ -256,6 +257,8 @@ export class GraphsComponent implements OnInit {
 							{data: this.auxCountDesktop , label: 'Cantidad de turnos por escritorio'},
 							{data: this.auxCountWeb , label: 'Cantidad de turnos por web'}
 						];
+
+		this.getStatesOfTurns();
 						
 						
 
@@ -487,8 +490,22 @@ export class GraphsComponent implements OnInit {
 	}
  
 
+	//grafico de torata estado de turnos
+	public stateLabels:string[] = ['Aun no se presentan', 'Atendidos', 'En sala de espera'];
+  	public stateData:number[] = [];
 
-
+  	getStatesOfTurns(){
+  		let aux: number[] = [0,0,0];
+  		for (var i = 0; i < this.turnsCompleteds.length; i++) {
+  			if (this.turnsCompleteds[i].campo5 == STATE_TURN.MISSING)
+  				aux[0] = aux[0] + 1;
+  			else if (this.turnsCompleteds[i].campo5 == STATE_TURN.ATTENDED) 
+  				aux[1] = aux[1] + 1;
+  			else
+  				aux[2] = aux[2] + 1;
+  		}
+  		this.stateData = aux;
+  	}
 
 
 	getTotalTurns(){
@@ -510,5 +527,8 @@ export class GraphsComponent implements OnInit {
 		return this.graphtype == '2';
 	}
 
+	isState(): boolean{
+		return this.graphtype == '3';
+	}
 
 }
