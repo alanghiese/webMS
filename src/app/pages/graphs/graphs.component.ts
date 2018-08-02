@@ -45,13 +45,41 @@ export class GraphsComponent implements OnInit {
 
 	ngOnInit() {
 		this.prepareArrays = new prepareArrays();
+		let preparingTurns1 = true;
+		let preparingTurns2 = true;
 
 		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
         	this._router.navigate(['login']);
         else{
-        	console.log('cargar turnos');
+        	console.log('cargando turnos...');	
         	this.preparingTurns = true;
-        	// this.dbPetitions.getTurnsDoctors('','',new Date(),new Date(),'').subscribe();
+        	this.dbPetitions.getTurnsDoctors('ACEITUNO JUAN PABLO','143.0',
+        						this.convertToDate(this.appComponent.filter.selSince),
+        						this.convertToDate(this.appComponent.filter.selUntil)
+        	).subscribe((turnsD)=>{
+        		if (turnsD){
+        			// console.log(turnsD);
+        			// this.filterTemp();
+
+
+
+
+        			preparingTurns2 = false;
+        			this.preparingTurns = preparingTurns1;
+        		}
+
+        	},
+        	(err)=>{
+				let msg = 'Ups! Algo salió mal, intente de nuevo';
+	          	if (err.message.includes('session expired')){
+	          		msg = 'Debe volver a iniciar sesion';
+	          		localStorage.setItem('logged','false');
+	          		this._router.navigate(['login']);
+	          	}
+	          	});
+        	
+
+
         	let from = this.convertToDate(this.appComponent.filter.selSince);
         	let to = this.convertToDate(this.appComponent.filter.selUntil);
         	from.setHours(0);
@@ -61,9 +89,10 @@ export class GraphsComponent implements OnInit {
 			to.setMilliseconds(0);
 			to.setMinutes(0);
 
-        	// this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
-        	this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+        	this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
+        	// this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
         		if (resp){
+        			// console.log(resp);
         			this.prepareArrays.prepareArray(resp);
         			// console.log(this.turnsCompleteds);
         			this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
@@ -71,12 +100,18 @@ export class GraphsComponent implements OnInit {
         			this.prepareArrays.doctorsAverage(this.turnsCompleteds);
 	        		this.delays = this.prepareArrays.getDelays();
 	        		// console.log(this.delays)
+	        		// console.log('FECHAS');
+	        		// console.log(from);
+	        		// console.log(to);
+	        		// console.log('FILTRO');
+	        		// console.log(this.appComponent.filter);
 	        		this.filterFunction();
         			// this.prepareGraphicDelay(this.delays);
 					// this.prepareGraphicTurns();
         			this.totalTurns = this.turnsCompleteds.length;
 
-        			this.preparingTurns = false;
+        			preparingTurns1 = false;
+        			this.preparingTurns = preparingTurns2;
         		}
         	},
         	(err)=>{
@@ -127,8 +162,12 @@ export class GraphsComponent implements OnInit {
   		// ).subscribe((resp)=>{ // va esto si es en tiempo real
   		if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
   			this.preparingTurns = true;
-	  		this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+	  		// this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+	  		this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
+  									this.convertToDate(this.appComponent.filter.selUntil)
+  		).subscribe((resp)=>{
 	        		if (resp){
+        				console.log(resp);
 	        			// console.log(resp)
 	        			this.prepareArrays.prepareArray(resp);
 	        			// console.log(this.turnsCompleteds);
@@ -176,6 +215,7 @@ export class GraphsComponent implements OnInit {
 			}
 		this.prepareGraphicDelay(this.delays);
 		this.prepareGraphicTurns();
+		this.getStatesOfTurns(arraySol);
   	}
 
   	contains(array: nameAVG[], valueToCompare: nameAVG){
@@ -258,7 +298,7 @@ export class GraphsComponent implements OnInit {
 							{data: this.auxCountWeb , label: 'Cantidad de turnos por web'}
 						];
 
-		this.getStatesOfTurns();
+		
 						
 						
 
@@ -494,12 +534,12 @@ export class GraphsComponent implements OnInit {
 	public stateLabels:string[] = ['Aun no se presentan', 'Atendidos', 'En sala de espera'];
   	public stateData:number[] = [];
 
-  	getStatesOfTurns(){
+  	getStatesOfTurns(array: turnosV0[]){
   		let aux: number[] = [0,0,0];
-  		for (var i = 0; i < this.turnsCompleteds.length; i++) {
-  			if (this.turnsCompleteds[i].campo5 == STATE_TURN.MISSING)
+  		for (var i = 0; i < array.length; i++) {
+  			if (array[i].campo5 == STATE_TURN.MISSING)
   				aux[0] = aux[0] + 1;
-  			else if (this.turnsCompleteds[i].campo5 == STATE_TURN.ATTENDED) 
+  			else if (array[i].campo5 == STATE_TURN.ATTENDED) 
   				aux[1] = aux[1] + 1;
   			else
   				aux[2] = aux[2] + 1;
@@ -511,6 +551,15 @@ export class GraphsComponent implements OnInit {
 	getTotalTurns(){
 		return this.totalTurns;
 	}
+
+
+
+
+	filterTemp(){
+		alert('SOY UN FILTRO DISTINTO')
+	}
+
+
 
 
 	//funciones booleanas para comparar que tipo de grafico voy a tener que mostrar

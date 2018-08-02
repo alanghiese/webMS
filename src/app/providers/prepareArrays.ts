@@ -27,6 +27,8 @@ export class prepareArrays{
 			if(array[k].campo3 != '' && array[k].campo4 != '')
 				this.turnsCompleteds.push(array[k]);
 		}
+		// console.log('ARRAY EN EL prepareArrays');
+		// console.log(this.turnsCompleteds);
 		return this.turnsCompleteds;
 	}
 

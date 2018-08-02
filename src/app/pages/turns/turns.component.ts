@@ -42,15 +42,15 @@ export class TurnsComponent implements OnInit {
 
 	ngOnInit() {
 		let array: any;
-		let from = new Date();
-		let to = new Date();
+		let from = this.convertToDate(this.appComponent.filter.selSince);
+		let to = this.convertToDate(this.appComponent.filter.selUntil);
 		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false'){
         	this._router.navigate(['login']);
 		}
     	else{
     		this.preparingTurns = true;
-			// this._dbPetitions.getStatistics(from, to).subscribe( (resp) => {
-			this._dbPetitions.getStatic().subscribe( (resp) => {
+			this._dbPetitions.getStatistics(from, to).subscribe( (resp) => {
+			// this._dbPetitions.getStatic().subscribe( (resp) => {
 				array = resp;
 				console.log('cargando datos en el arreglo...')
 				if (resp){
@@ -193,6 +193,7 @@ export class TurnsComponent implements OnInit {
 				coverageCeil = parseFloat(this.userPersentage);
 				serviceCeil  = parseFloat(this.userPersentage);
 			}
+			if (this.finalService.length > 1)
 			this.stackPercentages(coverageCeil,serviceCeil);
 		}
 	}
@@ -234,12 +235,12 @@ export class TurnsComponent implements OnInit {
 
 	//filtrar
   	filter(){
-  		// this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
-  		// 							this.convertToDate(this.appComponent.filter.selUntil)
-  		// ).subscribe((resp)=>{ // va esto si es en tiempo real
   		if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
   			this.preparingTurns = true;
-	  		this._dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+	  		// this._dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+	  		this._dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
+  									this.convertToDate(this.appComponent.filter.selUntil)
+  			).subscribe((resp)=>{
 	        		if (resp){
 	        			// console.log(resp)
 	        			this.prepareArray(resp);

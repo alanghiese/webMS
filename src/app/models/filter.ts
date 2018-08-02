@@ -13,20 +13,29 @@ export class Filter{
 		){}
 
 	filter(original:turnosV0[]):turnosV0[]{
-		let datesTurns: turnosV0[] = [];
-		this.filterDates(datesTurns,original);//si no uso el estatico no deberia ser necesario esto
+		// let datesTurns: turnosV0[] = [];
+		// this.filterDates(datesTurns,original);//si no uso el estatico no deberia ser necesario esto
 
 		
   		let doctorsTurns: turnosV0[] = [];
 
-		this.filterDoctors(doctorsTurns,datesTurns);
+		this.filterDoctors(doctorsTurns,original);
+
+		// console.log('doctores filtrados');
+		// console.log(doctorsTurns);
 
 
 		let servicesTurns: turnosV0[] = [];
 		this.filterService(servicesTurns,doctorsTurns);
 
+		// console.log('servicios filtrados');
+		// console.log(servicesTurns);
+
 		let coveragesTurns: turnosV0[] = [];
 		this.filterCoverages(coveragesTurns,servicesTurns);
+
+		// console.log('coberturas filtrados');
+		// console.log(coveragesTurns);
 
 		let excludeSurnameTurns: turnosV0[] = [];
 		this.excludeSurnameF(excludeSurnameTurns,coveragesTurns);

@@ -83,6 +83,7 @@ export class LoginComponent implements OnInit {
         resp = loginresp;
 
         if (resp){
+          // console.log(resp);
           let doctors: any[];
           let services: any[];
           let coverages: any[];

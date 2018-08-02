@@ -40,7 +40,7 @@ export class RealTimeComponent implements OnInit {
      else{
          console.log('cargar turnos');
           this.preparingTurns = true;
-          // this.dbPetitions.getTurnsDoctors('','',new Date(),new Date(),'').subscribe();
+
           let from = this.convertToDate(this.appComponent.filter.selSince);
           let to = this.convertToDate(this.appComponent.filter.selUntil);
           from.setHours(0);
@@ -50,8 +50,8 @@ export class RealTimeComponent implements OnInit {
           to.setMilliseconds(0);
           to.setMinutes(0);
 
-          // this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
-          this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+          this.dbPetitions.getActualStatistics().subscribe((resp)=>{
+          // this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
             if (resp){
               this.prepareArrays.prepareArray(resp);
               // console.log(this.turnsCompleteds);
@@ -124,32 +124,29 @@ export class RealTimeComponent implements OnInit {
     }
 
   refresh(){
-      // this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
+      // if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
+      //   this.preparingTurns = true;
+      //   this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
       //               this.convertToDate(this.appComponent.filter.selUntil)
-      // ).subscribe((resp)=>{ // va esto si es en tiempo real
-      if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
-        this.preparingTurns = true;
-        this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
-              if (resp){
-                // console.log(resp)
-                this.prepareArrays.prepareArray(resp);
-                // console.log(this.turnsCompleteds);
-                this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
-                this.delays = this.prepareArrays.getDelays();
+      // ).subscribe((resp)=>{
+      //         if (resp){
+      //           this.prepareArrays.prepareArray(resp);
+      //           this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
+      //           this.delays = this.prepareArrays.getDelays();
 
-                this.filterFunction();
-                this.backSince = this.appComponent.filter.selSince;
-                this.backUntil = this.appComponent.filter.selUntil;
-                this.preparingTurns = false;
+      //           this.filterFunction();
+      //           this.backSince = this.appComponent.filter.selSince;
+      //           this.backUntil = this.appComponent.filter.selUntil;
+      //           this.preparingTurns = false;
 
-              }
-            });
-      }
-      else{
-        this.preparingTurns = true;
-        this.filterFunction();
-        this.preparingTurns = false;
-      }
+      //         }
+      //       });
+      // }
+      // else{
+      this.preparingTurns = true;
+      this.filterFunction();
+      this.preparingTurns = false;
+      // }
 
       let now = new Date();
       this.lastUpdate ='Ultima actualizacion a las: ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();

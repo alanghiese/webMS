@@ -17,7 +17,7 @@
 		</div>
 
 		
-		<div>
+		<div *ngIf="!isTemp()" >
 			<button type="button" class="btn btn-success" (click)="filter()" style="margin-left: 30px">
 				Visualizar
 			</button>
@@ -27,6 +27,13 @@
 			</button>
 
 		</div>
+
+		<div *ngIf="isTemp()">
+			<button type="button" class="btn btn-success" (click)="filterTemp()" style="margin-left: 30px">
+				Visualizar
+			</button>
+		</div>
+
 		<div class="input-group mb-3" style="max-width: 50%">
 			<div class="form-check">
 	    		<input type="checkbox" class="form-check-input" name="save" id="chk" [(ngModel)] = "keepData">
@@ -68,7 +75,7 @@
 	</div>
 
 
-	<div *ngIf="this.isTemp()">	
+	<div *ngIf="isTemp()">	
 
 		
 
@@ -95,7 +102,7 @@
 		</table>
 	</div>
 
-	<div *ngIf="this.isWebVsDesktop()">
+	<div *ngIf="isWebVsDesktop()">
 		
 		<div  style="display: block">
 			<canvas baseChart
@@ -213,7 +220,7 @@
 
 	</div>
 
-	<div *ngIf="this.isState()">
+	<div *ngIf="isState()">
 		
 
 	    <div style="display: block">

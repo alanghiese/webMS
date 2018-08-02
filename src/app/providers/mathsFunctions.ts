@@ -14,7 +14,11 @@ export class MathsFunctions{
 			if (array[i] == valueToCompare)
 				counter++;
 		}
-		return parseFloat((counter * 100 / array.length).toFixed(2));
+		let sol = parseFloat((counter * 100 / array.length).toFixed(2));
+
+		if (sol)
+			return sol;
+		return 0 ;
 	}
 
 	public count(array: Array<any>, valueToCompare){

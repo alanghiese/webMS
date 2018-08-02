@@ -71,7 +71,7 @@ export class DbPetitionsComponent {
         map(resp => resp),//.data
         tap(resp => {
           console.log(`connected to client=${dataSource}`);
-          console.log(resp);
+          // console.log(resp);
           this.session.setActiveClient(resp);
         }),
         
@@ -107,7 +107,9 @@ export class DbPetitionsComponent {
   getActualStatistics():Observable<any>{
     let params = new HttpParams()
       .set("accion", "getEstadisticas")
-      .set("clave",'turnosV0');  
+      .set("clave",'turnosV0')
+      .set("desde", '')
+      .set("hasta", '');  
     const url = `${this.API_URL_BASE}/${this.API_ENDPOINTS.getStatistics}`;
     return this.http.get<JSONResponse>(url, {params: params})
     .pipe(
@@ -135,8 +137,9 @@ export class DbPetitionsComponent {
       );
 
   }
-  //TENDRIA QUE VER COMO HACER ANDAR LOS PARAMETROS Y DE DONDE CONSEGUIR EL CODIGOMEDICO
-  getTurnsDoctors(nombreMedico: string, codigoMedico: string,fechaDesde: Date,fechaHasta: Date,momentoDelDia: string ) : Observable<any> {
+
+
+  getTurnsDoctors(nombreMedico: string, codigoMedico: string, fechaDesde: Date, fechaHasta: Date) : Observable<any> {
     //momentoDelDia (maniana|tarde|todo)
     
     let params = new HttpParams()
@@ -145,13 +148,13 @@ export class DbPetitionsComponent {
     .set("codigoMedico",codigoMedico)
     .set("fechaDesde",this._formatDate(fechaDesde))
     .set("fechaHasta",this._formatDate(fechaHasta))
-    .set("momentoDelDia",momentoDelDia);
+    .set("momentoDelDia",'todo'); //de momento queda en todo
 
     const url = `${this.API_URL_BASE}/${this.API_ENDPOINTS.getTurnsDoctors}`;
     return this.http.get<JSONResponse>(url, {params: params})
       .pipe(
         map(resp => {
-          console.log(resp);
+          // console.log(resp);
           return resp;
         }),
         //tap(ap => console.log(`get Doctors ${params}`)),
