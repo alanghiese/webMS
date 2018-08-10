@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
 import { turnosV0 } from '../../interfaces';
 import { tuple } from './tuple';
+import { NO_COVERAGE, ERR_UPS } from '../../constants';
 
 
 
@@ -51,28 +52,44 @@ export class TurnsComponent implements OnInit {
     		this.preparingTurns = true;
 			this._dbPetitions.getStatistics(from, to).subscribe( (resp) => {
 			// this._dbPetitions.getStatic().subscribe( (resp) => {
-				array = resp.estadistica;
+				array = resp;
 				console.log('cargando datos en el arreglo...')
 				if (resp){
 					// console.log(array);
 					console.log('cargado!');
-					console.log(resp);
+					// console.log(resp);
 
-					this.prepareCoverages(array.coberturas, array.estadistica.lenght);
-					this.prepareServices(array.servicios, array.estadistica.lenght);
+					this.prepareArray(array);
+					// console.log(this.turns);
+					this.prepararArreglos(this.turns); 
+					// console.log(this.turns);
+                    // this.turns.sort(function(a,b){
+                    //     return a.campo6 - b.campo6;
+                    // })
+                    // console.log(this.turns);
 
-					this.filterFunction();
-					this.preparingTurns = false;
+                    // this.finalCoverage = this.getCoverages(this.turns);
+                    // this.finalService = this.getServices(this.turns);
+
+                    
+					let aux = this.appComponent.getCoverages();
+					for (var i = 0; i < aux.length; i++) {
+						this.nameOfCoverages.push(aux[i]);
+					}
+					this.nameOfCoverages.push(NO_COVERAGE);
+					this.nameOfServices = this.appComponent.getServices();
 
 					// this.finalizeArrays();
 
+					// console.log(this.turns);
 					this.filterFunction();
+					// console.log(this.turns);
 					this.preparingTurns = false;
 					
 				}
 			},
 			(err)=>{
-				let msg = 'Ups! Algo salió mal, intente de nuevo';
+				let msg = ERR_UPS;
 	          	if (err.message.includes('session expired')){
 	          		msg = 'Debe volver a iniciar sesion';
 	          		localStorage.setItem('logged','false');
@@ -96,40 +113,57 @@ export class TurnsComponent implements OnInit {
 	}
 
 
-	prepareCoverages(array: any[], totalTurns: number){
-		for (var i = 0; i < array.length; i++) {
-			let t: tuple = new tuple('',0,0);
-			t.name = array[i].cobertura;
-			t.count = array[i].cantidad;
-			t.percentage = t.count * 100 / totalTurns;
-			this.finalCoverage.push(t);
+
+	prepareArray(array: turnosV0[]){
+		this.turns = [];
+		let intC;
+		if(!array.length){
+			let c;
+			for (var i in array) {
+				if (parseInt(i))
+					c = i;
+			}
+		intC = parseInt(c);
 		}
+		else intC = array.length;
+
+		for (let k = 0; k < intC ; k++)
+			this.turns.push(array[k]);		
 	}
-
-	prepareServices(array: any[], totalTurns: number){
-		for (var i = 0; i < array.length; i++) {
-			let t: tuple = new tuple('',0,0);
-			t.name = array[i].servicio;
-			t.count = array[i].cantidad;
-			t.percentage = t.count * 100 / totalTurns;
-			this.finalService.push(t);
-		}
-	}
-
-
-
-
-	
 
 	getNumberOfTurns():number{
-		if (this.valueGroupBy == 'Cobertura')
-			return this.finalCoverage.length;
-		else if (this.valueGroupBy == 'Servicio')
-			return this.finalService.length;
-		return 0;
+		return this.turns.length;
 	}
 	
 	
+
+	prepararArreglos(array:turnosV0[]){
+		
+		this.allCoverages=[];
+		this.allServices=[];
+		
+		for (var i = 0; i < array.length; ++i) {
+            if (array[i].campo6.trim()=="")
+                this.allCoverages.push(NO_COVERAGE);
+            else
+			    this.allCoverages.push(array[i].campo6);
+			this.allServices.push(array[i].campo7);
+		}
+		this.allCoverages.sort(function(a,b){
+			if (a<b)
+				return -1;
+			else return 1;
+		});
+
+		this.allServices.sort(function(a,b){
+			if (a<b)
+				return -1;
+			else return 1;
+		});
+
+
+	}
+
 
 
 
@@ -138,6 +172,109 @@ export class TurnsComponent implements OnInit {
 	private userPersentage: string = '';
 	private stackP: boolean = true;
 	finalizeArrays(){
+		this.finalCoverage = [];
+		this.finalService = [];
+		let sumP = 0;
+		let sumC = 0;
+
+		let indexs: number[] = []
+
+		let arrNameCount = []; //name y count
+		for (var w = 0; w < this.nameOfCoverages.length; w++) {
+
+			let counter = 0;
+			for (var z = 0; z < this.turns.length; z++) {
+				if (this.turns[z].campo6.trim() == this.nameOfCoverages[w].trim())
+					counter++;
+				else if ((this.turns[z].campo6.trim() == '' || this.turns[z].campo6 == '') && this.nameOfCoverages[w] == NO_COVERAGE)
+					counter++;
+				else{
+					let enc = false;
+					let enc2 = false;
+					for (var m = 0; m < indexs.length; m++) {
+						if (indexs[m] == z)
+							enc = true;
+					}
+
+					for (var u = 0; u < this.nameOfCoverages.length; u++) {
+						if (this.nameOfCoverages[u] == this.turns[z].campo6)
+							enc2 = true;
+					}
+
+
+					if (!enc && !enc2)
+						indexs.push(z);
+				}
+			}
+
+			arrNameCount.push({
+				name: this.nameOfCoverages[w],
+				count: counter
+			});
+		}	
+
+		console.log('Lo que ocurre aca (fx finalizeArrays linea 276 aprox) no tiene sentido');
+		let no_encontradas = [];
+		let enc = false;
+
+		for (var i = 0; i < indexs.length; i++) {
+			no_encontradas.push(this.turns[indexs[i]]);
+		}
+
+		let symbol = no_encontradas[0].campo6;
+		for (var i = 0; i < indexs.length; i++) {
+			if (no_encontradas[i].campo6 == symbol)
+				console.log('-'+symbol+'-');
+		}
+		// alert('-'+symbol+'-');
+
+		
+		
+		console.log(no_encontradas);
+
+
+
+		for (var i=0; i<this.nameOfCoverages.length; i++){
+			let t = new tuple('',0,0);
+			t.name = arrNameCount[i].name;
+			t.count = arrNameCount[i].count//this.maths.count(this.allCoverages,this.nameOfCoverages[i]);
+			t.percentage = parseFloat((100*t.count/this.turns.length).toFixed(2));
+			// sumC = sumC + t.count;
+			// sumP = sumP + t.percentage
+			if (t.count != 0)
+				this.finalCoverage.push(t);
+		}
+
+		// console.log(this.finalCoverage)
+		
+
+		for (var k=0; k<this.nameOfServices.length; k++){
+			let t = new tuple('',0,0);
+			t.name = this.nameOfServices[k];
+			t.count = 1;//this.maths.count(this.allServices,this.nameOfServices[k]);
+			t.percentage = parseFloat((100*t.count/this.turns.length).toFixed(2));
+			if (t.count != 0)
+				this.finalService.push(t);
+		}
+
+		if (this.finalCoverage.length>0)
+			this.finalCoverage.sort(
+				function(a,b){
+					return b.percentage - a.percentage;
+				}
+			);
+
+		if (this.finalService.length>0)
+			this.finalService.sort(
+				function(a,b){
+					return b.percentage - a.percentage;
+				}
+			);
+
+		// let t = new tuple('Sin cobertura', parseFloat((100 - sumP).toFixed(2)), this.getNumberOfTurns() - sumC);
+		// this.finalCoverage.push(t);
+
+
 		if (this.stackP){
 			let coverageCeil = 0;
 			let serviceCeil = 0;
@@ -200,8 +337,7 @@ export class TurnsComponent implements OnInit {
   			).subscribe((resp)=>{
 	        		if (resp){
 	        			// console.log(resp)
-	        			this.prepareCoverages(resp.coberturas, resp.estadistica.lenght);
-                        this.prepareServices(resp.servicios, resp.estadistica.lenght);
+	        			this.prepareArray(resp);
 	        			// console.log(this.turnsCompleteds);
 
 	        			this.filterFunction();
@@ -212,7 +348,7 @@ export class TurnsComponent implements OnInit {
 	        		}
 	        	},
 			(err)=>{
-				let msg = 'Ups! Algo salió mal, intente de nuevo';
+				let msg = ERR_UPS;
 	          	if (err.message.includes('session expired')){
 	          		msg = 'Debe volver a iniciar sesion';
 	          		localStorage.setItem('logged','false');
