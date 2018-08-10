@@ -8,28 +8,28 @@ export class MathsFunctions{
 	constructor(){}
 
 
-	public calculatePercentage(array: Array<any>, valueToCompare):number{
-		let counter = 0;
-		for (var i = 0; i <= array.length-1; i++) {
-			if (array[i] == valueToCompare)
-				counter++;
-		}
-		let sol = parseFloat((counter * 100 / array.length).toFixed(2));
+	// public calculatePercentage(array: Array<any>, valueToCompare):number{
+	// 	let counter = 0;
+	// 	for (var i = 0; i <= array.length-1; i++) {
+	// 		if (array[i] == valueToCompare)
+	// 			counter++;
+	// 	}
+	// 	let sol = parseFloat((counter * 100 / array.length).toFixed(2));
 
-		if (sol)
-			return sol;
-		return 0 ;
-	}
+	// 	if (sol)
+	// 		return sol;
+	// 	return 0 ;
+	// }
 
-	public count(array: Array<any>, valueToCompare){
-		let counter = 0;
-		for (var i = 0; i < array.length; i++) {
-			if (array[i] == valueToCompare)
-				counter++;
-		}
-		return counter;
+	// public count(array: Array<any>, valueToCompare){
+	// 	let counter = 0;
+	// 	for (var i = 0; i < array.length; i++) {
+	// 		if (array[i] == valueToCompare)
+	// 			counter++;
+	// 	}
+	// 	return counter;
 		
-	}
+	// }
 
 
 

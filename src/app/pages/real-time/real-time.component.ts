@@ -125,27 +125,35 @@ export class RealTimeComponent implements OnInit {
 
   refresh(){
       // if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
-      //   this.preparingTurns = true;
-      //   this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
-      //               this.convertToDate(this.appComponent.filter.selUntil)
-      // ).subscribe((resp)=>{
-      //         if (resp){
-      //           this.prepareArrays.prepareArray(resp);
-      //           this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
-      //           this.delays = this.prepareArrays.getDelays();
+        this.preparingTurns = true;
+        this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
+                    this.convertToDate(this.appComponent.filter.selUntil)
+      ).subscribe((resp)=>{
+              if (resp){
+                this.prepareArrays.prepareArray(resp);
+                this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
+                this.delays = this.prepareArrays.getDelays();
 
-      //           this.filterFunction();
-      //           this.backSince = this.appComponent.filter.selSince;
-      //           this.backUntil = this.appComponent.filter.selUntil;
-      //           this.preparingTurns = false;
+                this.filterFunction();
+                this.backSince = this.appComponent.filter.selSince;
+                this.backUntil = this.appComponent.filter.selUntil;
+                this.preparingTurns = false;
 
-      //         }
-      //       });
+              }
+            },
+            (err)=>{
+              let msg = 'Ups! Algo salió mal, intente de nuevo';
+              if (err.message.includes('session expired')){
+                msg = 'Debe volver a iniciar sesion';
+                localStorage.setItem('logged','false');
+                this._router.navigate(['login']);
+              }
+              });
       // }
       // else{
-      this.preparingTurns = true;
-      this.filterFunction();
-      this.preparingTurns = false;
+      // this.preparingTurns = true;
+      // this.filterFunction();
+      // this.preparingTurns = false;
       // }
 
       let now = new Date();
@@ -159,7 +167,8 @@ export class RealTimeComponent implements OnInit {
     if (this.keepData)
       backDelays = this.delays;
     
-    let arraySol = this.appComponent.filter.filter(this.turnsCompleteds);
+    let arraySolOnlyOlds =  this.filterNewTurns(this.turnsCompleteds);
+    let arraySol = this.appComponent.filter.filter(arraySolOnlyOlds);
 
     if (this.keepData)
       this.totalTurns = this.totalTurns + arraySol.length;
@@ -188,6 +197,15 @@ export class RealTimeComponent implements OnInit {
       return founded;
     }
 
+  filterNewTurns(array: turnosV0[]): turnosV0[]{
+    let arr: turnosV0[] = [];
+    for (var i = 0; i < array.length; i++) {
+      if(array[i].campo3 != '' && array[i].campo4 != '')
+        arr.push(array[i]);
+    }
+    return arr;
+    
+  }
 
   //para graficos de demora de medicos
 

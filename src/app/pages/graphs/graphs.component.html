@@ -107,7 +107,7 @@
 		<div  style="display: block">
 			<canvas baseChart
 			    [datasets]="dataTurns"
-			    [labels]="nameOfTheDoctors"
+			    [labels]="nameOfTheDoctorsTurns"
 			    [options]="optionsTurns"
 			    [legend]="barChartLegend"
 			    [chartType]="barChartType"
@@ -129,10 +129,10 @@
 		    </tr>
 		  </thead>
 		  <tbody>
-		    <tr *ngFor="let doc of delays">
+		    <tr *ngFor="let doc of webVSdesktopArr">
 		      <td>{{ doc.name }}</td>
-		      <td>{{ doc.countWeb }}</td>
-		      <td>{{ doc.countDesktop }}</td>
+		      <td>{{ doc.web }}</td>
+		      <td>{{ doc.desktop }}</td>
 		    </tr>
 		  </tbody>
 		</table>

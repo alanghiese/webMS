@@ -79,7 +79,7 @@
 			<select  ng-model="selectedCoverage" #coverage (change)="onChangeCoverage(coverage.value)" title="Filtrar por cobertura"
 			class="form-control" style="max-width: 200px;">
 				<option></option>
-				<option>SIN COBERTURA</option>
+				<option>Sin Cobertura</option>
 				<option *ngFor="let cov of coverages "> {{ cov }} </option>
 			</select>
 		</div>

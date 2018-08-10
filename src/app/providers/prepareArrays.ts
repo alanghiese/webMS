@@ -1,4 +1,4 @@
-import { turnosV0 } from '../interfaces';
+import { turnosV0, webVSdesktop } from '../interfaces';
 import { nameAVG } from '../models/regNameAVG'
 import { MathsFunctions } from '../providers/mathsFunctions'
 
@@ -24,7 +24,7 @@ export class prepareArrays{
 		}
 		else intC = array.length;
 		for (var k = 0; k < intC; k++) {
-			if(array[k].campo3 != '' && array[k].campo4 != '')
+			// if(array[k].campo3 != '' && array[k].campo4 != '')
 				this.turnsCompleteds.push(array[k]);
 		}
 		// console.log('ARRAY EN EL prepareArrays');
@@ -75,6 +75,41 @@ export class prepareArrays{
 		);
 		// console.log(this.delays)
 
+	}
+
+	onlyCountWebDesktopTurns(fullTurns: turnosV0[]){
+		let arr = [];
+		// console.log('CANTIDAD DE TURNOS EN FULLTURNS');
+		// console.log(fullTurns.length);
+		// console.log('|||||||||||||||||||||||||||||||||||||||');
+		for (var i = 0; i < this.delays.length; i++) {
+			// let a: webVSdesktop;
+			let a = {
+				name: '',
+				web: '',
+				desktop: ''
+			};
+			// a = new webVSdesktop('',0,0);
+			a.name = this.delays[i].name;
+			a.web = this.math.countWebTurns(this.delays[i].name,fullTurns).toString();
+			a.desktop = this.math.countDesktopTurns(this.delays[i].name,fullTurns).toString();
+			// console.log('SUMA DE TURNOS PARA ' +  a.name);
+			// console.log(a.web+a.desktop);
+			// console.log('------------------------');
+			arr.push(a);
+		}
+		// console.log('prepareArrays');
+		// console.log(arr);
+		arr.sort(
+			function(a,b){
+				if (b.name > a.name)
+					return -1;
+				else return 1;
+			}
+		);
+		// console.log(arr);
+// 
+		return arr;
 	}
 
 	getTurnsCompleteds(): turnosV0[]{

@@ -27,5 +27,6 @@ export const STATE_TURN = {
         WAITING: 'S'
 }
 
+export const NO_COVERAGE = 'SIN COBERTURA';
 // export const assetsBaseRute = '/webMS/assets/';
 // export const mainRute = '/webMS/'

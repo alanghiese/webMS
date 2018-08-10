@@ -75,8 +75,9 @@ export class AppComponent {
 
 	setCoverages(c:coverageObject[]){
 		this.coverages = [];
+		// console.log(c)
 		for (var i = 0; i < c.length; i++) {
-			if (c[i] != null && c[i].nombre != '' && c[i].nombre != null)
+			if (c[i] != null)
 				this.coverages.push(c[i].nombre);
 		}
 	}

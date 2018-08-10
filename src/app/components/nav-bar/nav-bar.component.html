@@ -38,15 +38,22 @@
    
 
 
-    <div *ngIf="clientsExists() && isLogged()" class="input-group" style="max-width: 250px;">
+    <div *ngIf="clientsExists() && isLogged()" class="input-group" style=" max-width: 250px; margin-right: 2%">
       <div class="btn-group">
         <button type="button" class="btn dropdown-toggle dropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Conectado a <strong>{{ this.user }}</strong>
         </button>
         <div class="dropdown-menu dropdown-menu-right dropdownContainer">
-          <button class="dropdown-item userConnected" type="button" *ngFor="let c of clients" #client (click)="changeClient(c.nombreFuente)"> 
+          <button class="dropdown-item userConnected" type="button" *ngFor="let c of clients" #client (click)="changeClient(c.nombreFuente)"
+          style="text-align: center;"> 
             {{ c.nombreFuente }} 
           </button>
+          <button class="btn btn-danger my-2 my-sm-0" style="width: 100% !important; background-color: rgb(255, 179, 102); border: 0px; color: black" 
+            [routerLink] = "['login']" (click) = "logout()">
+              <strong>
+                SALIR
+              </strong>
+            </button>
         </div>
       </div>
 
@@ -60,10 +67,7 @@
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form> -->
 
-      <button *ngIf="isLogged()" class="btn btn-warning my-2 my-sm-0" style="background-color: rgb(255, 179, 102); border: 0px; color: black" 
-      [routerLink] = "['login']" (click) = "logout()">
-        SALIR
-      </button>
+      
       
   </div>
 </nav>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AppComponent } from '../../app.component';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
-import { turnosV0 } from '../../interfaces';
+import { turnosV0, webVSdesktop } from '../../interfaces';
 import { nameAVG } from '../../models/regNameAVG';
 import { prepareArrays } from '../../providers/prepareArrays';
 import { STATE_TURN } from '../../constants';
@@ -34,6 +34,7 @@ export class GraphsComponent implements OnInit {
 	private showTableB: boolean = false;
 	private stack = false;
 	private prepareArrays: prepareArrays;
+	private webVSdesktopArr: webVSdesktop[] = [];
 
 	
 	constructor(
@@ -99,13 +100,18 @@ export class GraphsComponent implements OnInit {
         			this.prepareArrays.prepareArrayDoctors(this.turnsCompleteds);
         			this.prepareArrays.doctorsAverage(this.turnsCompleteds);
 	        		this.delays = this.prepareArrays.getDelays();
+	        		this.webVSdesktopArr = this.prepareArrays.onlyCountWebDesktopTurns(this.turnsCompleteds);
+	        		// console.log('graphs.component');
+	        		// console.log(this.webVSdesktopArr);
 	        		// console.log(this.delays)
 	        		// console.log('FECHAS');
 	        		// console.log(from);
 	        		// console.log(to);
 	        		// console.log('FILTRO');
 	        		// console.log(this.appComponent.filter);
+
 	        		this.filterFunction();
+
         			// this.prepareGraphicDelay(this.delays);
 					// this.prepareGraphicTurns();
         			this.totalTurns = this.turnsCompleteds.length;
@@ -167,20 +173,30 @@ export class GraphsComponent implements OnInit {
   									this.convertToDate(this.appComponent.filter.selUntil)
   		).subscribe((resp)=>{
 	        		if (resp){
-        				console.log(resp);
+        				// console.log(resp);
 	        			// console.log(resp)
 	        			this.prepareArrays.prepareArray(resp);
 	        			// console.log(this.turnsCompleteds);
+	        			console.log('1');
 	        			this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
 	        			this.delays = this.prepareArrays.getDelays();
-
+	        			console.log('2');
 	        			this.filterFunction();
+	        			console.log('3');
 	        			this.backSince = this.appComponent.filter.selSince;
 	        			this.backUntil = this.appComponent.filter.selUntil;
 	        			this.preparingTurns = false;
 
 	        		}
-	        	});
+	        	},
+        		(err)=>{
+					let msg = 'Ups! Algo salió mal, intente de nuevo';
+		          	if (err.message.includes('session expired')){
+		          		msg = 'Debe volver a iniciar sesion';
+		          		localStorage.setItem('logged','false');
+		          		this._router.navigate(['login']);
+		          	}
+	          	});
   		}
 	  	else{
 	  		this.preparingTurns = true;
@@ -197,7 +213,8 @@ export class GraphsComponent implements OnInit {
 		if (this.keepData)
 			backDelays = this.delays;
 		
-		let arraySol = this.appComponent.filter.filter(this.turnsCompleteds);
+		let arraySolOnlyOlds =  this.filterNewTurns(this.turnsCompleteds);
+    	let arraySol = this.appComponent.filter.filter(arraySolOnlyOlds);
 
 		if (this.keepData)
 			this.totalTurns = this.totalTurns + arraySol.length;
@@ -214,8 +231,9 @@ export class GraphsComponent implements OnInit {
 					this.delays.push(backDelays[i]);
 			}
 		this.prepareGraphicDelay(this.delays);
+
 		this.prepareGraphicTurns();
-		this.getStatesOfTurns(arraySol);
+		this.getStatesOfTurns(this.turnsCompleteds);
   	}
 
   	contains(array: nameAVG[], valueToCompare: nameAVG){
@@ -227,6 +245,15 @@ export class GraphsComponent implements OnInit {
   		return founded;
   	}
 
+  	filterNewTurns(array: turnosV0[]): turnosV0[]{
+	    let arr: turnosV0[] = [];
+	    for (var i = 0; i < array.length; i++) {
+	      if(array[i].campo3 != '' && array[i].campo4 != '')
+	        arr.push(array[i]);
+	    }
+	    return arr;
+    
+  	}
   	
 	convertToDate(date:String):Date{
 		// console.log(date);
@@ -251,12 +278,16 @@ export class GraphsComponent implements OnInit {
 	//para graficos de demora de medicos
 
 	public nameOfTheDoctors:string[] = [];
+	private nameOfTheDoctorsTurns:string[] = [];
 	public datasOfTheDoctors:any[] = [];
 
 
 	clearCharts() {
 		while (this.nameOfTheDoctors.length > 0)
 			this.nameOfTheDoctors.pop();
+		while (this.nameOfTheDoctorsTurns.length > 0)
+			this.nameOfTheDoctorsTurns.pop();
+
 	    this.datasOfTheDoctors= [
 	      {data: [], label: 'label1'},
 	      {data: [], label: 'label2'}
@@ -268,23 +299,18 @@ export class GraphsComponent implements OnInit {
  	}
 
 
-	private auxCountWeb = [];
-	private auxCountDesktop = [];
 	prepareGraphicDelay(array: nameAVG[]){
 		this.clearCharts();
 		// console.log(this.nameOfTheDoctors);
 		let auxAVGDoctors = [];
 		let auxAVGPatients = [];
-		this.auxCountDesktop = [];
-		this.auxCountWeb = [];
 
 		for (var i = 0; i < array.length; i++) {
 			if (array[i].avgDoctor != 0 || array[i].avgPatient != 0){
 				this.nameOfTheDoctors.push(array[i].name);
 				auxAVGDoctors.push(array[i].avgDoctor);
 				auxAVGPatients.push(array[i].avgPatient);
-				this.auxCountDesktop.push(array[i].countDesktop);
-				this.auxCountWeb.push(array[i].countWeb);	
+				
 			}
 			
 		}
@@ -293,29 +319,53 @@ export class GraphsComponent implements OnInit {
 						{data: auxAVGDoctors , label: 'Demora de doctores (en minutos)'},
 						{data: auxAVGPatients , label: 'Demora de pacientes (en minutos)'}
 						];
-		this.dataTurns = [
-							{data: this.auxCountDesktop , label: 'Cantidad de turnos por escritorio'},
-							{data: this.auxCountWeb , label: 'Cantidad de turnos por web'}
-						];
+
+
+		
 
 		
 						
 						
 
 	}
+	
+	private auxCountWeb = [];
+	private auxCountDesktop = [];
 	private minMax = [];
 	private avgs = [];
 	prepareGraphicTurns(){
+
+		this.auxCountDesktop = [];
+		this.auxCountWeb = [];
+		let arrAux = this.prepareArrays.getDelays();
+		for (var i = 0; i < arrAux.length; i++) {
+			this.nameOfTheDoctorsTurns.push(arrAux[i].name);
+
+		}
+
+		// console.log(this.nameOfTheDoctorsTurns);
+
+		for (var k = 0; k < this.nameOfTheDoctorsTurns.length; k++) {
+				this.auxCountDesktop.push(this.webVSdesktopArr[k].desktop);
+				this.auxCountWeb.push(this.webVSdesktopArr[k].web);	
+		}				
+		this.dataTurns = [
+							{data: this.auxCountDesktop , label: 'Cantidad de turnos por escritorio'},
+							{data: this.auxCountWeb , label: 'Cantidad de turnos por web'}
+						];
+
+
+
 		let a = 0;
 
 		for (var i = 0; i < this.auxCountDesktop.length; i++) {
-			a = a + this.auxCountDesktop[i]
+			a = a + parseInt(this.auxCountDesktop[i]);
 		}
 
 
 		let b = 0;
 		for (var k = 0; k < this.auxCountWeb.length; k++) {
-			b = b + this.auxCountWeb[k]
+			b = b + parseInt(this.auxCountWeb[k]);
 		}
 		
 		this.pieChartData = [b,a];
@@ -350,8 +400,8 @@ export class GraphsComponent implements OnInit {
 		let avgWeb = 0;
 		let avgDesktop = 0;
 		for (var i = 0; i < this.auxCountWeb.length; i++) {
-			avgWeb = avgWeb + this.auxCountWeb[i];
-			avgDesktop = avgDesktop + this.auxCountDesktop[i];
+			avgWeb = avgWeb + parseInt(this.auxCountWeb[i]);
+			avgDesktop = avgDesktop + parseInt(this.auxCountDesktop[i]);
 		}
 		avgWeb = parseInt((avgWeb/this.auxCountWeb.length).toFixed(2));
 		avgDesktop = parseInt((avgDesktop/this.auxCountDesktop.length).toFixed(2));

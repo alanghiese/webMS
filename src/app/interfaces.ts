@@ -183,3 +183,12 @@ export interface coverageObject{
 export interface serviceObject{
   SERVICIO;
 }
+
+export class webVSdesktop{ //esta aca porque tuve que modificar el interface por class nomas, muy desubicado quedo 
+  
+  constructor(
+        public name:string,
+        public web: number,
+        public desktop: number,
+    ){};
+}

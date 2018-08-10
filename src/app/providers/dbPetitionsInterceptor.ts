@@ -8,10 +8,12 @@ import { catchError, map, tap } from 'rxjs/operators';
 // import { EVT_SESSION_EXPIRED } from '../../constants';
 import { JSONResponse } from '../interfaces';
 
+import { Router } from '@angular/router';
+
 @Injectable()
 export class dbPetitionsInterceptor implements HttpInterceptor {
 
-  // constructor(public events: Events) {}
+  constructor(private router: Router) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {    
        
@@ -27,7 +29,20 @@ export class dbPetitionsInterceptor implements HttpInterceptor {
                * En lugar de comparar el string del mensaje, lo mejor sería
                * setear el status de la respuesta como 403 Unauthorized */
               // this.events.publish(EVT_SESSION_EXPIRED);
+              let url = localStorage.getItem('url');
+              let user = localStorage.getItem('user');
+              let pass = localStorage.getItem('password');
+              localStorage.clear();
+              localStorage.setItem('url',url);
+              localStorage.setItem('logged','false');
+              localStorage.setItem('checked', 'false');
+              localStorage.setItem('relog', 'false');
+              localStorage.setItem('loading', 'falase');
+              localStorage.setItem('user', user);
+              localStorage.setItem('password', pass);
+              this.router.navigate(['login']);
               console.log('session expired');
+              alert('Sesion expirada, debe volver a loguearse');
             } else {
               /* Workaround ya que todas las respuestas del server tienen
                * status = 200, inclusive si es un error. Si el campo error está
