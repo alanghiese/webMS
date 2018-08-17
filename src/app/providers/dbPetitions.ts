@@ -138,14 +138,13 @@ export class DbPetitionsComponent {
 
   }
 
-
-  getTurnsDoctors(nombreMedico: string, codigoMedico: string, fechaDesde: Date, fechaHasta: Date) : Observable<any> {
+  getTurnsDoctors(fechaDesde: Date, fechaHasta: Date) : Observable<any> {
     //momentoDelDia (maniana|tarde|todo)
     
     let params = new HttpParams()
     .set("accion", "getJSONTurnos")
-    .set("nombreMedico",nombreMedico)
-    .set("codigoMedico",codigoMedico)
+    .set("nombreMedico",'')
+    .set("codigoMedico",'')
     .set("fechaDesde",this._formatDate(fechaDesde))
     .set("fechaHasta",this._formatDate(fechaHasta))
     .set("momentoDelDia",'todo'); //de momento queda en todo
@@ -154,7 +153,7 @@ export class DbPetitionsComponent {
     return this.http.get<JSONResponse>(url, {params: params})
       .pipe(
         map(resp => {
-          // console.log(resp);
+          console.log(`get turn doctors ${params}`);
           return resp;
         }),
         //tap(ap => console.log(`get Doctors ${params}`)),

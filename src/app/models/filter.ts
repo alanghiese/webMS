@@ -1,5 +1,6 @@
 import { turnosV0 } from '../interfaces';
 
+
 export class Filter{
 	constructor(
 			public excludeSurname: string,
@@ -7,7 +8,7 @@ export class Filter{
 			public selUntil: string,
 			public selSince: string,
 			public selService: string,
-			public selPractice: string,
+			public selState: string,
 			public selCoverage: string,
 			public selDoctor: string
 		){}
@@ -43,15 +44,33 @@ export class Filter{
 		let includeSurnameTurns: turnosV0[] = [];
 		this.includeSurname(includeSurnameTurns,excludeSurnameTurns);
 
+
+
 		return includeSurnameTurns;
 	}
 
+	public filterState(full: turnosV0[]){
+  		let array: any[] = [];
+  		if (this.selState != 'Todos'){
+			for (let k = 0; k < full.length ; k++) {
+				if (full[k].campo5.trim() == this.selState.trim()){
+					array.push(full[k]);
+				}
+			}
+		}
+		else {
+			for (let k = 0; k < full.length ; k++) {
+				array.push(full[k]);
+			}
+		}
+		return array;
+  	}
 
 	private filterDoctors(array: turnosV0[], full: turnosV0[]){
   		
   		if (this.selDoctor != ''){
 			for (let k = 0; k < full.length ; k++) {
-				if (full[k].campo1 == this.selDoctor){
+				if (full[k].campo1.trim().toUpperCase() == this.selDoctor.trim().toUpperCase()){
 					array.push(full[k]);
 				}
 			}

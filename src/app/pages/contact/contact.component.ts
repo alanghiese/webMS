@@ -21,6 +21,7 @@ export class ContactComponent implements OnInit {
 	  clearInterval(this.appComponent.interval);
     this.appComponent.setNotFilter(true);
     setTimeout(() => this._router.navigate(['contact']),1);
+    this.appComponent.stateFilter = false;
 
 
   }

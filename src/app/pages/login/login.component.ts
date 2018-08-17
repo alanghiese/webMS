@@ -57,6 +57,7 @@ export class LoginComponent implements OnInit {
     }
 
     this._appComponent.setNotFilter(false);
+    this._appComponent.stateFilter = false;
     localStorage.setItem('logged','false'); 
     // localStorage.setItem('loading','false');
     clearInterval(this._appComponent.interval);

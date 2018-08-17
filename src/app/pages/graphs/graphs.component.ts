@@ -54,12 +54,15 @@ export class GraphsComponent implements OnInit {
         else{
         	console.log('cargando turnos...');	
         	this.preparingTurns = true;
-        	this.dbPetitions.getTurnsDoctors('ACEITUNO JUAN PABLO','143.0',
-        						this.convertToDate(this.appComponent.filter.selSince),
-        						this.convertToDate(this.appComponent.filter.selUntil)
+        	this.dbPetitions.getTurnsDoctors(this.convertToDate(this.appComponent.filter.selSince),
+        									this.convertToDate(this.appComponent.filter.selUntil)
         	).subscribe((turnsD)=>{
         		if (turnsD){
         			// console.log(turnsD);
+        			let sizeString:string = turnsD.data.msg;
+        			let index = sizeString.indexOf(' ');
+        			let size: number = parseInt(sizeString.substr(0,index));
+        			console.log(size);
         			// this.filterTemp();
 
 
@@ -114,7 +117,6 @@ export class GraphsComponent implements OnInit {
 
         			// this.prepareGraphicDelay(this.delays);
 					// this.prepareGraphicTurns();
-        			this.totalTurns = this.turnsCompleteds.length;
 
         			preparingTurns1 = false;
         			this.preparingTurns = preparingTurns2;
@@ -163,9 +165,7 @@ export class GraphsComponent implements OnInit {
 	
   	//filtrar
   	filter(){
-  		// this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
-  		// 							this.convertToDate(this.appComponent.filter.selUntil)
-  		// ).subscribe((resp)=>{ // va esto si es en tiempo real
+  		
   		if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
   			this.preparingTurns = true;
 	  		// this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
@@ -177,12 +177,9 @@ export class GraphsComponent implements OnInit {
 	        			// console.log(resp)
 	        			this.prepareArrays.prepareArray(resp);
 	        			// console.log(this.turnsCompleteds);
-	        			console.log('1');
 	        			this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
 	        			this.delays = this.prepareArrays.getDelays();
-	        			console.log('2');
 	        			this.filterFunction();
-	        			console.log('3');
 	        			this.backSince = this.appComponent.filter.selSince;
 	        			this.backUntil = this.appComponent.filter.selUntil;
 	        			this.preparingTurns = false;
@@ -204,7 +201,7 @@ export class GraphsComponent implements OnInit {
 	  		this.preparingTurns = false;
 	  	}
 
-  		// console.log(this.appComponent.filter);
+  		console.log(this.appComponent.filter);
   	}
 
   	filterFunction(){
@@ -213,13 +210,20 @@ export class GraphsComponent implements OnInit {
 		if (this.keepData)
 			backDelays = this.delays;
 		
-		let arraySolOnlyOlds =  this.filterNewTurns(this.turnsCompleteds);
-    	let arraySol = this.appComponent.filter.filter(arraySolOnlyOlds);
+		let turnsAttended =  this.filterNewTurns(this.turnsCompleteds);
+    	let arraySol = this.appComponent.filter.filter(turnsAttended);
 
-		if (this.keepData)
+    	
+		let turnsCompletedsWithStateFilter = this.appComponent.filter.filterState(this.turnsCompleteds);
+
+		if (this.keepData && this.isDelay())
 			this.totalTurns = this.totalTurns + arraySol.length;
-		else
+		else if (this.isDelay())
 			this.totalTurns = arraySol.length;
+		else if (this.keepData)
+			this.totalTurns = this.totalTurns + turnsCompletedsWithStateFilter.length;
+		else
+			this.totalTurns = turnsCompletedsWithStateFilter.length;
 		
 		this.prepareArrays.prepareArrayDoctors(arraySol);
 		this.prepareArrays.doctorsAverage(arraySol);
@@ -231,9 +235,13 @@ export class GraphsComponent implements OnInit {
 					this.delays.push(backDelays[i]);
 			}
 		this.prepareGraphicDelay(this.delays);
+		
+		this.prepareArrays.prepareArrayDoctors(turnsCompletedsWithStateFilter);
+		this.prepareArrays.doctorsAverage(turnsCompletedsWithStateFilter);
+	    let delaysWithStateFilter: nameAVG[] = this.prepareArrays.getDelays();
 
-		this.prepareGraphicTurns();
-		this.getStatesOfTurns(this.turnsCompleteds);
+		this.prepareGraphicTurns(delaysWithStateFilter);
+		this.getStatesOfTurns(turnsCompletedsWithStateFilter);
   	}
 
   	contains(array: nameAVG[], valueToCompare: nameAVG){
@@ -333,13 +341,15 @@ export class GraphsComponent implements OnInit {
 	private auxCountDesktop = [];
 	private minMax = [];
 	private avgs = [];
-	prepareGraphicTurns(){
+	prepareGraphicTurns(delay: nameAVG[]){
+
+
 
 		this.auxCountDesktop = [];
 		this.auxCountWeb = [];
-		let arrAux = this.prepareArrays.getDelays();
-		for (var i = 0; i < arrAux.length; i++) {
-			this.nameOfTheDoctorsTurns.push(arrAux[i].name);
+		
+		for (var i = 0; i < delay.length; i++) {
+			this.nameOfTheDoctorsTurns.push(delay[i].name);
 
 		}
 
@@ -581,25 +591,36 @@ export class GraphsComponent implements OnInit {
  
 
 	//grafico de torata estado de turnos
-	public stateLabels:string[] = ['Aun no se presentan', 'Atendidos', 'En sala de espera'];
+	public stateLabels:string[] = ['Aun no se presentan', 'Atendidos', 'En sala de espera', 'Falto', 'Falto con aviso'];
   	public stateData:number[] = [];
 
   	getStatesOfTurns(array: turnosV0[]){
-  		let aux: number[] = [0,0,0];
+  		this.stateData = [];
+
+  		let aux: number[] = [0,0,0,0,0];
   		for (var i = 0; i < array.length; i++) {
-  			if (array[i].campo5 == STATE_TURN.MISSING)
+  			if (array[i].campo5.trim() == STATE_TURN.MISSING)
   				aux[0] = aux[0] + 1;
-  			else if (array[i].campo5 == STATE_TURN.ATTENDED) 
+  			else if (array[i].campo5.trim() == STATE_TURN.ATTENDED) 
   				aux[1] = aux[1] + 1;
-  			else
+  			else if (array[i].campo5.trim() == STATE_TURN.WAITING)
   				aux[2] = aux[2] + 1;
+  			else  if(array[i].campo5.trim() == STATE_TURN.F)
+  				aux[3] = aux[3] + 1;
+  			else if(array[i].campo5.trim() == STATE_TURN.FCA)
+  				aux[4] = aux[4] + 1;
+  			else 
+  				console.log(array[i]);
   		}
   		this.stateData = aux;
   	}
 
 
 	getTotalTurns(){
-		return this.totalTurns;
+		if (this.isState())
+			return this.turnsCompleteds.length;
+		else 
+			return this.totalTurns; 
 	}
 
 
@@ -609,6 +630,12 @@ export class GraphsComponent implements OnInit {
 		alert('SOY UN FILTRO DISTINTO')
 	}
 
+	onChangeType(){
+		if (this.isDelay())
+			this.appComponent.stateFilter = false;
+		else 
+			this.appComponent.stateFilter = true;
+	}
 
 
 

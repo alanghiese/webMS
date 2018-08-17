@@ -18,10 +18,16 @@ export class AppComponent {
 	now: boolean = false;
 	notFilter: boolean = localStorage.getItem('url') != null && (localStorage.getItem('url') == '/contact' || localStorage.getItem('url') == '/home');
 	interval; //para el intervalo de datos en el momento
+	stateFilter: boolean = false;
 
 
 
 	constructor(private _router: Router) {
+
+		alert('REVISAR BIEN EL TEMA DE LAS CANTIDADES DE TURNOS CARGADOS' +'\n'+
+				'EL CAMPO DE ESTADO DE TURNO TIENE UNA "F" A VECES Y NO SE QUE SIGNIFICA' +'\n'+
+				'FALTA PROGRAMA LOS DOCTORES Y SUS TURNOS TOMADOS/OFRECIDOS' +'\n'+
+				'ESTE ALERT ESTA EN APP.COMPONENT.TS');
 	
 		if (localStorage.getItem('checked') != null)
 			back.chk = localStorage.getItem('checked');
@@ -61,8 +67,7 @@ export class AppComponent {
 	    this._router.navigate(['login']);
 
 	    
-
-	    this.filter = new Filter('','','','','','','','');
+	    this.filter = new Filter('','','','','','Todos','','');
 	}
 
 	isNotFilter():boolean{

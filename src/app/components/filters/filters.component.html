@@ -84,14 +84,19 @@
 			</select>
 		</div>
 
-		<!-- Practicas -->                                        
-		<div class="input-group mb-3" style="max-width: 250px;margin-right: 18px">
+		<!-- Estado -->                                        
+		<div *ngIf="showState()" class="input-group mb-3" style="max-width: 250px;margin-right: 18px">
 			<div class="input-group-prepend">
-				<span class="input-group-text" id="basic-addon1" title="Filtrar por práctica"><strong>Practica</strong></span>
+				<span class="input-group-text" id="basic-addon1" title="Filtrar por estado del turno"><strong>Estado</strong></span>
 			</div>
-			<select  ng-model="selectedPractice" #practice (change)="onChangePractice(practice.value)"  title="Filtrar por práctica"
-			class="form-control" style="max-width: 200px;" disabled="true">
-				<option>AUN NO TENGO CON QUE SETEARLO (SERVICIO)</option>
+			<select  ng-model="selectedPractice" #practice (change)="onChangeState(practice.value)"  title="Filtrar por estado del turno"
+			class="form-control" style="max-width: 200px;">
+				<option>Todos</option>
+				<option>Atendidos</option>
+				<option>Ausentes</option>
+				<option>En sala de espera</option>
+				<option>Falto</option>
+				<option>Falto con aviso</option>
 			</select>
 		</div>
 		

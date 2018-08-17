@@ -8,7 +8,7 @@
 				<span class="input-group-text" id="basic-addon1"><strong>Tipo de gráfico</strong></span>
 			</div>
 			<select ng-model="selectedGraphType" #type class="form-control"
-			[(ngModel)]="this.graphtype">
+			(change)="onChangeType()" [(ngModel)]="this.graphtype">
 				<option value=0> Estadisticas de horarios ofrecidos/turnos atendidos </option>
 				<option value=1> Estadisticas de turnos por demora de medicos/pacientes </option>
 				<option value=2> Estadisticas de turnos WEB vs Escritorio </option>
@@ -232,6 +232,28 @@
 	              (chartClick)="chartClicked($event)"></canvas>
 	    </div>
 
+	    <table class="table table-hover">
+		  <thead>
+		    <tr>
+		    	<th></th>
+		      	<th>Pacientes atendidos</th>
+		      	<th>Pacientes ausente</th>
+		      	<th>Pacientes en sala de espera</th>
+		      	<th>Falto</th>
+		      	<th>Falto con aviso</th>
+		    </tr>  
+		  </thead>
+		  <tbody>
+		    <tr>
+		    	<td>Cantidad</td>
+		      	<td> {{ this.stateData[1] }} </td>
+		      	<td> {{ this.stateData[0] }} </td>
+		      	<td> {{ this.stateData[2] }} </td>
+		      	<td> {{ this.stateData[3] }} </td>
+		      	<td> {{ this.stateData[4] }} </td>
+		    </tr>
+		  </tbody>
+		</table>
 
 	</div>
 

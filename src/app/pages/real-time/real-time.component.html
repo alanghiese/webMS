@@ -42,6 +42,10 @@
 				<span><i><small>Cantidad de turnos cargados: {{ getTotalTurns() }}</small></i></span>
 				<br>
 				<span><i><small>Se muestran solo los doctores que tengan turnos cargados</small></i></span>
+				<br>
+				<span><i><small>
+					Los cantidad de turnos cargados de esta tabla corresponde con la cantidad de pacientes atendidos
+				</small></i></span>
 				
 				<div>
 					<div  style="display: block" data-toggle="modal" data-target="#exampleModal">
@@ -74,7 +78,16 @@
 		<p>Pacientes en sala de espera: {{ stateData[2] }} </p>
 		<p>Pacientes restantes: {{stateData[0]}} </p>
 		<p>Pacientes atendidos: {{stateData[1]}} </p>
+		<p>Falta: {{stateData[3]}} </p>
+		<p>Falta con aviso: {{stateData[4]}} </p>
 	</div>
+
+
+	<div>
+		<span><i>La pagina se refrescara cada {{ this.timeToRefresh / 60000 }} minuto/s.</i></span>
+		<span><i> {{ this.lastUpdate }} </i> </span>
+	</div>
+
 
 </div>
 
@@ -111,6 +124,9 @@
 						    (chartClick)="chartClicked($event)">
 					    </canvas>
 					</div>
+					<span><i><small>
+						Los cantidad de turnos cargados de esta tabla corresponde con la cantidad de pacientes atendidos
+					</small></i></span>
 				  
 				</div>
 			</div>
@@ -123,6 +139,3 @@
   </div>
 </div>
 
-<span><i>La pagina se refrescara cada {{ this.timeToRefresh / 60000 }} minuto/s.</i></span>
-
-<span><i> {{ this.lastUpdate }} </i> </span>

@@ -24,9 +24,11 @@ export const SUBTOPIC = {
 export const STATE_TURN = {
         MISSING: '',
         ATTENDED: 'A',
-        WAITING: 'S'
+        WAITING: 'S',
+        F: 'F',
+        FCA: 'F CA'
 }
 
 export const NO_COVERAGE = 'SIN COBERTURA';
-// export const assetsBaseRute = '/webMS/assets/';
-// export const mainRute = '/webMS/'
+
+export const ANY = "Ninguno";

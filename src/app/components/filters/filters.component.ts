@@ -5,10 +5,20 @@ import { NgbDatepickerI18n, NgbDateStruct, NgbDateParserFormatter } from '@ng-bo
 import { AppComponent } from '../../app.component';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
 import { UPPERCASE } from '../../pipes/toUpperCase.pipe';
+import { STATE_TURN,ANY } from '../../constants';
 
 
 
 const now = new Date();
+const STATES = {
+  ATTENDED: "Atendidos",
+  MISSING: "Ausentes",
+  WAITING: "En sala de espera",
+  F: 'Falto',
+  FCA: 'Falto con aviso',
+  ALL: "Todos"
+}
+
 
 @Component({
   selector: 'filters',
@@ -23,12 +33,13 @@ const now = new Date();
 export class FiltersComponent implements OnInit {
 
 
-  	modelSince: NgbDateStruct = {day: 1, month: now.getMonth() + 1, year: now.getFullYear() };
+  modelSince: NgbDateStruct = {day: 1, month: now.getMonth() + 1, year: now.getFullYear() };
 	modelUntil: NgbDateStruct// = {day: 0, month: now.getMonth() + 2, year: now.getFullYear() };
 	private doctors:any = null;
 	private services:any = null;
   private coverages:any = null;
   private showMeBool = false;
+
 
 	constructor(
 		private appComponent: AppComponent, 
@@ -58,6 +69,12 @@ export class FiltersComponent implements OnInit {
   			this.services = [];
   	}
 
+
+    showState():boolean{
+      return this.appComponent.stateFilter;
+    }
+
+
     showMe(){
       return this.showMeBool;
     }
@@ -70,19 +87,11 @@ export class FiltersComponent implements OnInit {
   	reload(){
   		this._DbPetitionsComponent.getDoctors('').subscribe(
   		(resp)=>{
-  			// if (resp)
-  			// 	console.log(resp);
-  			// else
-  			// 	console.log('doctors don\'t work'); 
   			this.doctors = resp.data;
   		});
 
   		this._DbPetitionsComponent.getServices().subscribe(
   		(resp)=>{
-  			// if (resp)
-  			// 	console.log(resp);
-  			// else
-  			// 	console.log('services don\'t work');
   			this.services = resp.data;
   		});
   	}
@@ -127,25 +136,33 @@ export class FiltersComponent implements OnInit {
 
 	//Servicio
 	onChangeService(value: any) {
-		if (value=='Ninguno')
+		if (value==ANY)
 			this.appComponent.filter.selService = ''
 		else
 			this.appComponent.filter.selService = value;
 	}
 
 	//Practice
-	onChangePractice(value: any) {
-		if (value=='Ninguno')
-			this.appComponent.filter.selPractice = ''
-		else
-			this.appComponent.filter.selPractice = value;
+	onChangeState(value: any) {
+		if (value == STATES.ALL)
+			this.appComponent.filter.selState = STATES.ALL;
+		else if (value == STATES.MISSING)
+      this.appComponent.filter.selState = STATE_TURN.MISSING;
+    else if (value == STATES.ATTENDED)
+      this.appComponent.filter.selState = STATE_TURN.ATTENDED;
+    else if (value == STATES.WAITING)
+      this.appComponent.filter.selState = STATE_TURN.WAITING;
+    else if (value == STATES.F)
+      this.appComponent.filter.selState = STATE_TURN.F;
+    else 
+      this.appComponent.filter.selState = STATE_TURN.FCA;
 	}
 
 
 
 	//Cobertura
 	onChangeCoverage(value: any) {
-		if (value=='Ninguno')
+		if (value==ANY)
 			this.appComponent.filter.selCoverage = ''
 		else
 			this.appComponent.filter.selCoverage = value;
@@ -154,7 +171,7 @@ export class FiltersComponent implements OnInit {
 
 	//Doctor
 	onChangeDoctor(value: any) {
-		if (value=='Ninguno')
+		if (value==ANY)
 			this.appComponent.filter.selDoctor = ''
 		else
 			this.appComponent.filter.selDoctor = value;

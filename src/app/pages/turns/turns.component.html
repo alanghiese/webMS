@@ -10,6 +10,7 @@
 				<select ng-model="selectedGroupBy" #groupBy (change)="onChangeGroupBy(groupBy.value)" class="form-control" style="max-width: 200px;">
 					<option> Cobertura </option>
 					<option> Servicio </option>
+					<option> Medico </option>
 				</select>
 			</div>
 
@@ -92,6 +93,24 @@
 				</tr>
 			</tbody>
 		</table>
+
+		<table *ngIf="doctor()" class="table table-striped table-hover table-secondary">
+			<thead>
+				<tr>
+					<th scope="col">{{ this.valueGroupBy | UPPERCASE }}</th>
+					<th>CANTIDAD DE TURNOS</th>
+					<th> % DEL TOTAL </th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let d of finalDoctors">
+					<th>{{ d.name }}</th>
+					<th> {{ d.count }} </th>
+					<th> {{ d.percentage }}%</th>
+				</tr>
+			</tbody>
+		</table>
+
 		
 	</div> 
 </div>

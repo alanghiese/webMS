@@ -6,7 +6,7 @@ import { DbPetitionsComponent } from '../../providers/dbPetitions'
 import { turnosV0 } from '../../interfaces';
 import { nameAVG } from '../../models/regNameAVG';
 import { prepareArrays } from '../../providers/prepareArrays';
-import { STATE_TURN } from '../../constants';
+import { STATE_TURN, ERR_UPS } from '../../constants';
 
 @Component({
   selector: 'realTime',
@@ -20,9 +20,8 @@ export class RealTimeComponent implements OnInit {
   private turnsCompleteds: turnosV0[] = [];
   private delays: nameAVG[] = [];
   private prepareArrays: prepareArrays;
-  private keepData: boolean = false;
   private stack = false;
-  private stateData: number[] = [0,0,0]; //ausentes, atendidos, esperando 
+  private stateData: number[] = [0,0,0,0,0]; //ausentes, atendidos, esperando, falto, falto con aviso 
 
   constructor(
               private _router: Router,
@@ -63,13 +62,12 @@ export class RealTimeComponent implements OnInit {
               this.filterFunction();
               // this.prepareGraphicDelay(this.delays);
 
-              this.totalTurns = this.turnsCompleteds.length;
 
               this.preparingTurns = false;
             }
           },
           (err)=>{
-              let msg = 'Ups! Algo salió mal, intente de nuevo';
+              let msg = ERR_UPS;
               if (err.message.includes('session expired')){
                 msg = 'Debe volver a iniciar sesion';
                 localStorage.setItem('logged','false');
@@ -84,6 +82,7 @@ export class RealTimeComponent implements OnInit {
 
     let backURL = this._router.url;
 	  localStorage.setItem('url', backURL);
+    this.appComponent.stateFilter = false;
 
 
   
@@ -110,29 +109,39 @@ export class RealTimeComponent implements OnInit {
     return !this.preparingTurns;
   }
 
-  getStatesOfTurns(){
-      let aux: number[] = [0,0,0];
-      for (var i = 0; i < this.turnsCompleteds.length; i++) {
-        if (this.turnsCompleteds[i].campo5 == STATE_TURN.MISSING)
+  getStatesOfTurns(array: turnosV0[]){
+      this.stateData = [];
+
+      let aux: number[] = [0,0,0,0,0];
+      for (var i = 0; i < array.length; i++) {
+        if (array[i].campo5.trim() == STATE_TURN.MISSING)
           aux[0] = aux[0] + 1;
-        else if (this.turnsCompleteds[i].campo5 == STATE_TURN.ATTENDED) 
+        else if (array[i].campo5.trim() == STATE_TURN.ATTENDED) 
           aux[1] = aux[1] + 1;
-        else
+        else if (array[i].campo5.trim() == STATE_TURN.WAITING)
           aux[2] = aux[2] + 1;
+        else  if(array[i].campo5.trim() == STATE_TURN.F)
+          aux[3] = aux[3] + 1;
+        else if(array[i].campo5.trim() == STATE_TURN.FCA)
+          aux[4] = aux[4] + 1;
+        else 
+          console.log(array[i]);
       }
       this.stateData = aux;
     }
 
   refresh(){
+      this.turnsCompleteds = [];
+      this.delays = [];
       // if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
         this.preparingTurns = true;
-        this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
-                    this.convertToDate(this.appComponent.filter.selUntil)
+        this.dbPetitions.getActualStatistics(
       ).subscribe((resp)=>{
               if (resp){
                 this.prepareArrays.prepareArray(resp);
                 this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
                 this.delays = this.prepareArrays.getDelays();
+              
 
                 this.filterFunction();
                 this.backSince = this.appComponent.filter.selSince;
@@ -142,7 +151,7 @@ export class RealTimeComponent implements OnInit {
               }
             },
             (err)=>{
-              let msg = 'Ups! Algo salió mal, intente de nuevo';
+              let msg = ERR_UPS;
               if (err.message.includes('session expired')){
                 msg = 'Debe volver a iniciar sesion';
                 localStorage.setItem('logged','false');
@@ -158,34 +167,25 @@ export class RealTimeComponent implements OnInit {
 
       let now = new Date();
       this.lastUpdate ='Ultima actualizacion a las: ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+      console.log(this.lastUpdate);
   }
 
 
   filterFunction(){
       //FILTROS
-    let backDelays: any[] = [];
-    if (this.keepData)
-      backDelays = this.delays;
     
     let arraySolOnlyOlds =  this.filterNewTurns(this.turnsCompleteds);
     let arraySol = this.appComponent.filter.filter(arraySolOnlyOlds);
 
-    if (this.keepData)
-      this.totalTurns = this.totalTurns + arraySol.length;
-    else
-      this.totalTurns = arraySol.length;
+   this.totalTurns = this.turnsCompleteds.length;
     
     this.prepareArrays.prepareArrayDoctors(arraySol);
     this.prepareArrays.doctorsAverage(arraySol);
-      this.delays = this.prepareArrays.getDelays();
+    this.delays = this.prepareArrays.getDelays();
 
-    if (this.keepData)
-      for (var i = 0; i < backDelays.length; i++) {
-        if (!this.contains(this.delays, backDelays[i]))
-          this.delays.push(backDelays[i]);
-      }
+      
     this.prepareGraphicDelay(this.delays);
-    this.getStatesOfTurns();
+    this.getStatesOfTurns(this.turnsCompleteds);
   }
 
     contains(array: nameAVG[], valueToCompare: nameAVG){

@@ -23,6 +23,7 @@ export class EmptyComponent implements OnInit {
     localStorage.setItem('url', backURL);
     clearInterval(this.appComponent.interval);
     this.appComponent.setNotFilter(true);
+    this.appComponent.stateFilter = false;
     
 
   }

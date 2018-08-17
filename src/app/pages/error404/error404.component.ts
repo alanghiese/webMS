@@ -13,6 +13,7 @@ export class Error404Component implements OnInit {
 
   ngOnInit() {
   	this.appComponent.setNotFilter(true);
+  	this.appComponent.stateFilter = false;
   }
 
 }
