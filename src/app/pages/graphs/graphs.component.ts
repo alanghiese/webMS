@@ -60,33 +60,33 @@ export class GraphsComponent implements OnInit {
         else{
         	console.log('cargando turnos...');	
         	this.preparingTurns = true;
-    //     	this.dbPetitions.getTurnsDoctors(this.convertToDate(this.appComponent.filter.selSince),
-    //     									this.convertToDate(this.appComponent.filter.selUntil)
-    //     	).subscribe((turnsD)=>{
-    //     		if (turnsD){
-    //     			// console.log(turnsD);
-    //     			let sizeString:string = turnsD.data.msg;
-    //     			let index = sizeString.indexOf(' ');
-    //     			let size: number = parseInt(sizeString.substr(0,index));
-    //     			console.log(size);
-    //     			// this.filterTemp();
+        	this.dbPetitions.getTurnsDoctors(this.convertToDate(this.appComponent.filter.selSince),
+        									this.convertToDate(this.appComponent.filter.selUntil)
+        	).subscribe((turnsD)=>{
+        		if (turnsD){
+        			// console.log(turnsD);
+        			let sizeString:string = turnsD.data.msg;
+        			let index = sizeString.indexOf(' ');
+        			let size: number = parseInt(sizeString.substr(0,index));
+        			console.log(size);
+        			// this.filterTemp();
 
 
 
 
         			preparingTurns2 = false;
         			this.preparingTurns = preparingTurns1;
-    //     		}
+        		}
 
-    //     	},
-    //     	(err)=>{
-				// let msg = 'Ups! Algo salió mal, intente de nuevo';
-	   //        	if (err.message.includes('session expired')){
-	   //        		msg = 'Debe volver a iniciar sesion';
-	   //        		localStorage.setItem('logged','false');
-	   //        		this._router.navigate(['login']);
-	   //        	}
-	   //        	});
+        	},
+        	(err)=>{
+				let msg = 'Ups! Algo salió mal, intente de nuevo';
+	          	if (err.message.includes('session expired')){
+	          		msg = 'Debe volver a iniciar sesion';
+	          		localStorage.setItem('logged','false');
+	          		this._router.navigate(['login']);
+	          	}
+	          	});
         	
 
 
@@ -99,8 +99,8 @@ export class GraphsComponent implements OnInit {
 			to.setMilliseconds(0);
 			to.setMinutes(0);
 
-        	// this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
-        	this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+        	this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
+        	// this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
         		if (resp){
         			// console.log(resp);
         			this.prepareArrays.prepareArray(resp);
@@ -173,10 +173,10 @@ export class GraphsComponent implements OnInit {
   		
   		if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
   			this.preparingTurns = true;
-	  		this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
-	  		// this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
-  									// this.convertToDate(this.appComponent.filter.selUntil)
-  		// ).subscribe((resp)=>{
+	  		// this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+	  		this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
+  									this.convertToDate(this.appComponent.filter.selUntil)
+  		).subscribe((resp)=>{
 	        		if (resp){
         				// console.log(resp);
 	        			// console.log(resp)
