@@ -64,7 +64,7 @@ export class GraphsComponent implements OnInit {
         									this.convertToDate(this.appComponent.filter.selUntil)
         	).subscribe((turnsD)=>{
         		if (turnsD){
-        			// console.log(turnsD);
+        			console.log(turnsD);
         			let sizeString:string = turnsD.data.msg;
         			let index = sizeString.indexOf(' ');
         			let size: number = parseInt(sizeString.substr(0,index));
@@ -285,7 +285,7 @@ export class GraphsComponent implements OnInit {
 
   	filterNewTurns(array: turnosV0[]): turnosV0[]{
 	    let arr: turnosV0[] = [];
-	    for (var i = 0; i < array.length; i++) {
+	    for (var i = 0; i < array.length; i++) {Recordar
 	      if(array[i].campo3 != '' && array[i].campo4 != '')
 	        arr.push(array[i]);
 	    }

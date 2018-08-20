@@ -65,8 +65,8 @@ export class TurnsComponent implements OnInit {
 		}
     	else{
     		this.preparingTurns = true;
-			// this._dbPetitions.getStatistics(from, to).subscribe( (resp) => {
-			this._dbPetitions.getStatic().subscribe( (resp) => {
+			this._dbPetitions.getStatistics(from, to).subscribe( (resp) => {
+			// this._dbPetitions.getStatic().subscribe( (resp) => {
 				array = resp;
 				console.log('cargando datos en el arreglo...')
 				if (resp){
