@@ -13,6 +13,7 @@ export class prepareArrays{
 
 	prepareArray(array: turnosV0[]): turnosV0[]{
 		this.turnsCompleteds = [];
+		this.delays = [];
 		let intC;
 		if(!array.length){
 			let c;
@@ -35,6 +36,7 @@ export class prepareArrays{
 	prepareArrayDoctors(array:turnosV0[]){
 		this.delays = [];
 		let doctors: string[] = this.getDoctors(array);
+		
 		for (var i = 0; i < doctors.length; i++) {
 			this.delays.push({name: doctors[i], avgDoctor: 0, avgPatient: 0, countWeb: 0, countDesktop: 0})
 		}

@@ -14,16 +14,17 @@ export class EmptyComponent implements OnInit {
               private appComponent: AppComponent){}
 
   ngOnInit() {
-    if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
-      this._router.navigate(['login']);
-    else{
-      setTimeout(() => this._router.navigate(['home']),1);
-    }
     let backURL = this._router.url;
     localStorage.setItem('url', backURL);
     clearInterval(this.appComponent.interval);
     this.appComponent.setNotFilter(true);
     this.appComponent.stateFilter = false;
+    if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
+      this._router.navigate(['login']);
+    else{
+      setTimeout(() => this._router.navigate(['home']),1);
+    }
+    
     
 
   }

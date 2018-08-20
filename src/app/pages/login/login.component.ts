@@ -61,7 +61,6 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('logged','false'); 
     // localStorage.setItem('loading','false');
     clearInterval(this._appComponent.interval);
-
   }
 
   account: UserCredentials = {

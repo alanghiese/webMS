@@ -26,11 +26,13 @@ export class GraphsComponent implements OnInit {
 	private graphtype: string = '1';
 	private turnsCompleteds: turnosV0[] = [];
 	private delays: nameAVG[] = [];
+	private delaysWithStateFilter: nameAVG[] = [];
 	private keepData: boolean = false;
 	private backSince = null;
 	private backUntil = null;
 	private preparingTurns: boolean = false;
-	private totalTurns: number = 0;
+	private totalDelays: number = 0;
+	private totalOthers: number = 0;
 	private showTableB: boolean = false;
 	private stack = false;
 	private prepareArrays: prepareArrays;
@@ -45,6 +47,10 @@ export class GraphsComponent implements OnInit {
 	){}
 
 	ngOnInit() {
+		this.appComponent.setNotFilter(false);
+		let backURL = this._router.url;
+		localStorage.setItem('url', backURL);
+		clearTimeout(this.appComponent.interval);
 		this.prepareArrays = new prepareArrays();
 		let preparingTurns1 = true;
 		let preparingTurns2 = true;
@@ -54,33 +60,33 @@ export class GraphsComponent implements OnInit {
         else{
         	console.log('cargando turnos...');	
         	this.preparingTurns = true;
-        	this.dbPetitions.getTurnsDoctors(this.convertToDate(this.appComponent.filter.selSince),
-        									this.convertToDate(this.appComponent.filter.selUntil)
-        	).subscribe((turnsD)=>{
-        		if (turnsD){
-        			// console.log(turnsD);
-        			let sizeString:string = turnsD.data.msg;
-        			let index = sizeString.indexOf(' ');
-        			let size: number = parseInt(sizeString.substr(0,index));
-        			console.log(size);
-        			// this.filterTemp();
+    //     	this.dbPetitions.getTurnsDoctors(this.convertToDate(this.appComponent.filter.selSince),
+    //     									this.convertToDate(this.appComponent.filter.selUntil)
+    //     	).subscribe((turnsD)=>{
+    //     		if (turnsD){
+    //     			// console.log(turnsD);
+    //     			let sizeString:string = turnsD.data.msg;
+    //     			let index = sizeString.indexOf(' ');
+    //     			let size: number = parseInt(sizeString.substr(0,index));
+    //     			console.log(size);
+    //     			// this.filterTemp();
 
 
 
 
         			preparingTurns2 = false;
         			this.preparingTurns = preparingTurns1;
-        		}
+    //     		}
 
-        	},
-        	(err)=>{
-				let msg = 'Ups! Algo salió mal, intente de nuevo';
-	          	if (err.message.includes('session expired')){
-	          		msg = 'Debe volver a iniciar sesion';
-	          		localStorage.setItem('logged','false');
-	          		this._router.navigate(['login']);
-	          	}
-	          	});
+    //     	},
+    //     	(err)=>{
+				// let msg = 'Ups! Algo salió mal, intente de nuevo';
+	   //        	if (err.message.includes('session expired')){
+	   //        		msg = 'Debe volver a iniciar sesion';
+	   //        		localStorage.setItem('logged','false');
+	   //        		this._router.navigate(['login']);
+	   //        	}
+	   //        	});
         	
 
 
@@ -93,16 +99,17 @@ export class GraphsComponent implements OnInit {
 			to.setMilliseconds(0);
 			to.setMinutes(0);
 
-        	this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
-        	// this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+        	// this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
+        	this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
         		if (resp){
         			// console.log(resp);
         			this.prepareArrays.prepareArray(resp);
+        			this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();        			
         			// console.log(this.turnsCompleteds);
-        			this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
         			this.prepareArrays.prepareArrayDoctors(this.turnsCompleteds);
         			this.prepareArrays.doctorsAverage(this.turnsCompleteds);
 	        		this.delays = this.prepareArrays.getDelays();
+	        		// console.log(this.delays);
 	        		this.webVSdesktopArr = this.prepareArrays.onlyCountWebDesktopTurns(this.turnsCompleteds);
 	        		// console.log('graphs.component');
 	        		// console.log(this.webVSdesktopArr);
@@ -135,12 +142,10 @@ export class GraphsComponent implements OnInit {
 			});
 
         }
-        this.appComponent.setNotFilter(false);
+        
         this.backSince = this.appComponent.filter.selSince;
         this.backUntil = this.appComponent.filter.selUntil;
-        let backURL = this._router.url;
-		localStorage.setItem('url', backURL);
-		clearTimeout(this.appComponent.interval);
+        
 		
 	}
 
@@ -168,10 +173,10 @@ export class GraphsComponent implements OnInit {
   		
   		if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
   			this.preparingTurns = true;
-	  		// this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
-	  		this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
-  									this.convertToDate(this.appComponent.filter.selUntil)
-  		).subscribe((resp)=>{
+	  		this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+	  		// this.dbPetitions.getStatistics(this.convertToDate(this.appComponent.filter.selSince),
+  									// this.convertToDate(this.appComponent.filter.selUntil)
+  		// ).subscribe((resp)=>{
 	        		if (resp){
         				// console.log(resp);
 	        			// console.log(resp)
@@ -201,7 +206,7 @@ export class GraphsComponent implements OnInit {
 	  		this.preparingTurns = false;
 	  	}
 
-  		console.log(this.appComponent.filter);
+  		// console.log(this.appComponent.filter);
   	}
 
   	filterFunction(){
@@ -214,17 +219,10 @@ export class GraphsComponent implements OnInit {
     	let arraySol = this.appComponent.filter.filter(turnsAttended);
 
     	
-		let turnsCompletedsWithStateFilter = this.appComponent.filter.filterState(this.turnsCompleteds);
-
-		if (this.keepData && this.isDelay())
-			this.totalTurns = this.totalTurns + arraySol.length;
-		else if (this.isDelay())
-			this.totalTurns = arraySol.length;
-		else if (this.keepData)
-			this.totalTurns = this.totalTurns + turnsCompletedsWithStateFilter.length;
-		else
-			this.totalTurns = turnsCompletedsWithStateFilter.length;
 		
+
+
+
 		this.prepareArrays.prepareArrayDoctors(arraySol);
 		this.prepareArrays.doctorsAverage(arraySol);
 	    this.delays = this.prepareArrays.getDelays();
@@ -235,13 +233,45 @@ export class GraphsComponent implements OnInit {
 					this.delays.push(backDelays[i]);
 			}
 		this.prepareGraphicDelay(this.delays);
-		
-		this.prepareArrays.prepareArrayDoctors(turnsCompletedsWithStateFilter);
-		this.prepareArrays.doctorsAverage(turnsCompletedsWithStateFilter);
-	    let delaysWithStateFilter: nameAVG[] = this.prepareArrays.getDelays();
 
-		this.prepareGraphicTurns(delaysWithStateFilter);
-		this.getStatesOfTurns(turnsCompletedsWithStateFilter);
+
+
+
+		let backDelaysState = this.delaysWithStateFilter;
+
+		let turnsCompletedsWithStateFilter = this.appComponent.filter.filterState(this.turnsCompleteds);
+		let newTurnsFilter = this.appComponent.filter.filter(turnsCompletedsWithStateFilter);
+
+		this.prepareArrays.prepareArrayDoctors(newTurnsFilter);
+		this.prepareArrays.doctorsAverage(newTurnsFilter);
+	    this.delaysWithStateFilter = this.prepareArrays.getDelays();
+
+	    this.webVSdesktopArr = this.prepareArrays.onlyCountWebDesktopTurns(newTurnsFilter);
+
+	    if (this.keepData)
+			for (var i = 0; i < backDelaysState.length; i++) {
+				if (!this.contains(this.delaysWithStateFilter, backDelaysState[i]))
+					this.delays.push(backDelaysState[i]);
+			}
+
+	    
+		this.prepareGraphicTurns(this.delaysWithStateFilter);
+		this.getStatesOfTurns(newTurnsFilter);
+
+
+
+
+
+
+
+		if (this.keepData){
+			this.totalDelays = this.totalDelays + arraySol.length;
+			this.totalOthers = this.totalOthers + turnsCompletedsWithStateFilter.length;
+		}
+		else{
+			this.totalDelays = arraySol.length;
+			this.totalOthers = newTurnsFilter.length;
+		}
   	}
 
   	contains(array: nameAVG[], valueToCompare: nameAVG){
@@ -328,7 +358,7 @@ export class GraphsComponent implements OnInit {
 						{data: auxAVGPatients , label: 'Demora de pacientes (en minutos)'}
 						];
 
-
+		// console.log(this.datasOfTheDoctors);
 		
 
 		
@@ -344,13 +374,12 @@ export class GraphsComponent implements OnInit {
 	prepareGraphicTurns(delay: nameAVG[]){
 
 
-
 		this.auxCountDesktop = [];
 		this.auxCountWeb = [];
+		this.pieChartData = [];
 		
 		for (var i = 0; i < delay.length; i++) {
 			this.nameOfTheDoctorsTurns.push(delay[i].name);
-
 		}
 
 		// console.log(this.nameOfTheDoctorsTurns);
@@ -358,10 +387,11 @@ export class GraphsComponent implements OnInit {
 		for (var k = 0; k < this.nameOfTheDoctorsTurns.length; k++) {
 				this.auxCountDesktop.push(this.webVSdesktopArr[k].desktop);
 				this.auxCountWeb.push(this.webVSdesktopArr[k].web);	
-		}				
+		}			
+
 		this.dataTurns = [
-							{data: this.auxCountDesktop , label: 'Cantidad de turnos por escritorio'},
-							{data: this.auxCountWeb , label: 'Cantidad de turnos por web'}
+							{data: this.auxCountWeb , label: 'Cantidad de turnos por web'},
+							{data: this.auxCountDesktop , label: 'Cantidad de turnos por escritorio'}
 						];
 
 
@@ -617,10 +647,10 @@ export class GraphsComponent implements OnInit {
 
 
 	getTotalTurns(){
-		if (this.isState())
-			return this.turnsCompleteds.length;
+		if (this.isDelay())
+			return this.totalDelays;
 		else 
-			return this.totalTurns; 
+			return this.totalOthers; 
 	}
 
 

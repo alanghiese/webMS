@@ -53,7 +53,7 @@ export class Filter{
   		let array: any[] = [];
   		if (this.selState != 'Todos'){
 			for (let k = 0; k < full.length ; k++) {
-				if (full[k].campo5.trim() == this.selState.trim()){
+				if (full[k].campo5.trim().toUpperCase() == this.selState.trim().toUpperCase()){
 					array.push(full[k]);
 				}
 			}

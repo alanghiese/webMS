@@ -50,6 +50,13 @@ export class TurnsComponent implements OnInit {
 		){}
 
 	ngOnInit() {
+		this.appComponent.setNotFilter(false);
+    	this.appComponent.stateFilter = true;
+		let backURL = this._router.url;
+		localStorage.setItem('url', backURL);
+		clearInterval(this.appComponent.interval);
+
+
 		let array: any; //defino el array donde voy a cargar los datos de la db
 		let from = this.convertToDate(this.appComponent.filter.selSince); //obtengo la fecha del filtro
 		let to = this.convertToDate(this.appComponent.filter.selUntil); //obtengo la fecha del filtro
@@ -58,14 +65,15 @@ export class TurnsComponent implements OnInit {
 		}
     	else{
     		this.preparingTurns = true;
-			this._dbPetitions.getStatistics(from, to).subscribe( (resp) => {
-			// this._dbPetitions.getStatic().subscribe( (resp) => {
+			// this._dbPetitions.getStatistics(from, to).subscribe( (resp) => {
+			this._dbPetitions.getStatic().subscribe( (resp) => {
 				array = resp;
 				console.log('cargando datos en el arreglo...')
 				if (resp){
 					console.log('cargado!');
+
 					this.prepareArray(array); // carga el array turns
-					
+					console.log(this.turns);
 					this.filterFunction(); // aca extraigo los nombres y ademas finalizo los arreglos
 
 					this.preparingTurns = false;
@@ -86,13 +94,9 @@ export class TurnsComponent implements OnInit {
     		}
 
     	
-    	this.appComponent.setNotFilter(false);
-    	this.appComponent.stateFilter = true;
         this.backSince = this.appComponent.filter.selSince;
         this.backUntil = this.appComponent.filter.selUntil;
-		let backURL = this._router.url;
-		localStorage.setItem('url', backURL);
-		clearInterval(this.appComponent.interval);
+    	
 	}
 
 
@@ -124,8 +128,6 @@ export class TurnsComponent implements OnInit {
 	}
 
 	
-	
-
 	prepararArreglos(array:turnosV0[]){
 
 		this.allCoverages = [];

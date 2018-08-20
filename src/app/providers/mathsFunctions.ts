@@ -7,34 +7,6 @@ export class MathsFunctions{
 	
 	constructor(){}
 
-
-	// public calculatePercentage(array: Array<any>, valueToCompare):number{
-	// 	let counter = 0;
-	// 	for (var i = 0; i <= array.length-1; i++) {
-	// 		if (array[i] == valueToCompare)
-	// 			counter++;
-	// 	}
-	// 	let sol = parseFloat((counter * 100 / array.length).toFixed(2));
-
-	// 	if (sol)
-	// 		return sol;
-	// 	return 0 ;
-	// }
-
-	// public count(array: Array<any>, valueToCompare){
-	// 	let counter = 0;
-	// 	for (var i = 0; i < array.length; i++) {
-	// 		if (array[i] == valueToCompare)
-	// 			counter++;
-	// 	}
-	// 	return counter;
-		
-	// }
-
-
-
-
-
 	
 	//funciones estadisticas
 
@@ -68,19 +40,15 @@ export class MathsFunctions{
 			if (array[i].campo1 == doctor)
 				aux.push(array[i]);
 		}
-		let avg = 0;
+		console.log(aux);
+		let avg:number = 0;
 		for (var k = 0; k < aux.length; k++) {
 
-			let hour = Math.abs(parseInt(aux[k].campo4.substr(0,1)) - parseInt(aux[k].fecha1.substr(0,1)))*60;
-			let minuts = Math.abs(parseInt(aux[k].campo4.substr(3,4)) - parseInt(aux[k].fecha1.substr(3,4)));
-			// console.log(minuts);
-			if (hour == 60)
-				hour = 0;
-			
-			avg = avg + hour + minuts;
-
+			let minutsC2 = parseInt(aux[k].campo2.substr(0,2))*60 + parseFloat(aux[k].campo2.substr(3,5));
+			let minutsC4 = parseInt(aux[k].campo4.substr(0,2))*60 + parseFloat(aux[k].campo4.substr(3,5));
+			avg = avg + (minutsC2 - minutsC4);
 		}
-		let result = parseInt((avg / aux.length).toFixed(2));
+		let result = parseFloat((avg / aux.length).toFixed(2))*-1;
 		if (result)
 			return result;
 		return 0;
@@ -88,6 +56,7 @@ export class MathsFunctions{
 
 
 	avgPatient(doctor: string, array: turnosV0[]){
+
 		let aux: turnosV0[] = [];
 		for (var i = 0; i < array.length; i++) {
 			if (array[i].campo1 == doctor)
@@ -96,16 +65,12 @@ export class MathsFunctions{
 		let avg = 0;
 		for (var k = 0; k < aux.length; k++) {
 
-			let hour = Math.abs(parseInt(aux[k].campo4.substr(0,1)) - parseInt(aux[k].campo3.substr(0,1)))*60;
-			let minuts = Math.abs(parseInt(aux[k].campo4.substr(3,4)) - parseInt(aux[k].campo3.substr(3,4)));
-			// console.log(minuts);
-			if (hour == 60)
-				hour = 0;
-			
-			avg = avg + hour + minuts;
+			let minutsC2 = parseInt(aux[k].campo2.substr(0,2))*60 + parseFloat(aux[k].campo2.substr(3,5));
+			let minutsC3 = parseInt(aux[k].campo3.substr(0,2))*60 + parseFloat(aux[k].campo3.substr(3,5));
+			avg = avg + (minutsC2 - minutsC3);
 
 		}
-		let result = parseInt((avg / aux.length).toFixed(2));
+		let result = parseFloat((avg / aux.length).toFixed(2))*-1;
 		if (result)
 			return result;
 		return 0;

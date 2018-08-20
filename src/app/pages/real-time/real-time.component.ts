@@ -31,6 +31,9 @@ export class RealTimeComponent implements OnInit {
 
 
   ngOnInit() {
+    let backURL = this._router.url;
+    localStorage.setItem('url', backURL);
+    this.appComponent.stateFilter = false;
     this.prepareArrays = new prepareArrays();
     this.appComponent.setNotFilter(false);
 	  clearInterval(this.appComponent.interval);
@@ -80,9 +83,7 @@ export class RealTimeComponent implements OnInit {
      }
 
 
-    let backURL = this._router.url;
-	  localStorage.setItem('url', backURL);
-    this.appComponent.stateFilter = false;
+    
 
 
   
@@ -177,7 +178,7 @@ export class RealTimeComponent implements OnInit {
     let arraySolOnlyOlds =  this.filterNewTurns(this.turnsCompleteds);
     let arraySol = this.appComponent.filter.filter(arraySolOnlyOlds);
 
-   this.totalTurns = this.turnsCompleteds.length;
+    this.totalTurns = this.turnsCompleteds.length;
     
     this.prepareArrays.prepareArrayDoctors(arraySol);
     this.prepareArrays.doctorsAverage(arraySol);
