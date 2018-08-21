@@ -24,11 +24,8 @@ export class prepareArrays{
 		}
 		else intC = array.length;
 		for (var k = 0; k < intC; k++) {
-			// if(array[k].campo3 != '' && array[k].campo4 != '')
-				this.turnsCompleteds.push(array[k]);
+			this.turnsCompleteds.push(array[k]);
 		}
-		// console.log('ARRAY EN EL prepareArrays');
-		// console.log(this.turnsCompleteds);
 		return this.turnsCompleteds;
 	}
 
@@ -40,7 +37,6 @@ export class prepareArrays{
 			this.delays.push({name: doctors[i], avgDoctor: 0, avgPatient: 0, countWeb: 0, countDesktop: 0})
 		}
 
-		// console.log(this.delays)
 	}
 
 	getDoctors(array: turnosV0[]):string[]{
@@ -60,7 +56,6 @@ export class prepareArrays{
 	}
 
 	doctorsAverage(fullTurns:turnosV0[]){
-		// console.log(fullTurns);
 		for (var i = 0; i < this.delays.length; i++) {
 			this.delays[i].avgDoctor = this.math.avgDoctor(this.delays[i].name,fullTurns);
 			this.delays[i].avgPatient = this.math.avgPatient(this.delays[i].name,fullTurns);
@@ -74,42 +69,28 @@ export class prepareArrays{
 				else return 1;
 			}
 		);
-		// console.log(this.delays)
-
 	}
 
 	onlyCountWebDesktopTurns(fullTurns: turnosV0[]){
 		let arr = [];
-		// console.log('CANTIDAD DE TURNOS EN FULLTURNS');
-		// console.log(fullTurns.length);
-		// console.log('|||||||||||||||||||||||||||||||||||||||');
 		for (var i = 0; i < this.delays.length; i++) {
-			// let a: webVSdesktop;
 			let a = {
 				name: '',
 				web: '',
 				desktop: ''
 			};
-			// a = new webVSdesktop('',0,0);
 			a.name = this.delays[i].name;
 			a.web = this.math.countWebTurns(this.delays[i].name,fullTurns).toString();
 			a.desktop = this.math.countDesktopTurns(this.delays[i].name,fullTurns).toString();
-			// console.log('SUMA DE TURNOS PARA ' +  a.name);
-			// console.log(a.web+a.desktop);
-			// console.log('------------------------');
 			arr.push(a);
 		}
-		// console.log('prepareArrays');
-		// console.log(arr);
 		arr.sort(
 			function(a,b){
 				if (b.name > a.name)
 					return -1;
 				else return 1;
 			}
-		);
-		// console.log(arr);
-// 
+		); 
 		return arr;
 	}
 

@@ -60,33 +60,33 @@ export class GraphsComponent implements OnInit {
         else{
         	console.log('cargando turnos...');	
         	this.preparingTurns = true;
-        	this.dbPetitions.getTurnsDoctors(this.convertToDate(this.appComponent.filter.selSince),
-        									this.convertToDate(this.appComponent.filter.selUntil)
-        	).subscribe((turnsD)=>{
-        		if (turnsD){
-        			// console.log(turnsD);
-        			let sizeString:string = turnsD.data.msg;
-        			let index = sizeString.indexOf(' ');
-        			let size: number = parseInt(sizeString.substr(0,index));
-        			// console.log(size);
-        			// this.filterTemp();
+    //     	this.dbPetitions.getTurnsDoctors(this.convertToDate(this.appComponent.filter.selSince),
+    //     									this.convertToDate(this.appComponent.filter.selUntil)
+    //     	).subscribe((turnsD)=>{
+    //     		if (turnsD){
+    //     			// console.log(turnsD);
+    //     			let sizeString:string = turnsD.data.msg;
+    //     			let index = sizeString.indexOf(' ');
+    //     			let size: number = parseInt(sizeString.substr(0,index));
+    //     			// console.log(size);
+    //     			// this.filterTemp();
 
 
 
 
         			preparingTurns2 = false;
         			this.preparingTurns = preparingTurns1;
-        		}
+    //     		}
 
-        	},
-        	(err)=>{
-				let msg = 'Ups! Algo salió mal, intente de nuevo';
-	          	if (err.message.includes('session expired')){
-	          		msg = 'Debe volver a iniciar sesion';
-	          		localStorage.setItem('logged','false');
-	          		this._router.navigate(['login']);
-	          	}
-	          	});
+    //     	},
+    //     	(err)=>{
+				// let msg = 'Ups! Algo salió mal, intente de nuevo';
+	   //        	if (err.message.includes('session expired')){
+	   //        		msg = 'Debe volver a iniciar sesion';
+	   //        		localStorage.setItem('logged','false');
+	   //        		this._router.navigate(['login']);
+	   //        	}
+	   //        	});
         	
 
 
