@@ -113,10 +113,17 @@ export class RealTimeComponent implements OnInit {
   getStatesOfTurns(array: turnosV0[]){
       this.stateData = [];
 
-      let aux: number[] = [0,0,0,0,0];
+      let aux: number[] = [0,0,0,0,0,0];
       for (var i = 0; i < array.length; i++) {
-        if (array[i].campo5.trim() == STATE_TURN.MISSING)
+        if (array[i].campo5.trim() == STATE_TURN.MISSING){
+          let now = new Date();
+          let campo2 = array[i].campo2;
+          let campo2Date= new Date();
+          campo2Date.setHours(parseInt(campo2.substr(0,3)),parseInt(campo2.substr(4,6)));
+          console.log('campo2' + campo2Date.getHours());
+          // if (array[i])
           aux[0] = aux[0] + 1;
+      }
         else if (array[i].campo5.trim() == STATE_TURN.ATTENDED) 
           aux[1] = aux[1] + 1;
         else if (array[i].campo5.trim() == STATE_TURN.WAITING)
@@ -174,19 +181,17 @@ export class RealTimeComponent implements OnInit {
 
   filterFunction(){
       //FILTROS
-    
+    this.totalTurns = this.turnsCompleteds.length;
+
     let arraySolOnlyOlds =  this.filterNewTurns(this.turnsCompleteds);
     let arraySol = this.appComponent.filter.filter(arraySolOnlyOlds);
-
-    this.totalTurns = this.turnsCompleteds.length;
-    
     this.prepareArrays.prepareArrayDoctors(arraySol);
     this.prepareArrays.doctorsAverage(arraySol);
-    this.delays = this.prepareArrays.getDelays();
-
-      
+    this.delays = this.prepareArrays.getDelays();     
     this.prepareGraphicDelay(this.delays);
-    this.getStatesOfTurns(this.turnsCompleteds);
+
+    let SolutionWithAllStates = this.appComponent.filter.filter(this.turnsCompleteds);
+    this.getStatesOfTurns(SolutionWithAllStates);
   }
 
     contains(array: nameAVG[], valueToCompare: nameAVG){

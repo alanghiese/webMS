@@ -64,11 +64,11 @@ export class GraphsComponent implements OnInit {
         									this.convertToDate(this.appComponent.filter.selUntil)
         	).subscribe((turnsD)=>{
         		if (turnsD){
-        			console.log(turnsD);
+        			// console.log(turnsD);
         			let sizeString:string = turnsD.data.msg;
         			let index = sizeString.indexOf(' ');
         			let size: number = parseInt(sizeString.substr(0,index));
-        			console.log(size);
+        			// console.log(size);
         			// this.filterTemp();
 
 
@@ -111,14 +111,7 @@ export class GraphsComponent implements OnInit {
 	        		this.delays = this.prepareArrays.getDelays();
 	        		// console.log(this.delays);
 	        		this.webVSdesktopArr = this.prepareArrays.onlyCountWebDesktopTurns(this.turnsCompleteds);
-	        		// console.log('graphs.component');
-	        		// console.log(this.webVSdesktopArr);
-	        		// console.log(this.delays)
-	        		// console.log('FECHAS');
-	        		// console.log(from);
-	        		// console.log(to);
-	        		// console.log('FILTRO');
-	        		// console.log(this.appComponent.filter);
+	        		
 
 	        		this.filterFunction();
 
@@ -178,7 +171,6 @@ export class GraphsComponent implements OnInit {
   									this.convertToDate(this.appComponent.filter.selUntil)
   		).subscribe((resp)=>{
 	        		if (resp){
-        				// console.log(resp);
 	        			// console.log(resp)
 	        			this.prepareArrays.prepareArray(resp);
 	        			// console.log(this.turnsCompleteds);
@@ -285,7 +277,7 @@ export class GraphsComponent implements OnInit {
 
   	filterNewTurns(array: turnosV0[]): turnosV0[]{
 	    let arr: turnosV0[] = [];
-	    for (var i = 0; i < array.length; i++) {Recordar
+	    for (var i = 0; i < array.length; i++) {
 	      if(array[i].campo3 != '' && array[i].campo4 != '')
 	        arr.push(array[i]);
 	    }

@@ -13,7 +13,6 @@ export class prepareArrays{
 
 	prepareArray(array: turnosV0[]): turnosV0[]{
 		this.turnsCompleteds = [];
-		this.delays = [];
 		let intC;
 		if(!array.length){
 			let c;
