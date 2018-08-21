@@ -56,14 +56,11 @@ export class RealTimeComponent implements OnInit {
           // this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
             if (resp){
               this.prepareArrays.prepareArray(resp);
-              // console.log(this.turnsCompleteds);
               this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
               this.prepareArrays.prepareArrayDoctors(this.turnsCompleteds);
               this.prepareArrays.doctorsAverage(this.turnsCompleteds);
               this.delays = this.prepareArrays.getDelays();
-              // console.log(this.delays)
               this.filterFunction();
-              // this.prepareGraphicDelay(this.delays);
 
 
               this.preparingTurns = false;
@@ -120,9 +117,12 @@ export class RealTimeComponent implements OnInit {
           let campo2 = array[i].campo2;
           let campo2Date= new Date();
           campo2Date.setHours(parseInt(campo2.substr(0,3)),parseInt(campo2.substr(4,6)));
-          console.log('campo2' + campo2Date.getHours());
-          // if (array[i])
-          aux[0] = aux[0] + 1;
+          // console.log(campo2);
+          // console.log('campo2 ' + campo2Date.getHours());
+          if (now<campo2Date)
+            aux[0] = aux[0] + 1;
+          else
+            aux[5] = aux[5] + 1;
       }
         else if (array[i].campo5.trim() == STATE_TURN.ATTENDED) 
           aux[1] = aux[1] + 1;
@@ -141,38 +141,30 @@ export class RealTimeComponent implements OnInit {
   refresh(){
       this.turnsCompleteds = [];
       this.delays = [];
-      // if (this.backSince != this.appComponent.filter.selSince || this.backUntil != this.appComponent.filter.selUntil){
-        this.preparingTurns = true;
-        this.dbPetitions.getActualStatistics(
+      this.preparingTurns = true;
+      this.dbPetitions.getActualStatistics(
       ).subscribe((resp)=>{
-              if (resp){
-                this.prepareArrays.prepareArray(resp);
-                this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
-                this.delays = this.prepareArrays.getDelays();
-              
+            if (resp){
+              this.prepareArrays.prepareArray(resp);
+              this.turnsCompleteds = this.prepareArrays.getTurnsCompleteds();
+              this.delays = this.prepareArrays.getDelays();
+            
 
-                this.filterFunction();
-                this.backSince = this.appComponent.filter.selSince;
-                this.backUntil = this.appComponent.filter.selUntil;
-                this.preparingTurns = false;
+              this.filterFunction();
+              this.backSince = this.appComponent.filter.selSince;
+              this.backUntil = this.appComponent.filter.selUntil;
+              this.preparingTurns = false;
 
-              }
-            },
-            (err)=>{
-              let msg = ERR_UPS;
-              if (err.message.includes('session expired')){
-                msg = 'Debe volver a iniciar sesion';
-                localStorage.setItem('logged','false');
-                this._router.navigate(['login']);
-              }
-              });
-      // }
-      // else{
-      // this.preparingTurns = true;
-      // this.filterFunction();
-      // this.preparingTurns = false;
-      // }
-
+            }
+          },
+          (err)=>{
+            let msg = ERR_UPS;
+            if (err.message.includes('session expired')){
+              msg = 'Debe volver a iniciar sesion';
+              localStorage.setItem('logged','false');
+              this._router.navigate(['login']);
+            }
+            });
       let now = new Date();
       this.lastUpdate ='Ultima actualizacion a las: ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
       console.log(this.lastUpdate);
@@ -235,10 +227,7 @@ export class RealTimeComponent implements OnInit {
               xAxes: [{
                 ticks: {
                     display: true,
-                    // beginAtZero: true,
                     autoSkip: false,
-                    // stepSize: 1,
-                    // min: 0,
                     
                     maxRotation: 90,
                     minRotation: 90,
@@ -278,10 +267,7 @@ export class RealTimeComponent implements OnInit {
                 xAxes: [{
                   ticks: {
                       display: true,
-                      // beginAtZero: true,
                       autoSkip: false,
-                      // stepSize: 1,
-                      // min: 0,
                       
                       maxRotation: 90,
                       minRotation: 90,
@@ -320,7 +306,6 @@ export class RealTimeComponent implements OnInit {
 
   prepareGraphicDelay(array: nameAVG[]){
     this.clearCharts();
-    // console.log(this.nameOfTheDoctors);
     let auxAVGDoctors = [];
     let auxAVGPatients = [];
 
@@ -353,7 +338,6 @@ export class RealTimeComponent implements OnInit {
 
 
   convertToDate(date:String):Date{
-    // console.log(date);
     let d = new Date();
     //YYYY-MM-DD
     let second = date.lastIndexOf('-');
