@@ -24,9 +24,9 @@ export class AppComponent {
 
 	constructor(private _router: Router) {
 
-		alert(	'FALTA PROGRAMA LOS DOCTORES Y SUS TURNOS TOMADOS/OFRECIDOS' +'\n'+
-				'HACER UN LOGIN MAS SEGURO EN CUANTO A LA ENCRIPTACION DEL PASSWORD' +'\n'+ 
-				'ESTE ALERT ESTA EN APP.COMPONENT.TS');
+		// alert(	'FALTA PROGRAMA LOS DOCTORES Y SUS TURNOS TOMADOS/OFRECIDOS' +'\n'+
+		// 		'HACER UN LOGIN MAS SEGURO EN CUANTO A LA ENCRIPTACION DEL PASSWORD' +'\n'+ 
+		// 		'ESTE ALERT ESTA EN APP.COMPONENT.TS');
 	
 		if (localStorage.getItem('checked') != null)
 			back.chk = localStorage.getItem('checked');

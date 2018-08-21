@@ -40,7 +40,7 @@ export class MathsFunctions{
 			if (array[i].campo1 == doctor)
 				aux.push(array[i]);
 		}
-		console.log(aux);
+		
 		let avg:number = 0;
 		for (var k = 0; k < aux.length; k++) {
 

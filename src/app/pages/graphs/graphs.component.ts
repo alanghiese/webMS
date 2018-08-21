@@ -210,11 +210,6 @@ export class GraphsComponent implements OnInit {
 		let turnsAttended =  this.filterNewTurns(this.turnsCompleteds);
     	let arraySol = this.appComponent.filter.filter(turnsAttended);
 
-    	
-		
-
-
-
 		this.prepareArrays.prepareArrayDoctors(arraySol);
 		this.prepareArrays.doctorsAverage(arraySol);
 	    this.delays = this.prepareArrays.getDelays();

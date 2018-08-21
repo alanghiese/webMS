@@ -73,7 +73,7 @@ export class TurnsComponent implements OnInit {
 					console.log('cargado!');
 
 					this.prepareArray(array); // carga el array turns
-					console.log(this.turns);
+					// console.log(this.turns);
 					this.filterFunction(); // aca extraigo los nombres y ademas finalizo los arreglos
 
 					this.preparingTurns = false;
