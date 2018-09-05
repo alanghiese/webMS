@@ -27,8 +27,16 @@ export const STATE_TURN = {
         WAITING: 'S',
         F: 'F',
         FCA: 'F CA'
-}
+};
 
 export const NO_COVERAGE = 'SIN COBERTURA';
 
 export const ANY = "Ninguno";
+
+export const PAGES = {
+        MY_TURNS: "my_turns",
+        MEDICAL_HISTORY: "medical_history",
+        HOME: "home",
+        CONTACT: "contact",
+        LOGIN: "login"
+};

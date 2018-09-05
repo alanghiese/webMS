@@ -31,6 +31,8 @@ import { UPPERCASE } from './pipes/toUpperCase.pipe';
 import { LoadingComponent } from './pages/loading/loading.component';
 import { RealTimeComponent } from './pages/real-time/real-time.component';
 import { ContactComponent } from './pages/contact/contact.component';
+import { MedicalHistoryComponent } from './pages/medical-history/medical-history.component';
+import { MyTurnsComponent } from './pages/my-turns/my-turns.component';
 
 
 
@@ -51,7 +53,9 @@ import { ContactComponent } from './pages/contact/contact.component';
     UPPERCASE,
     LoadingComponent,
     RealTimeComponent,
-    ContactComponent
+    ContactComponent,
+    MedicalHistoryComponent,
+    MyTurnsComponent
   ],
   imports: [
     BrowserModule,

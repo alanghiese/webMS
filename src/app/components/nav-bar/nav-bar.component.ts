@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppComponent } from '../../app.component';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
 import { Router } from '@angular/router';
+import { PAGES } from '../../constants';
 
 @Component({
   selector: 'navBar',
@@ -54,7 +55,7 @@ export class NavBarComponent implements OnInit {
                 alert('Debe relogearse');
                 localStorage.clear();
                 localStorage.setItem('logged', 'false');
-                this._router.navigate(['login']);
+                this._router.navigate([PAGES.LOGIN]);
               }
               else alert(r.error.message);
             }
@@ -69,7 +70,7 @@ export class NavBarComponent implements OnInit {
                 alert('El cliente no existe')
                 localStorage.clear();
                 localStorage.setItem('logged', 'false');
-                this._router.navigate(['login']);
+                this._router.navigate([PAGES.LOGIN]);
         });
   }
 
@@ -81,6 +82,8 @@ export class NavBarComponent implements OnInit {
     }
     return (this.clients != null);
   }
+
+  
 
   isLogged(){
     return localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'true';

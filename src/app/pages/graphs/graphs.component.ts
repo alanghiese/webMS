@@ -6,6 +6,7 @@ import { turnosV0, webVSdesktop } from '../../interfaces';
 import { nameAVG } from '../../models/regNameAVG';
 import { prepareArrays } from '../../providers/prepareArrays';
 import { STATE_TURN } from '../../constants';
+import { PAGES } from '../../constants';
 
 
 
@@ -56,7 +57,7 @@ export class GraphsComponent implements OnInit {
 		let preparingTurns2 = true;
 
 		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
-        	this._router.navigate(['login']);
+        	this._router.navigate([PAGES.LOGIN]);
         else{
         	console.log('cargando turnos...');	
         	this.preparingTurns = true;
@@ -127,7 +128,7 @@ export class GraphsComponent implements OnInit {
 	          	if (err.message.includes('session expired')){
 	          		msg = 'Debe volver a iniciar sesion';
 	          		localStorage.setItem('logged','false');
-	          		this._router.navigate(['login']);
+	          		this._router.navigate([PAGES.LOGIN]);
 	          	}
 	            
 
@@ -188,7 +189,7 @@ export class GraphsComponent implements OnInit {
 		          	if (err.message.includes('session expired')){
 		          		msg = 'Debe volver a iniciar sesion';
 		          		localStorage.setItem('logged','false');
-		          		this._router.navigate(['login']);
+		          		this._router.navigate([PAGES.LOGIN]);
 		          	}
 	          	});
   		}

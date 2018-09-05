@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppComponent } from '../../app.component';
+import { PAGES } from '../../constants';
 
 @Component({
   selector: 'app-contact',
@@ -20,7 +21,7 @@ export class ContactComponent implements OnInit {
 	  localStorage.setItem('url', backURL);
 	  clearInterval(this.appComponent.interval);
     this.appComponent.setNotFilter(true);
-    setTimeout(() => this._router.navigate(['contact']),1);
+    setTimeout(() => this._router.navigate([PAGES.CONTACT]),1);
     this.appComponent.stateFilter = false;
 
 

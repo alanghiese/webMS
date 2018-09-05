@@ -18,7 +18,10 @@ and then
 Run `npm install chart.js --save`
 
 
-
+## install file-saver and xlsx
+Run `npm install file-saver --save`
+and
+Run `npm install xlsx --save`
 
 
 

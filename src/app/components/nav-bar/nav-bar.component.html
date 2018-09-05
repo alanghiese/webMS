@@ -1,44 +1,49 @@
 <nav class="navbar navbar-expand-lg navbar-dark  bg-orange">
-  <a class="navbar-brand" style="font-size: 25px; color: black">Medical Software</a>
+  <a class="navbar-brand" style="font-size: 25px; color: black; cursor: default;" [routerLink] = "['']">Medical Software</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
-      <a  title="Contacto" [routerLink] = "['contact']"  style="margin-left: : 30px; font-size: 20px; color: black"> <small>Contacto</small> </a>
-     <!--  <li class="nav-item active">
-        <a class="nav-link arrow" href="#">↑</a>
-      </li> -->
-      <!-- <li class="nav-item">
-        <a class="nav-link" href="" (click) = "logout()">SALIR</a>
-      </li> -->
-      <!-- <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
+      <li class="nav-link">
+        <a  title="Contacto" [routerLink] = "['contact']"  style="font-size: 20px; color: black"> <small>Contacto</small> </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
-      </li> -->
-    </ul>
-    
+  
 
-   <!--  <div *ngIf="clientsExists() && isLogged()">
-      <span>Conectado a: </span>
-      <span style="margin-left: 10px; margin-right: 30px;"><strong>{{ this.user }}</strong></span>
-    </div> -->
+      <button *ngIf="!isLogged()" class="userConnected" [routerLink] = "['']" 
+                                    style=" border-radius: 5px !important;" >
+        Entrar
+      </button>
 
-   
+      <div *ngIf="isLogged()" class="btn-group" style="margin-left: 10px !important; margin-right: 10px !important; ">
+       <!--  <button class="userConnected" title="Contacto" [routerLink] = "['contact']" 
+                                      style=" border-top-left-radius: 5px !important;
+                                              border-bottom-left-radius: 5px !important;" >
+          Contacto
+        </button> -->
+
+        <button class="userConnected" [routerLink] = "['']" 
+                                      style=" border-top-left-radius: 5px !important;
+                                              border-bottom-left-radius: 5px !important;" >
+          Estadisticas
+        </button>
+
+        <button class="userConnected" [routerLink] = "['my_turns']" >
+          Mis Turnos
+        </button>
+
+        <button class="userConnected" [routerLink] = "['medical_history']" 
+                                      style=" border-top-right-radius: 5px !important;
+                                              border-bottom-right-radius: 5px !important">
+          Historiales Clinicos
+        </button>
+      </div>
 
 
-    <div *ngIf="clientsExists() && isLogged()" class="input-group" style=" max-width: 250px; margin-right: 2%">
+
+
+    <div *ngIf="clientsExists() && isLogged()" class="input-group" style=" max-width: 250px;">
       <div class="btn-group">
         <button type="button" class="btn dropdown-toggle dropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Conectado a <strong>{{ this.user }}</strong>
@@ -48,26 +53,20 @@
           style="text-align: center;"> 
             {{ c.nombreFuente }} 
           </button>
-          <button class="btn btn-danger my-2 my-sm-0" style="width: 100% !important; background-color: rgb(255, 179, 102); border: 0px; color: black" 
+            <button class="btn btn-danger my-2 my-sm-0" style="width: 100% !important; background-color: rgb(255, 179, 102); border: 0px; color: black" 
             [routerLink] = "['login']" (click) = "logout()">
               <strong>
                 SALIR
               </strong>
-            </button>
+          </button>
         </div>
       </div>
 
     </div>
-
-   
-
-
+    </ul>
     <!-- <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form> -->
-
-      
-      
   </div>
 </nav>

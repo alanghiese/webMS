@@ -10,6 +10,8 @@ import { ERR_UPS } from '../../constants';
 import { turnosV0 } from '../../interfaces';
 import { Observable } from 'rxjs';
 
+import { Encode } from '../../providers/encode';
+import { PAGES } from '../../constants';
 
 @Component({
   selector: 'login',
@@ -19,6 +21,7 @@ import { Observable } from 'rxjs';
 export class LoginComponent implements OnInit {
 
   acc: User;
+  encoder: Encode = new Encode();
   
 
   constructor(
@@ -48,10 +51,14 @@ export class LoginComponent implements OnInit {
       back.url = localStorage.getItem('url');
     
 
+    //let a = e.utf8_to_b64("back.psw"); // "4pyTIMOgIGxhIG1vZGU="
+    //let b = e.b64_to_utf8(a);
+    
+  
 
     if (back.relog == 'true'){
       this.acc.checked = back.chk;
-      this.acc.password = back.psw;
+      this.acc.password = this.encoder.b64_to_utf8(back.psw);
       this.acc.user = back.usr;
       this.login();  
     }
@@ -72,9 +79,12 @@ export class LoginComponent implements OnInit {
 
   login(){ 
     
+    this.acc.password = this.encoder.utf8_to_b64(this.acc.password);
+
+
     localStorage.setItem('loading','true');
     this.account.enrollmentId = this.acc.user;
-    this.account.password = this.acc.password;
+    this.account.password = this.encoder.b64_to_utf8(this.acc.password);
     var resp;
     
     console.log('logging..');
@@ -107,7 +117,7 @@ export class LoginComponent implements OnInit {
           if (localStorage.getItem('url') != null)  
             this._router.navigate([localStorage.getItem('url')]);
     			else 
-            this._router.navigate(['home']);
+            this._router.navigate([PAGES.HOME]);
 			
         }
         else{
@@ -118,10 +128,10 @@ export class LoginComponent implements OnInit {
       (err) => {
           localStorage.setItem('loading','false');
           localStorage.setItem('logged','false');
+          localStorage.setItem('relog','false');
           let msg = ERR_UPS;
           if (err.message.includes('incorrecto'))
             msg = 'Matrícula o contraseña incorrecta';
-
           alert(msg);
         // console.log(msg);
 

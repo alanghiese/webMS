@@ -8,23 +8,25 @@
 	<navBar></navBar> <!-- class="fixed-top" -->
 	<body>
 	   
-		
-		<div class="row" style="max-width: 100%">  
-			<!-- style="border-right: 1px solid rgb(255, 204, 153); height: 82%" -->
+
+		<div  class="row" style="max-width: 100%">  
 			<br>
-		    <div class="col-md-1 buttons"> 
-		        <buttons></buttons>
+		    <!-- <div class="col-md-1 buttons"> 
+		        <buttons *ngIf="isLogged()"></buttons>
 		    </div>
-		    	
+		    	 -->
 
-		    	<!--  style="margin-left: 10%; width: 90%"-->
-		    <div class="col-md-11 interfaces"> 
+		    <div class="col-md-12" style="margin-left: 15px"> 
 		        <filters *ngIf="isLogged() && !isNotFilter()"></filters>
-
 		        <router-outlet></router-outlet>
 		    </div>
 		</div>
+		<!-- <div *ngIf="!emptyScreen">
+			<p>sin filtros</p>
+			<router-outlet></router-outlet>
+		</div> -->
 
+		
 
 	</body>
 

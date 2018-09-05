@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Filter } from './models/filter';
 import { back } from './constants';
-import { coverageObject, serviceObject } from './interfaces'
+import { coverageObject, serviceObject } from './interfaces';
+import { PAGES } from './constants';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
 	filter: Filter;
 	clients: any[];
 	doctors: any[] = [];	
@@ -22,12 +23,16 @@ export class AppComponent {
 
 
 
+
+
+
 	constructor(private _router: Router) {
 
 		// alert(	'FALTA PROGRAMA LOS DOCTORES Y SUS TURNOS TOMADOS/OFRECIDOS' +'\n'+
 		// 		'HACER UN LOGIN MAS SEGURO EN CUANTO A LA ENCRIPTACION DEL PASSWORD' +'\n'+ 
 		// 		'ESTE ALERT ESTA EN APP.COMPONENT.TS');
-	
+		
+		// alert('podria tratar de poner tanto los filtros como los botones (o solo los botones) directamente en el componente que lo necesite')
 		if (localStorage.getItem('checked') != null)
 			back.chk = localStorage.getItem('checked');
 		if (localStorage.getItem('user') != null)
@@ -55,7 +60,8 @@ export class AppComponent {
         	localStorage.setItem('checked',back.chk);
         	localStorage.setItem('password',back.psw);
         	localStorage.setItem('url',back.url);
-        	this._router.navigate(['login']);
+        	this._router.navigate([PAGES.LOGIN]);
+        	// this._router.navigate([{outlets: {withoutButtons: [PAGES.LOGIN]}}]);
 
 	    }
 	    else {
@@ -63,12 +69,26 @@ export class AppComponent {
 	    	localStorage.setItem('logged', back.logged);
         	localStorage.setItem('url',back.url);
 	    }
-	    this._router.navigate(['login']);
+	    this._router.navigate([PAGES.LOGIN]);
+		
 
 	    
 	    this.filter = new Filter('','','','','','Todos','','');
+
+
 	}
 
+
+	ngOnInit(){
+
+	}
+
+	// emptyScreen:boolean = false;
+	// chA(value){
+	// 	this.emptyScreen = value;
+	// }
+
+	
 	isNotFilter():boolean{
 		return this.notFilter;
 	}
@@ -144,7 +164,7 @@ export class AppComponent {
 
 	}
 
-
+	
 
 	isLoading(){
 		if (localStorage.getItem('loading') != null)

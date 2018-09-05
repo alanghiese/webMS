@@ -3,20 +3,20 @@ import { Router } from '@angular/router';
 import { AppComponent } from '../../app.component';
 import { PAGES } from '../../constants';
 
-@Component({
-  selector: 'empty',
-  templateUrl: './empty.component.html',
-  styleUrls: ['./empty.component.css']
-})
-export class EmptyComponent implements OnInit {
 
-  constructor(
-              private _router: Router,
-              private appComponent: AppComponent){}
+@Component({
+  selector: 'myTurns',
+  templateUrl: './my-turns.component.html',
+  styleUrls: ['./my-turns.component.css']
+})
+export class MyTurnsComponent implements OnInit {
+
+  constructor(	private _router: Router,
+  				private appComponent: AppComponent) { }
 
   ngOnInit() {
-    
-    let backURL = this._router.url;
+
+  	let backURL = this._router.url;
     localStorage.setItem('url', backURL);
     clearInterval(this.appComponent.interval);
     this.appComponent.setNotFilter(true);
@@ -24,12 +24,10 @@ export class EmptyComponent implements OnInit {
     if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
       this._router.navigate([PAGES.LOGIN]);
     else{
-      setTimeout(() => this._router.navigate([PAGES.HOME]),1);
+      setTimeout(() => this._router.navigate([PAGES.MY_TURNS]),1);
     }
-    
-    
-
   }
-  // 
+
+
 
 }

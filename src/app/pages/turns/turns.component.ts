@@ -6,6 +6,8 @@ import { DbPetitionsComponent } from '../../providers/dbPetitions';
 import { turnosV0 } from '../../interfaces';
 import { tuple } from './tuple';
 import { NO_COVERAGE, ERR_UPS } from '../../constants';
+import { PAGES } from '../../constants';
+import { ExcelService } from '../../providers/excel.services';
 
 const valuesGroupBy={
 	COV: "Cobertura",
@@ -20,7 +22,8 @@ const valuesGroupBy={
   styleUrls: ['./turns.component.css'],
   providers: [ 
   				MathsFunctions,
-  				DbPetitionsComponent
+  				DbPetitionsComponent,
+  				ExcelService
   			 ]
 })
 export class TurnsComponent implements OnInit {
@@ -46,7 +49,8 @@ export class TurnsComponent implements OnInit {
 		private appComponent: AppComponent, 
 		private maths: MathsFunctions,
 		private _router: Router,
-		private _dbPetitions: DbPetitionsComponent
+		private _dbPetitions: DbPetitionsComponent,
+		private excelService:ExcelService
 		){}
 
 	ngOnInit() {
@@ -61,7 +65,7 @@ export class TurnsComponent implements OnInit {
 		let from = this.convertToDate(this.appComponent.filter.selSince); //obtengo la fecha del filtro
 		let to = this.convertToDate(this.appComponent.filter.selUntil); //obtengo la fecha del filtro
 		if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false'){
-        	this._router.navigate(['login']);
+        	this._router.navigate([PAGES.LOGIN]);
 		}
     	else{
     		this.preparingTurns = true;
@@ -85,7 +89,7 @@ export class TurnsComponent implements OnInit {
 	          	if (err.message.includes('session expired')){
 	          		msg = 'Debe volver a iniciar sesion';
 	          		localStorage.setItem('logged','false');
-	          		this._router.navigate(['login']);
+	          		this._router.navigate([PAGES.LOGIN]);
 	          	}
 	            
 
@@ -99,6 +103,16 @@ export class TurnsComponent implements OnInit {
     	
 	}
 
+
+	exportAsXLSX():void {
+		if (this.coverage())
+			this.excelService.exportAsExcelFile(this.finalCoverage, 'Turnos agrupados por coberturas');
+		else if (this.service())
+			this.excelService.exportAsExcelFile(this.finalService, 'Turnos agrupados por servicios');
+		else if (this.doctor())
+			this.excelService.exportAsExcelFile(this.finalDoctors, 'Turnos agrupados por medicos');
+	   
+	}
 
 
 	prepareArray(array: turnosV0[]){
@@ -295,7 +309,7 @@ export class TurnsComponent implements OnInit {
 				serviceCeil  = parseFloat(this.userPersentage);
 				doctorCeil  = parseFloat(this.userPersentage);
 			}
-			if (this.finalService.length > 1)
+			// if (this.finalService.length > 1)
 			this.stackPercentages(coverageCeil,serviceCeil,doctorCeil);
 		}
 	}
@@ -341,7 +355,7 @@ export class TurnsComponent implements OnInit {
 		if (this.finalDoctors.length > 1){
 			this.finalDoctors = [];
 			for (var i = 0; i < arrAux.length; i++) {
-				if (arrAux[i].percentage >= serviceCeil){
+				if (arrAux[i].percentage >= doctorCeil){
 					this.finalDoctors.push(arrAux[i]);
 				}
 				else{
@@ -349,7 +363,7 @@ export class TurnsComponent implements OnInit {
 					countAux = countAux + arrAux[i].count;	
 				}
 			}
-			this.finalDoctors.push(new tuple('Turnos con porcentajes menores a '+serviceCeil+'%',percentageAux,countAux));
+			this.finalDoctors.push(new tuple('Turnos con porcentajes menores a '+doctorCeil+'%',percentageAux,countAux));
 		}
 
 	}
@@ -378,7 +392,7 @@ export class TurnsComponent implements OnInit {
 	          	if (err.message.includes('session expired')){
 	          		msg = 'Debe volver a iniciar sesion';
 	          		localStorage.setItem('logged','false');
-	          		this._router.navigate(['login']);
+	          		this._router.navigate([PAGES.LOGIN]);
 	          	}
 	            
 

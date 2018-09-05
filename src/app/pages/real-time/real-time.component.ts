@@ -7,6 +7,7 @@ import { turnosV0 } from '../../interfaces';
 import { nameAVG } from '../../models/regNameAVG';
 import { prepareArrays } from '../../providers/prepareArrays';
 import { STATE_TURN, ERR_UPS } from '../../constants';
+import { PAGES } from '../../constants';
 
 @Component({
   selector: 'realTime',
@@ -38,7 +39,7 @@ export class RealTimeComponent implements OnInit {
     this.appComponent.setNotFilter(false);
 	  clearInterval(this.appComponent.interval);
   	if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
-        this._router.navigate(['login']);
+        this._router.navigate([PAGES.LOGIN]);
      else{
          console.log('cargar turnos');
           this.preparingTurns = true;
@@ -71,7 +72,7 @@ export class RealTimeComponent implements OnInit {
               if (err.message.includes('session expired')){
                 msg = 'Debe volver a iniciar sesion';
                 localStorage.setItem('logged','false');
-                this._router.navigate(['login']);
+                this._router.navigate([PAGES.LOGIN]);
               }
               
 
@@ -162,7 +163,7 @@ export class RealTimeComponent implements OnInit {
             if (err.message.includes('session expired')){
               msg = 'Debe volver a iniciar sesion';
               localStorage.setItem('logged','false');
-              this._router.navigate(['login']);
+              this._router.navigate([PAGES.LOGIN]);
             }
             });
       let now = new Date();

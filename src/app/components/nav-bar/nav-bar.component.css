@@ -25,5 +25,6 @@ a:hover{
 .userConnected{
 	background-color: rgb(255, 179, 102); 
 	border: 0px; 
-	color: black
+	color: black;
+	cursor: pointer !important;
 }

@@ -9,6 +9,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { JSONResponse } from '../interfaces';
 
 import { Router } from '@angular/router';
+import { PAGES } from '../constants';
 
 @Injectable()
 export class dbPetitionsInterceptor implements HttpInterceptor {
@@ -40,7 +41,7 @@ export class dbPetitionsInterceptor implements HttpInterceptor {
               localStorage.setItem('loading', 'falase');
               localStorage.setItem('user', user);
               localStorage.setItem('password', pass);
-              this.router.navigate(['login']);
+              this.router.navigate([PAGES.LOGIN]);
               console.log('session expired');
               alert('Sesion expirada, debe volver a loguearse');
             } else {
