@@ -43,8 +43,8 @@ export class AppComponent implements OnInit{
 			back.loading = localStorage.getItem('loading');
 		if (localStorage.getItem('logged') != null)
 			back.logged = localStorage.getItem('logged');
-		if (localStorage.getItem('url') != null)
-			back.url = localStorage.getItem('url');
+		// if (localStorage.getItem('url') != null)
+			// back.url = localStorage.getItem('url');
 
 		localStorage.clear();
 		// console.log(this.back.url);
@@ -59,7 +59,7 @@ export class AppComponent implements OnInit{
         	localStorage.setItem('user',back.usr);
         	localStorage.setItem('checked',back.chk);
         	localStorage.setItem('password',back.psw);
-        	localStorage.setItem('url',back.url);
+        	// localStorage.setItem('url',back.url);
         	this._router.navigate([PAGES.LOGIN]);
         	// this._router.navigate([{outlets: {withoutButtons: [PAGES.LOGIN]}}]);
 
@@ -67,7 +67,7 @@ export class AppComponent implements OnInit{
 	    else {
 
 	    	localStorage.setItem('logged', back.logged);
-        	localStorage.setItem('url',back.url);
+        	// localStorage.setItem('url',back.url);
 	    }
 	    this._router.navigate([PAGES.LOGIN]);
 		

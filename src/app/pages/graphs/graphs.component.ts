@@ -49,8 +49,10 @@ export class GraphsComponent implements OnInit {
 
 	ngOnInit() {
 		this.appComponent.setNotFilter(false);
-		let backURL = this._router.url;
-		localStorage.setItem('url', backURL);
+		
+		// let backURL = this._router.url;
+		// localStorage.setItem('url', backURL);
+		
 		clearTimeout(this.appComponent.interval);
 		this.prepareArrays = new prepareArrays();
 		let preparingTurns1 = true;

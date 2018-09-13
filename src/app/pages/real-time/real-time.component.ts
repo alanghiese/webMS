@@ -32,8 +32,9 @@ export class RealTimeComponent implements OnInit {
 
 
   ngOnInit() {
-    let backURL = this._router.url;
-    localStorage.setItem('url', backURL);
+    // let backURL = this._router.url;
+    // localStorage.setItem('url', backURL);
+    
     this.appComponent.stateFilter = false;
     this.prepareArrays = new prepareArrays();
     this.appComponent.setNotFilter(false);

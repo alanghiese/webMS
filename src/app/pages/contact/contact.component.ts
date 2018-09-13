@@ -17,8 +17,10 @@ export class ContactComponent implements OnInit {
   ngOnInit() {
   	// if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
    //      this._router.navigate(['login']);
-    let backURL = this._router.url;
-	  localStorage.setItem('url', backURL);
+
+    // let backURL = this._router.url;
+	  // localStorage.setItem('url', backURL);
+    
 	  clearInterval(this.appComponent.interval);
     this.appComponent.setNotFilter(true);
     setTimeout(() => this._router.navigate([PAGES.CONTACT]),1);

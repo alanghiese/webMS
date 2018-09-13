@@ -47,8 +47,9 @@ export class LoginComponent implements OnInit {
       back.logged = localStorage.getItem('logged');
     if (localStorage.getItem('relog') != null)
       back.relog = localStorage.getItem('relog');
-    if (localStorage.getItem('url') != null)
-      back.url = localStorage.getItem('url');
+
+    // if (localStorage.getItem('url') != null)
+      // back.url = localStorage.getItem('url');
     
 
     //let a = e.utf8_to_b64("back.psw"); // "4pyTIMOgIGxhIG1vZGU="
@@ -113,11 +114,11 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('logged', 'true');
           localStorage.setItem('relog',back.relog);
           localStorage.setItem('loading','false');
-          localStorage.setItem('url',back.url);
-          if (localStorage.getItem('url') != null)  
-            this._router.navigate([localStorage.getItem('url')]);
-    			else 
-            this._router.navigate([PAGES.HOME]);
+          // localStorage.setItem('url',back.url);
+          // if (localStorage.getItem('url') != null)  
+            // this._router.navigate([localStorage.getItem('url')]);
+    			// else 
+          this._router.navigate([PAGES.MY_TURNS]);
 			
         }
         else{

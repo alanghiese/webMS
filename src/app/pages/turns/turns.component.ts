@@ -56,8 +56,10 @@ export class TurnsComponent implements OnInit {
 	ngOnInit() {
 		this.appComponent.setNotFilter(false);
     	this.appComponent.stateFilter = true;
-		let backURL = this._router.url;
-		localStorage.setItem('url', backURL);
+    	
+		// let backURL = this._router.url;
+		// localStorage.setItem('url', backURL);
+		
 		clearInterval(this.appComponent.interval);
 
 

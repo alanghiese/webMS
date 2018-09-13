@@ -4,7 +4,7 @@
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  <div class="collapse navbar-collapse">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-link">
         <a  title="Contacto" [routerLink] = "['contact']"  style="font-size: 20px; color: black"> <small>Contacto</small> </a>
@@ -17,11 +17,7 @@
       </button>
 
       <div *ngIf="isLogged()" class="btn-group" style="margin-left: 10px !important; margin-right: 10px !important; ">
-       <!--  <button class="userConnected" title="Contacto" [routerLink] = "['contact']" 
-                                      style=" border-top-left-radius: 5px !important;
-                                              border-bottom-left-radius: 5px !important;" >
-          Contacto
-        </button> -->
+      
 
         <button class="userConnected" [routerLink] = "['']" 
                                       style=" border-top-left-radius: 5px !important;
@@ -41,7 +37,7 @@
       </div>
 
 
-
+      
 
     <div *ngIf="clientsExists() && isLogged()" class="input-group" style=" max-width: 250px;">
       <div class="btn-group">

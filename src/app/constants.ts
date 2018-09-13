@@ -10,8 +10,8 @@ export const back = {
     psw: '',
     logged: '',
     loading: '',
-    relog: '',
-    url: ''
+    relog: ''//,
+    // url: ''
   	};
 
 export const ERR_UPS = 'Ups! Algo salió mal, intente de nuevo';
