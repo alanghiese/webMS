@@ -103,8 +103,8 @@ export class GraphsComponent implements OnInit {
 			to.setMilliseconds(0);
 			to.setMinutes(0);
 
-        	this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
-        	// this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+        	// this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
+        	this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
         		if (resp){
         			// console.log(resp);
         			this.prepareArrays.prepareArray(resp);
@@ -625,35 +625,35 @@ export class GraphsComponent implements OnInit {
   		let aux: number[] = [0,0,0,0,0];
   		for (var i = 0; i < array.length; i++) {
   			if (array[i].campo5.trim() == STATE_TURN.MISSING){
-  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB)
+  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
   					this.combinedDataWeb[0] = this.combinedDataWeb[0] + 1;
   				else
   					this.combinedDataDesktop[0] = this.combinedDataDesktop[0] + 1;
   				aux[0] = aux[0] + 1;
   			}
   			else if (array[i].campo5.trim() == STATE_TURN.ATTENDED) {
-  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB)
+  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
   					this.combinedDataWeb[1] = this.combinedDataWeb[1] + 1;
   				else
   					this.combinedDataDesktop[1] = this.combinedDataDesktop[1] + 1;
   				aux[1] = aux[1] + 1;
   			}
   			else if (array[i].campo5.trim() == STATE_TURN.WAITING){
-  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB)
+  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
   					this.combinedDataWeb[2] = this.combinedDataWeb[2] + 1;
   				else
   					this.combinedDataDesktop[2] = this.combinedDataDesktop[2] + 1;
   				aux[2] = aux[2] + 1;
   			}
   			else  if(array[i].campo5.trim() == STATE_TURN.F){
-  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB)
+  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
   					this.combinedDataWeb[3] = this.combinedDataWeb[3] + 1;
   				else
   					this.combinedDataDesktop[3] = this.combinedDataDesktop[3] + 1;
   				aux[3] = aux[3] + 1;
   			}
   			else if(array[i].campo5.trim() == STATE_TURN.FCA){
-  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB)
+  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
   					this.combinedDataWeb[4] = this.combinedDataWeb[4] + 1;
   				else
   					this.combinedDataDesktop[4] = this.combinedDataDesktop[4] + 1;
