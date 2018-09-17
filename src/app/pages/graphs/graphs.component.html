@@ -3,6 +3,7 @@
 	<div class="col-md-1 buttons" > 
 		<buttons></buttons>
     </div>
+    <br>
 	<div class="col-md-11" style="margin-bottom: 50px;"> 
 		<div class="row-md" style="margin-right: 15px">
 			<div class="input-group input-group-sm mb-3" >
@@ -17,26 +18,22 @@
 						<option value=1> Estadisticas de turnos por demora de medicos/pacientes </option>
 						<option value=2> Estadisticas de turnos WEB vs Escritorio </option>
 						<option value=3> Estadisticas de estado de turnos </option>
+						<option value=4> Estadisticas de estado de turnos (Web vs Escritorio)</option>
 					</select>
 				</div>
 
 				
-				<div *ngIf="!isTemp()" >
-					<button type="button" class="btn btn-success" (click)="filter()" style="margin-left: 30px">
-						Visualizar
-					</button>
+				
+				<button type="button" class="btn btn-success" (click)="filter()" style="margin-left: 30px">
+					Visualizar
+				</button>
 
-					<button type="button" class="btn btn-success" (click)="stackBars()" style="margin-left: 30px">
-						Juntar/Separar Barras
-					</button>
+				<button type="button" class="btn btn-success" (click)="stackBars()" style="margin-left: 30px">
+					Juntar/Separar Barras
+				</button>
 
-				</div>
+				
 
-				<div *ngIf="isTemp()">
-					<button type="button" class="btn btn-success" (click)="filterTemp()" style="margin-left: 30px">
-						Visualizar
-					</button>
-				</div>
 
 				<div class="input-group mb-3" style="max-width: 50%">
 					<div class="form-check">
@@ -79,32 +76,7 @@
 			</div>
 
 
-			<div *ngIf="isTemp()">	
-
 				
-				<h5>ESTO ES SOLO UN EJEMPLO</h5>
-				<table class="table table-hover">
-				  <thead>
-				    <tr>
-				      <th>Medico</th>
-				      <th>Horarios ofrecidos</th>
-				      <th>Turnos tomados</th>
-				    </tr>
-				  </thead>
-				  <tbody>
-				    <tr>
-				      <td>doctor1</td>
-				      <td>40</td>
-				      <td>43</td>
-				    </tr>
-				    <tr>
-				      <td>doctor2</td>
-				      <td>22</td>
-				      <td>31</td>
-				    </tr>
-				  </tbody>
-				</table>
-			</div>
 
 			<div *ngIf="isWebVsDesktop()">
 				
@@ -260,6 +232,69 @@
 				</table>
 
 			</div>
+
+			<div *ngIf="isStateCombinedWithWebVsDesktop()"> 
+
+				<button class="btnCustom" (click)= "changeSizeBoolean()"><< Cambiar al otro gráfico >></button>
+
+				<div *ngIf="sizeBoolean" class="row">
+					<div class="col-6" style="color: rgb(197,104,0); font-size: 25px">WEB</div>
+					<div class="col-6">ESCRITORIO</div>
+				</div>
+
+				<div *ngIf="!sizeBoolean" class="row">
+					<div class="col-6">WEB</div>
+					<div class="col-6" style="color: rgb(197,104,0); font-size: 25px">ESCRITORIO</div>
+				</div>
+
+				<div *ngIf="sizeBoolean" class="row">
+					<div class="col-8" >
+						
+						<div style="display: block">
+					      <canvas baseChart
+					              [data]="combinedDataWeb"
+					              [labels]="stateLabels"
+					              [chartType]="pieChartType"
+					              (chartHover)="chartHovered($event)"
+					              (chartClick)="chartClicked($event)"></canvas>
+					    </div></div>
+					<div class="col-4" >
+						
+						<div style="display: block">
+					      <canvas baseChart
+					              [data]="combinedDataDesktop"
+					              [labels]="stateLabels"
+					              [chartType]="pieChartType"
+					              (chartHover)="chartHovered($event)"
+					              (chartClick)="chartClicked($event)"></canvas>
+					    </div></div>
+				</div>
+
+				<div *ngIf="!sizeBoolean" class="row">
+					<div class="col-4" >
+						
+						<div style="display: block">
+					      <canvas baseChart
+					              [data]="combinedDataWeb"
+					              [labels]="stateLabels"
+					              [chartType]="pieChartType"
+					              (chartHover)="chartHovered($event)"
+					              (chartClick)="chartClicked($event)"></canvas>
+					    </div></div>
+					<div class="col-8" >
+						
+						<div style="display: block">
+					      <canvas baseChart
+					              [data]="combinedDataDesktop"
+					              [labels]="stateLabels"
+					              [chartType]="pieChartType"
+					              (chartHover)="chartHovered($event)"
+					              (chartClick)="chartClicked($event)"></canvas>
+					    </div></div>
+				</div>
+			</div>
+
+
 		</div>
 	</div>
 </div>

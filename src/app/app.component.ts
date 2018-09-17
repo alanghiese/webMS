@@ -80,6 +80,8 @@ export class AppComponent implements OnInit{
 
 
 	ngOnInit(){
+		if(window.innerHeight > window.innerWidth)
+    		alert("Para una mejor experiencia, utilizar el celular de forma horizontal");
 
 	}
 
