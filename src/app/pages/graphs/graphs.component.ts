@@ -654,7 +654,7 @@ export class GraphsComponent implements OnInit {
   			}
   			else if(array[i].campo5.trim() == STATE_TURN.FCA){
   				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB)
-  					this.combinedDataWeb[4] = this.combinedDataWeb[4 + 1;
+  					this.combinedDataWeb[4] = this.combinedDataWeb[4] + 1;
   				else
   					this.combinedDataDesktop[4] = this.combinedDataDesktop[4] + 1;
   				aux[4] = aux[4] + 1;
