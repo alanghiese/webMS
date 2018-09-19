@@ -237,15 +237,81 @@
 
 				<button class="btnCustom" (click)= "changeSizeBoolean()"><< Cambiar al otro gráfico >></button>
 
+				<br><br><br>
+
 				<div *ngIf="sizeBoolean" class="row">
-					<div class="col-6" style="color: rgb(197,104,0); font-size: 25px">WEB</div>
-					<div class="col-6">ESCRITORIO</div>
+					<div class="col-6" style="color: rgb(197,104,0); font-size: 25px">
+						WEB (Cantidad de turnos: {{ this.combinedDataWeb[0] + this.combinedDataWeb[1] }})
+					</div>
+					<div class="col-6">
+						ESCRITORIO (Cantidad de turnos: {{ this.combinedDataDesktop[0] + this.combinedDataDesktop[1] }})
+					</div>
 				</div>
 
 				<div *ngIf="!sizeBoolean" class="row">
-					<div class="col-6">WEB</div>
-					<div class="col-6" style="color: rgb(197,104,0); font-size: 25px">ESCRITORIO</div>
+					<div class="col-6">
+						WEB (Cantidad de turnos: {{ this.combinedDataWeb[0] + this.combinedDataWeb[1] }})
+					</div>
+					<div class="col-6" style="color: rgb(197,104,0); font-size: 25px">
+						ESCRITORIO (Cantidad de turnos: {{ this.combinedDataDesktop[0] + this.combinedDataDesktop[1] }})
+					</div>
 				</div>
+
+
+				<p> Porcentaje de atendidos: </p>
+				<div *ngIf="sizeBoolean" class="row">
+					<div class="col-8" >
+						
+						<div style="display: block">
+					      <canvas baseChart
+					              [data]="attendedWeb"
+					              [labels]="attendedLabels"
+					              [chartType]="pieChartType"
+					              [options]="pieChartOptions" 
+					              (chartHover)="chartHovered($event)"
+					              (chartClick)="chartClicked($event)"></canvas>
+					    </div></div>
+					<div class="col-4" >
+						
+						<div style="display: block">
+					      <canvas baseChart
+					              [data]="attendedDesktop"
+					              [labels]="attendedLabels"
+					              [chartType]="pieChartType"
+					              [options]="pieChartOptions" 
+					              (chartHover)="chartHovered($event)"
+					              (chartClick)="chartClicked($event)"></canvas>
+					    </div></div>
+				</div>
+
+				<div *ngIf="!sizeBoolean" class="row">
+					<div class="col-4" >
+						
+						<div style="display: block">
+					      <canvas baseChart
+					              [data]="attendedWeb"
+					              [labels]="attendedLabels"
+					              [chartType]="pieChartType"
+					              [options]="pieChartOptions" 
+					              (chartHover)="chartHovered($event)"
+					              (chartClick)="chartClicked($event)"></canvas>
+					    </div></div>
+					<div class="col-8" >
+						
+						<div style="display: block">
+					      <canvas baseChart
+					              [data]="attendedDesktop"
+					              [labels]="attendedLabels"
+					              [chartType]="pieChartType"
+					              [options]="pieChartOptions" 
+					              (chartHover)="chartHovered($event)"
+					              (chartClick)="chartClicked($event)"></canvas>
+					    </div></div>
+				</div>
+
+				<br>
+
+				<p> Cantidades de pacientes por estado del turno: </p>
 
 				<div *ngIf="sizeBoolean" class="row">
 					<div class="col-8" >
@@ -292,6 +358,10 @@
 					              (chartClick)="chartClicked($event)"></canvas>
 					    </div></div>
 				</div>
+
+
+
+
 			</div>
 
 

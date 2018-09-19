@@ -37,6 +37,8 @@ export class GraphsComponent implements OnInit {
 	private stack = false;
 	private prepareArrays: prepareArrays;
 	private webVSdesktopArr: webVSdesktop[] = [];
+	private attendedWeb: any[] = [];
+	private attendedDesktop: any[] = [];
 	private combinedDataWeb: any[] = [];
 	private combinedDataDesktop: any[] = [];
 
@@ -613,55 +615,110 @@ export class GraphsComponent implements OnInit {
 	}
  
 
+	public pieChartOptions: any = {
+        	
+        	tooltips: {
+            callbacks: {
+                label: function(tooltipItem, data) {
+                	console.log(tooltipItem);
+                	console.log(data);
+                	return data.labels[tooltipItem.index] + data.datasets[0].data[tooltipItem.index]  + '%';
+                    
+
+                }
+            }
+        }
+    };
+
+    
+
+
 	//grafico de torata estado de turnos
 	public stateLabels:string[] = ['Aun no se presentan', 'Atendidos', 'En sala de espera', 'Falto', 'Falto con aviso'];
   	public stateData:number[] = [];
+  	public attendedLabels: string[] = ['Atendidos: ', 'No atendidos: '];
+
+
+  	countInfo(	arraySubTema: string, 
+  				indexAttended: number,
+  				indexCombinedData: number
+  			){
+
+  		if (arraySubTema.toUpperCase() == SUBTOPIC.WEB.toUpperCase()){
+			this.attendedWeb[indexAttended] = this.attendedWeb[indexAttended] + 1;
+			this.combinedDataWeb[indexCombinedData] = this.combinedDataWeb[indexCombinedData] + 1;
+		}
+		else{
+			this.attendedDesktop[indexAttended] = this.attendedDesktop[indexAttended] + 1;
+			this.combinedDataDesktop[indexCombinedData] = this.combinedDataDesktop[indexCombinedData] + 1;
+		}
+  	}
+
 
   	getStatesOfTurns(array: turnosV0[]){
   		this.stateData = [];
-
+  		//0: para  atendidos 1: para no atendidos
+  		this.attendedDesktop = [0,0];
+  		this.attendedWeb = [0,0];
   		this.combinedDataDesktop = [0,0,0,0,0];
-  		this.combinedDataWeb = [0,0,0,0,0];
+		this.combinedDataWeb = [0,0,0,0,0];
+
   		let aux: number[] = [0,0,0,0,0];
   		for (var i = 0; i < array.length; i++) {
   			if (array[i].campo5.trim() == STATE_TURN.MISSING){
-  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
+  				this.countInfo(array[i].subTema,1,0);
+  				/*if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase()){
+  					this.attendedWeb[1] = this.attendedWeb[1] + 1;
   					this.combinedDataWeb[0] = this.combinedDataWeb[0] + 1;
-  				else
+  				}
+  				else{
+  					this.attendedDesktop[1] = this.attendedDesktop[1] + 1;
   					this.combinedDataDesktop[0] = this.combinedDataDesktop[0] + 1;
+  				}*/
   				aux[0] = aux[0] + 1;
   			}
   			else if (array[i].campo5.trim() == STATE_TURN.ATTENDED) {
-  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
-  					this.combinedDataWeb[1] = this.combinedDataWeb[1] + 1;
+  				this.countInfo(array[i].subTema,0,1);
+  				/*if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
+  					this.attendedWeb[0] = this.attendedWeb[0] + 1;
   				else
-  					this.combinedDataDesktop[1] = this.combinedDataDesktop[1] + 1;
+  					this.attendedDesktop[0] = this.attendedDesktop[0] + 1;*/
   				aux[1] = aux[1] + 1;
   			}
   			else if (array[i].campo5.trim() == STATE_TURN.WAITING){
-  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
-  					this.combinedDataWeb[2] = this.combinedDataWeb[2] + 1;
+  				this.countInfo(array[i].subTema,1,2);
+  				/*if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
+  					this.attendedWeb[1] = this.attendedWeb[1] + 1;
   				else
-  					this.combinedDataDesktop[2] = this.combinedDataDesktop[2] + 1;
+  					this.attendedDesktop[1] = this.attendedDesktop[1] + 1;*/
   				aux[2] = aux[2] + 1;
   			}
   			else  if(array[i].campo5.trim() == STATE_TURN.F){
-  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
-  					this.combinedDataWeb[3] = this.combinedDataWeb[3] + 1;
+  				this.countInfo(array[i].subTema,1,3);
+  				/*if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
+  					this.attendedWeb[1] = this.attendedWeb[1] + 1;
   				else
-  					this.combinedDataDesktop[3] = this.combinedDataDesktop[3] + 1;
+  					this.attendedDesktop[1] = this.attendedDesktop[1] + 1;*/
   				aux[3] = aux[3] + 1;
   			}
   			else if(array[i].campo5.trim() == STATE_TURN.FCA){
-  				if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
-  					this.combinedDataWeb[4] = this.combinedDataWeb[4] + 1;
+  				this.countInfo(array[i].subTema,1,4);
+  				/*if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
+  					this.attendedWeb[1] = this.attendedWeb[1] + 1;
   				else
-  					this.combinedDataDesktop[4] = this.combinedDataDesktop[4] + 1;
+  					this.attendedDesktop[1] = this.attendedDesktop[1] + 1;*/
   				aux[4] = aux[4] + 1;
   			}
   			else 
   				console.log(array[i]);
   		}
+
+  		let totalAttDes = this.attendedDesktop[0] + this.attendedDesktop[1];
+  		let totalAttWeb = this.attendedWeb[0] + this.attendedWeb[1];
+  		this.attendedDesktop[0] = ( this.attendedDesktop[0] * 100 / totalAttDes ).toFixed(2);
+  		this.attendedDesktop[1] = ( this.attendedDesktop[1] * 100 / totalAttDes ).toFixed(2);
+  		this.attendedWeb[0] = ( this.attendedWeb[0] * 100 / totalAttWeb ).toFixed(2);
+  		this.attendedWeb[1] = ( this.attendedWeb[1] * 100 / totalAttWeb ).toFixed(2);
   		this.stateData = aux;
   	}
 
