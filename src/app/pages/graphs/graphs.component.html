@@ -60,7 +60,13 @@
 			<br>
 			<span><i><small>Se muestran solo los doctores que tengan turnos cargados</small></i></span>
 			
-			<div *ngIf = "isDelay()" >
+			<div *ngIf = "isDelay()">
+
+				<!-- Expande los turnos del medico seleccionado -->
+				<button class="btn btn-info" [disabled]="isDisableNameButton()" data-toggle="modal" data-target="#turnsInfo">
+					Ver detalle de: {{ nameButton }}
+				</button>
+
 				<div  style="display: block">
 					<canvas baseChart
 					    [datasets]="datasOfTheDoctors"
@@ -73,6 +79,52 @@
 				    </canvas>
 				</div>
 			  
+
+				<!-- Modal  de delays-->
+				<div class="modal fade bd-example-modal-lg" id="turnsInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				  <div class="modal-dialog modal-lg" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title" id="exampleModalLabel">Tunos de: {{ nameButton }} </h5>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				      </div>
+				      <div class="modal-body">
+				        
+						
+						<table class="table table-hover">
+						  <thead>
+						    <tr>
+						      <th>Paciente</th>
+						      <th>Fecha del turno</th>
+						      <th>Hora del turno</th>
+						      <th>Hora de llegada</th>
+						      <th>Hora de atencion</th>
+						    </tr>
+						  </thead>
+						  <tbody style="font-size: 10px">
+						    <tr *ngFor="let data of arrayPatients">
+						      <td> {{ data.nomUsuario }} </td>
+						      <td> {{ data.fecha1 | date: "dd/MM/yyyy"}} </td>
+						      <td> {{ data.campo2 }} </td>
+						      <td> {{ data.campo3 }}</td>
+						      <td> {{ data.campo4 }}</td>
+						    </tr>		
+						  </tbody>
+						</table>
+
+
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+
+
 			</div>
 
 

@@ -5,7 +5,7 @@ import { DbPetitionsComponent } from '../../providers/dbPetitions';
 import { turnosV0, webVSdesktop } from '../../interfaces';
 import { nameAVG } from '../../models/regNameAVG';
 import { prepareArrays } from '../../providers/prepareArrays';
-import { STATE_TURN,SUBTOPIC,PAGES } from '../../constants';
+import { STATE_TURN,SUBTOPIC,PAGES,ANYBODY } from '../../constants';
 
 
 
@@ -41,6 +41,10 @@ export class GraphsComponent implements OnInit {
 	private attendedDesktop: any[] = [];
 	private combinedDataWeb: any[] = [];
 	private combinedDataDesktop: any[] = [];
+	private arraySol: turnosV0[] = []; //array para los datos de los delays
+	private arrayPatients: turnosV0[] = []; //para el modal de los delays
+
+	private nameButton = "Nadie";
 
 	
 	constructor(
@@ -216,10 +220,10 @@ export class GraphsComponent implements OnInit {
 			backDelays = this.delays;
 		
 		let turnsAttended =  this.filterNewTurns(this.turnsCompleteds);
-    	let arraySol = this.appComponent.filter.filter(turnsAttended);
+    	this.arraySol = this.appComponent.filter.filter(turnsAttended);
 
-		this.prepareArrays.prepareArrayDoctors(arraySol);
-		this.prepareArrays.doctorsAverage(arraySol);
+		this.prepareArrays.prepareArrayDoctors(this.arraySol);
+		this.prepareArrays.doctorsAverage(this.arraySol);
 	    this.delays = this.prepareArrays.getDelays();
 
 		if (this.keepData)
@@ -260,11 +264,11 @@ export class GraphsComponent implements OnInit {
 
 
 		if (this.keepData){
-			this.totalDelays = this.totalDelays + arraySol.length;
+			this.totalDelays = this.totalDelays + this.arraySol.length;
 			this.totalOthers = this.totalOthers + turnsCompletedsWithStateFilter.length;
 		}
 		else{
-			this.totalDelays = arraySol.length;
+			this.totalDelays = this.arraySol.length;
 			this.totalOthers = newTurnsFilter.length;
 		}
   	}
@@ -607,6 +611,16 @@ export class GraphsComponent implements OnInit {
 
 	// events
 	public chartClicked(e:any):void {
+		this.arrayPatients = []
+		if (e.active.length>0){
+			this.nameButton=e.active[0]._model.label;
+			for (var i = 0; i < this.arraySol.length; ++i) {
+				if (this.arraySol[i].campo1.trim().toUpperCase() == this.nameButton.trim().toUpperCase())
+					this.arrayPatients.push(this.arraySol[i]);
+			}
+		}
+		else
+			this.nameButton = ANYBODY;
 		console.log(e);
 	}
 
@@ -767,6 +781,10 @@ export class GraphsComponent implements OnInit {
 
 	isStateCombinedWithWebVsDesktop():boolean{
 		return this.graphtype == '4';
+	}
+
+	isDisableNameButton():boolean{
+		return this.nameButton == ANYBODY;
 	}
 
 }

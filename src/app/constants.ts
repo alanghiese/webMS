@@ -29,6 +29,8 @@ export const STATE_TURN = {
         FCA: 'F CA'
 };
 
+export const ANYBODY = "Nadie";
+
 export const NO_COVERAGE = 'SIN COBERTURA';
 
 export const ANY = "Ninguno";
