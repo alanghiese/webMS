@@ -60,12 +60,15 @@
 			<br>
 			<span><i><small>Se muestran solo los doctores que tengan turnos cargados</small></i></span>
 			
+			<br>
+			<!-- Expande los turnos del medico seleccionado -->
+			<button class="btn btn-info" [disabled]="isDisableNameButton()" data-toggle="modal" data-target="#turnsInfo">
+				Ver detalle de: {{ nameButton }}
+			</button>
+			
 			<div *ngIf = "isDelay()">
 
-				<!-- Expande los turnos del medico seleccionado -->
-				<button class="btn btn-info" [disabled]="isDisableNameButton()" data-toggle="modal" data-target="#turnsInfo">
-					Ver detalle de: {{ nameButton }}
-				</button>
+				
 
 				<div  style="display: block">
 					<canvas baseChart
@@ -74,13 +77,18 @@
 					    [options]="optionsDelays"
 					    [legend]="barChartLegend"
 					    [chartType]="barChartType"
-					    (chartHover)="chartHovered($event)"
 					    (chartClick)="chartClicked($event)">
 				    </canvas>
 				</div>
 			  
 
-				<!-- Modal  de delays-->
+				
+
+
+
+			</div>
+
+			<!-- Modal  de delays y webVSdesktop-->
 				<div class="modal fade bd-example-modal-lg" id="turnsInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 				  <div class="modal-dialog modal-lg" role="document">
 				    <div class="modal-content">
@@ -122,15 +130,11 @@
 				    </div>
 				  </div>
 				</div>
-
-
-
-			</div>
-
-
 				
 
 			<div *ngIf="isWebVsDesktop()">
+
+				
 				
 				<div  style="display: block">
 					<canvas baseChart
@@ -139,7 +143,6 @@
 					    [options]="optionsTurns"
 					    [legend]="barChartLegend"
 					    [chartType]="barChartType"
-					    (chartHover)="chartHovered($event)"
 					    (chartClick)="chartClicked($event)">
 				    </canvas>
 				</div>
@@ -188,11 +191,10 @@
 					      <canvas baseChart
 					              [data]="pieChartData"
 					              [labels]="pieChartLabels"
-					              [chartType]="pieChartType"
-					              (chartHover)="chartHovered($event)"
-					              (chartClick)="chartClicked($event)"></canvas>
+					              [chartType]="pieChartType"></canvas>
 					    </div>
-
+<!-- 
+					              (chartClick)="chartClicked($event)"s -->
 
 				      </div>
 				      <div class="modal-footer">
@@ -256,7 +258,6 @@
 			              [data]="stateData"
 			              [labels]="stateLabels"
 			              [chartType]="pieChartType"
-			              (chartHover)="chartHovered($event)"
 			              (chartClick)="chartClicked($event)"></canvas>
 			    </div>
 
@@ -320,7 +321,6 @@
 					              [labels]="attendedLabels"
 					              [chartType]="pieChartType"
 					              [options]="pieChartOptions" 
-					              (chartHover)="chartHovered($event)"
 					              (chartClick)="chartClicked($event)"></canvas>
 					    </div></div>
 					<div class="col-4" >
@@ -331,7 +331,6 @@
 					              [labels]="attendedLabels"
 					              [chartType]="pieChartType"
 					              [options]="pieChartOptions" 
-					              (chartHover)="chartHovered($event)"
 					              (chartClick)="chartClicked($event)"></canvas>
 					    </div></div>
 				</div>
@@ -345,7 +344,6 @@
 					              [labels]="attendedLabels"
 					              [chartType]="pieChartType"
 					              [options]="pieChartOptions" 
-					              (chartHover)="chartHovered($event)"
 					              (chartClick)="chartClicked($event)"></canvas>
 					    </div></div>
 					<div class="col-8" >
@@ -356,7 +354,6 @@
 					              [labels]="attendedLabels"
 					              [chartType]="pieChartType"
 					              [options]="pieChartOptions" 
-					              (chartHover)="chartHovered($event)"
 					              (chartClick)="chartClicked($event)"></canvas>
 					    </div></div>
 				</div>
@@ -373,7 +370,6 @@
 					              [data]="combinedDataWeb"
 					              [labels]="stateLabels"
 					              [chartType]="pieChartType"
-					              (chartHover)="chartHovered($event)"
 					              (chartClick)="chartClicked($event)"></canvas>
 					    </div></div>
 					<div class="col-4" >
@@ -383,7 +379,6 @@
 					              [data]="combinedDataDesktop"
 					              [labels]="stateLabels"
 					              [chartType]="pieChartType"
-					              (chartHover)="chartHovered($event)"
 					              (chartClick)="chartClicked($event)"></canvas>
 					    </div></div>
 				</div>
@@ -396,7 +391,6 @@
 					              [data]="combinedDataWeb"
 					              [labels]="stateLabels"
 					              [chartType]="pieChartType"
-					              (chartHover)="chartHovered($event)"
 					              (chartClick)="chartClicked($event)"></canvas>
 					    </div></div>
 					<div class="col-8" >
@@ -406,7 +400,6 @@
 					              [data]="combinedDataDesktop"
 					              [labels]="stateLabels"
 					              [chartType]="pieChartType"
-					              (chartHover)="chartHovered($event)"
 					              (chartClick)="chartClicked($event)"></canvas>
 					    </div></div>
 				</div>

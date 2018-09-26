@@ -612,11 +612,31 @@ export class GraphsComponent implements OnInit {
 	// events
 	public chartClicked(e:any):void {
 		this.arrayPatients = []
-		if (e.active.length>0){
+		if (e.active != {}){
 			this.nameButton=e.active[0]._model.label;
-			for (var i = 0; i < this.arraySol.length; ++i) {
-				if (this.arraySol[i].campo1.trim().toUpperCase() == this.nameButton.trim().toUpperCase())
-					this.arrayPatients.push(this.arraySol[i]);
+			if (this.isDelay())
+				for (var i = 0; i < this.arraySol.length; ++i) {
+					if (this.arraySol[i].campo1.trim().toUpperCase() == this.nameButton.trim().toUpperCase())
+						this.arrayPatients.push(this.arraySol[i]);
+				}
+			else if (this.isWebVsDesktop()){
+				for (var i = 0; i < this.turnsCompleteds.length; ++i) {
+					if (this.turnsCompleteds[i].campo1.trim().toUpperCase() == this.nameButton.trim().toUpperCase())
+						this.arrayPatients.push(this.turnsCompleteds[i]);
+				}
+			}
+			else {
+				this.nameButton=(e.active[0]._index == 0?"Atendidos":"No atendidos");
+				if(e.active[0]._index == 0) //atendidos
+					for (var i = 0; i < this.turnsCompleteds.length; ++i) {
+						if (this.turnsCompleteds[i].campo5.trim().toUpperCase() == STATE_TURN.ATTENDED.trim().toUpperCase())
+							this.arrayPatients.push(this.turnsCompleteds[i]);
+					}
+				else
+					for (var i = 0; i < this.turnsCompleteds.length; ++i) {
+						if (this.turnsCompleteds[i].campo5.trim().toUpperCase() != STATE_TURN.ATTENDED.trim().toUpperCase())
+							this.arrayPatients.push(this.turnsCompleteds[i]);
+					}
 			}
 		}
 		else
@@ -624,8 +644,12 @@ export class GraphsComponent implements OnInit {
 		console.log(e);
 	}
 
-	public chartHovered(e:any):void {
+	/*public chartHovered(e:any):void {
 		console.log(e);
+	}*/
+
+	nothing(){
+		console.log("nothing");
 	}
  
 
@@ -634,8 +658,6 @@ export class GraphsComponent implements OnInit {
         	tooltips: {
             callbacks: {
                 label: function(tooltipItem, data) {
-                	console.log(tooltipItem);
-                	console.log(data);
                 	return data.labels[tooltipItem.index] + data.datasets[0].data[tooltipItem.index]  + '%';
                     
 
@@ -749,6 +771,7 @@ export class GraphsComponent implements OnInit {
 
 
 	onChangeType(){
+		this.nameButton = ANYBODY;
 		if (this.isDelay())
 			this.appComponent.stateFilter = false;
 		else 
@@ -759,6 +782,7 @@ export class GraphsComponent implements OnInit {
 	//funcion y variable para el cambio de tamaño en Estadisticas de estado de turnos (Web vs Escritorio)
 	private sizeBoolean:boolean = true;
 	changeSizeBoolean(){
+		this.nameButton = ANYBODY;
 		this.sizeBoolean = !this.sizeBoolean;
 	}
 
@@ -787,4 +811,7 @@ export class GraphsComponent implements OnInit {
 		return this.nameButton == ANYBODY;
 	}
 
+	istrue(){
+		return true;
+	}
 }
