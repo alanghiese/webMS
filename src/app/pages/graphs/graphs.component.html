@@ -24,11 +24,11 @@
 
 				
 				
-				<button type="button" class="btn btn-success" (click)="filter()" style="margin-left: 30px">
+				<button type="button" class="btn btnCustom" (click)="filter()" style="margin-left: 30px">
 					Visualizar
 				</button>
 
-				<button type="button" class="btn btn-success" (click)="stackBars()" style="margin-left: 30px">
+				<button *ngIf="isDelay() || isWebVsDesktop()" type="button" class="btn  btnCustom" (click)="stackBars()" style="margin-left: 30px">
 					Juntar/Separar Barras
 				</button>
 
@@ -61,8 +61,9 @@
 			<span><i><small>Se muestran solo los doctores que tengan turnos cargados</small></i></span>
 			
 			<br>
-			<!-- Expande los turnos del medico seleccionado -->
-			<button class="btn btn-info" [disabled]="isDisableNameButton()" data-toggle="modal" data-target="#turnsInfo">
+			<!-- [disabled]="isDisableNameButton()" -->
+			<!-- Expande los turnos del medico seleccionado pero esta oculto porque es un itermediario nomas -->
+			<button class="btn btnCustom"  id="btnInfo" data-toggle="modal" data-target="#turnsInfo" >
 				Ver detalle de: {{ nameButton }}
 			</button>
 			
@@ -94,6 +95,13 @@
 				    <div class="modal-content">
 				      <div class="modal-header">
 				        <h5 class="modal-title" id="exampleModalLabel">Tunos de: {{ nameButton }} </h5>
+				        <button class="none" (click)="exportAsXLSX()" style="max-width: 45px; margin-left: 15px" title="Descargar tabla">
+							<img src="/MediwareHub/webMS/assets/excel.png" title="Descargar .xlsx"
+							style="	max-height: 35px; 
+									max-width: 35px;
+									margin-left:-10px; 
+									margin-top: -3px;">
+						</button>
 				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				          <span aria-hidden="true">&times;</span>
 				        </button>
@@ -210,7 +218,7 @@
 					<div>
 						<h5>Tabla de valores totales WEB vs ESCRITORIO</h5> 
 					</div>
-					<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModal" style="margin-left: 15px" >
+					<button type="button" class="btns btn-sm btnCustom" data-toggle="modal" data-target="#exampleModal" style="margin-left: 15px" >
 						Ver grafico de turnos totales
 					</button>
 					
@@ -288,6 +296,7 @@
 
 			<div *ngIf="isStateCombinedWithWebVsDesktop()"> 
 
+				<br>
 				<button class="btnCustom" (click)= "changeSizeBoolean()"><< Cambiar al otro gráfico >></button>
 
 				<br><br><br>
@@ -321,7 +330,7 @@
 					              [labels]="attendedLabels"
 					              [chartType]="pieChartType"
 					              [options]="pieChartOptions" 
-					              (chartClick)="chartClicked($event)"></canvas>
+					              (chartClick)="chartClickedCombined($event,'MediWeb')"></canvas>
 					    </div></div>
 					<div class="col-4" >
 						
@@ -331,7 +340,7 @@
 					              [labels]="attendedLabels"
 					              [chartType]="pieChartType"
 					              [options]="pieChartOptions" 
-					              (chartClick)="chartClicked($event)"></canvas>
+					              (chartClick)="chartClickedCombined($event,'escritorio')"></canvas>
 					    </div></div>
 				</div>
 
@@ -344,7 +353,7 @@
 					              [labels]="attendedLabels"
 					              [chartType]="pieChartType"
 					              [options]="pieChartOptions" 
-					              (chartClick)="chartClicked($event)"></canvas>
+					              (chartClick)="chartClickedCombined($event,'MediWeb')"></canvas>
 					    </div></div>
 					<div class="col-8" >
 						
@@ -354,12 +363,13 @@
 					              [labels]="attendedLabels"
 					              [chartType]="pieChartType"
 					              [options]="pieChartOptions" 
-					              (chartClick)="chartClicked($event)"></canvas>
+					              (chartClick)="chartClickedCombined($event,'escritorio')"></canvas>
 					    </div></div>
 				</div>
 
 				<br>
 
+				<!-- esto creo que es igual a estado de turnos
 				<p> Cantidades de pacientes por estado del turno: </p>
 
 				<div *ngIf="sizeBoolean" class="row">
@@ -370,7 +380,7 @@
 					              [data]="combinedDataWeb"
 					              [labels]="stateLabels"
 					              [chartType]="pieChartType"
-					              (chartClick)="chartClicked($event)"></canvas>
+					              (chartClick)="chartClickedCombined($event,'MediWeb')"></canvas>
 					    </div></div>
 					<div class="col-4" >
 						
@@ -379,7 +389,7 @@
 					              [data]="combinedDataDesktop"
 					              [labels]="stateLabels"
 					              [chartType]="pieChartType"
-					              (chartClick)="chartClicked($event)"></canvas>
+					              (chartClick)="chartClickedCombined($event,'MediWeb')"></canvas>
 					    </div></div>
 				</div>
 
@@ -391,7 +401,7 @@
 					              [data]="combinedDataWeb"
 					              [labels]="stateLabels"
 					              [chartType]="pieChartType"
-					              (chartClick)="chartClicked($event)"></canvas>
+					              (chartClick)="chartClickedCombined($event,'escritorio')"></canvas>
 					    </div></div>
 					<div class="col-8" >
 						
@@ -400,9 +410,9 @@
 					              [data]="combinedDataDesktop"
 					              [labels]="stateLabels"
 					              [chartType]="pieChartType"
-					              (chartClick)="chartClicked($event)"></canvas>
+					              (chartClick)="chartClickedCombined($event,'escritorio')"></canvas>
 					    </div></div>
-				</div>
+				</div> -->
 
 
 

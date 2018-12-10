@@ -6,11 +6,7 @@ import { turnosV0, webVSdesktop } from '../../interfaces';
 import { nameAVG } from '../../models/regNameAVG';
 import { prepareArrays } from '../../providers/prepareArrays';
 import { STATE_TURN,SUBTOPIC,PAGES,ANYBODY } from '../../constants';
-
-
-
-
-
+import { ExcelService } from '../../providers/excel.services';
 import { UserCredentials } from '../../interfaces';
 
 const now = new Date();
@@ -18,19 +14,21 @@ const now = new Date();
 @Component({
   selector: 'graphs',
   templateUrl: './graphs.component.html',
-  styleUrls: ['./graphs.component.css']
+  styleUrls: ['./graphs.component.css'],
+  providers: [ ExcelService ]
 })
 export class GraphsComponent implements OnInit {
 
 
 	private graphtype: string = '1';
 	private turnsCompleteds: turnosV0[] = [];
+	private newTurnsFilter: turnosV0[] = [];
 	private delays: nameAVG[] = [];
 	private delaysWithStateFilter: nameAVG[] = [];
 	private keepData: boolean = false;
 	private backSince = null;
 	private backUntil = null;
-	private preparingTurns: boolean = false;
+	private preparingTurns: boolean = false;		
 	private totalDelays: number = 0;
 	private totalOthers: number = 0;
 	private showTableB: boolean = false;
@@ -51,13 +49,14 @@ export class GraphsComponent implements OnInit {
 		private _route: ActivatedRoute,
 		private _router: Router,
 		private appComponent: AppComponent,
-		private dbPetitions: DbPetitionsComponent
+		private dbPetitions: DbPetitionsComponent,
+		private excelService:ExcelService
 	){}
 
 	ngOnInit() {
-		this.appComponent.setNotFilter(false);
-		
-		// let backURL = this._router.url;
+		// this.appComponent.setNotFilter(false);
+    this.appComponent.filterVisibility('visible');
+		let backURL = this._router.url;
 		// localStorage.setItem('url', backURL);
 		
 		clearTimeout(this.appComponent.interval);
@@ -109,8 +108,8 @@ export class GraphsComponent implements OnInit {
 			to.setMilliseconds(0);
 			to.setMinutes(0);
 
-        	// this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
-        	this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
+        	this.dbPetitions.getStatistics(from,to).subscribe((resp)=>{
+        	// this.dbPetitions.getStatic().subscribe((resp)=>{ //sacar si uso la peticion en tiempo real
         		if (resp){
         			// console.log(resp);
         			this.prepareArrays.prepareArray(resp);
@@ -156,7 +155,28 @@ export class GraphsComponent implements OnInit {
 		return !this.preparingTurns;
 	}
 	
+	exportAsXLSX():void {
+		
+		let arrayExcel = [{
+			nombre_paciente: '',
+			fecha_turno: '',
+			hora_turno: '',
+			hora_llegada: '',
+			hora_atencion: ''
+		}];
 
+
+		for (var i = 0; i < this.arrayPatients.length; i++) {
+			arrayExcel[i].nombre_paciente = this.arrayPatients[i].nomUsuario;
+			arrayExcel[i].fecha_turno = this.arrayPatients[i].fecha1;
+			arrayExcel[i].hora_turno = this.arrayPatients[i].campo2;
+			arrayExcel[i].hora_llegada = this.arrayPatients[i].campo3;
+			arrayExcel[i].hora_atencion = this.arrayPatients[i].campo4;
+
+		}
+
+		this.excelService.exportAsExcelFile(arrayExcel, 'Turnos de pacientes');
+	}
 
 
 	hideOrShowTable(){
@@ -237,15 +257,14 @@ export class GraphsComponent implements OnInit {
 
 
 		let backDelaysState = this.delaysWithStateFilter;
-
 		let turnsCompletedsWithStateFilter = this.appComponent.filter.filterState(this.turnsCompleteds);
-		let newTurnsFilter = this.appComponent.filter.filter(turnsCompletedsWithStateFilter);
+		this.newTurnsFilter = this.appComponent.filter.filter(turnsCompletedsWithStateFilter);
 
-		this.prepareArrays.prepareArrayDoctors(newTurnsFilter);
-		this.prepareArrays.doctorsAverage(newTurnsFilter);
+		this.prepareArrays.prepareArrayDoctors(this.newTurnsFilter);
+		this.prepareArrays.doctorsAverage(this.newTurnsFilter);
 	    this.delaysWithStateFilter = this.prepareArrays.getDelays();
 
-	    this.webVSdesktopArr = this.prepareArrays.onlyCountWebDesktopTurns(newTurnsFilter);
+	    this.webVSdesktopArr = this.prepareArrays.onlyCountWebDesktopTurns(this.newTurnsFilter);
 
 	    if (this.keepData)
 			for (var i = 0; i < backDelaysState.length; i++) {
@@ -255,7 +274,7 @@ export class GraphsComponent implements OnInit {
 
 	    
 		this.prepareGraphicTurns(this.delaysWithStateFilter);
-		this.getStatesOfTurns(newTurnsFilter);
+		this.getStatesOfTurns(this.newTurnsFilter);
 
 
 
@@ -269,7 +288,7 @@ export class GraphsComponent implements OnInit {
 		}
 		else{
 			this.totalDelays = this.arraySol.length;
-			this.totalOthers = newTurnsFilter.length;
+			this.totalOthers = this.newTurnsFilter.length;
 		}
   	}
 
@@ -609,11 +628,36 @@ export class GraphsComponent implements OnInit {
 
 	}
 
+	public chartClickedCombined(e:any,wORd:any){
+		this.arrayPatients = []
+		if (e.active != {} && e.active.length > 0){
+			this.nameButton=e.active[0]._model.label;
+			this.nameButton=(e.active[0]._index == 0?"Atendidos":"No atendidos");
+			if(e.active[0]._index == 0) //atendidos
+				for (var i = 0; i < this.newTurnsFilter.length; ++i) {
+					if (this.newTurnsFilter[i].campo5.trim().toUpperCase() == STATE_TURN.ATTENDED.trim().toUpperCase()
+						&& this.newTurnsFilter[i].subTema.trim() == wORd.trim())
+						this.arrayPatients.push(this.newTurnsFilter[i]);
+				}
+			else
+				for (var i = 0; i < this.newTurnsFilter.length; ++i) {
+					if (this.newTurnsFilter[i].campo5.trim().toUpperCase() != STATE_TURN.ATTENDED.trim().toUpperCase()
+						&& this.newTurnsFilter[i].subTema.trim() == wORd.trim())
+						this.arrayPatients.push(this.newTurnsFilter[i]);
+				}
+			document.getElementById("btnInfo").click();
+		}
+		else
+			this.nameButton = ANYBODY;
+		console.log(e);
+	}
+
 	// events
 	public chartClicked(e:any):void {
 		this.arrayPatients = []
-		if (e.active != {}){
+		if (e.active != {} && e.active.length > 0){
 			this.nameButton=e.active[0]._model.label;
+			
 			if (this.isDelay())
 				for (var i = 0; i < this.arraySol.length; ++i) {
 					if (this.arraySol[i].campo1.trim().toUpperCase() == this.nameButton.trim().toUpperCase())
@@ -625,19 +669,59 @@ export class GraphsComponent implements OnInit {
 						this.arrayPatients.push(this.turnsCompleteds[i]);
 				}
 			}
-			else {
-				this.nameButton=(e.active[0]._index == 0?"Atendidos":"No atendidos");
-				if(e.active[0]._index == 0) //atendidos
-					for (var i = 0; i < this.turnsCompleteds.length; ++i) {
-						if (this.turnsCompleteds[i].campo5.trim().toUpperCase() == STATE_TURN.ATTENDED.trim().toUpperCase())
-							this.arrayPatients.push(this.turnsCompleteds[i]);
+			// else if(this.isStateCombinedWithWebVsDesktop()){
+				// this.nameButton=(e.active[0]._index == 0?"Atendidos":"No atendidos");
+				// if(e.active[0]._index == 0) //atendidos
+				// 	for (var i = 0; i < this.turnsCompleteds.length; ++i) {
+				// 		if (this.turnsCompleteds[i].campo5.trim().toUpperCase() == STATE_TURN.ATTENDED.trim().toUpperCase())
+				// 			this.arrayPatients.push(this.turnsCompleteds[i]);
+				// 	}
+				// else
+				// 	for (var i = 0; i < this.turnsCompleteds.length; ++i) {
+				// 		if (this.turnsCompleteds[i].campo5.trim().toUpperCase() != STATE_TURN.ATTENDED.trim().toUpperCase())
+				// 			this.arrayPatients.push(this.turnsCompleteds[i]);
+				// 	}
+			// }
+			else
+				{	
+					if(e.active[0]._index == 0){
+						this.nameButton = "Aun no se presentan";
+						for (var i = 0; i < this.newTurnsFilter.length; ++i) {
+							if (this.newTurnsFilter[i].campo5.trim().toUpperCase() == STATE_TURN.MISSING.trim().toUpperCase())
+								this.arrayPatients.push(this.newTurnsFilter[i]);
+						}
 					}
-				else
-					for (var i = 0; i < this.turnsCompleteds.length; ++i) {
-						if (this.turnsCompleteds[i].campo5.trim().toUpperCase() != STATE_TURN.ATTENDED.trim().toUpperCase())
-							this.arrayPatients.push(this.turnsCompleteds[i]);
+					else if(e.active[0]._index == 1){
+						this.nameButton = "Atendidos";
+						for (var i = 0; i < this.newTurnsFilter.length; ++i) {
+							if (this.newTurnsFilter[i].campo5.trim().toUpperCase() == STATE_TURN.ATTENDED.trim().toUpperCase())
+								this.arrayPatients.push(this.newTurnsFilter[i]);
+						}
 					}
-			}
+					else if(e.active[0]._index == 2){
+						this.nameButton = "En sala de espera";
+						for (var i = 0; i < this.newTurnsFilter.length; ++i) {
+							if (this.newTurnsFilter[i].campo5.trim().toUpperCase() == STATE_TURN.WAITING.trim().toUpperCase())
+								this.arrayPatients.push(this.newTurnsFilter[i]);
+						}
+					}
+					else if(e.active[0]._index == 3){
+						this.nameButton = "Falto";
+						for (var i = 0; i < this.newTurnsFilter.length; ++i) {
+							if (this.newTurnsFilter[i].campo5.trim().toUpperCase() == STATE_TURN.F.trim().toUpperCase())
+								this.arrayPatients.push(this.newTurnsFilter[i]);
+						}
+					}
+					else if(e.active[0]._index == 4)	{
+						this.nameButton = "Falto con aviso";
+						for (var i = 0; i < this.newTurnsFilter.length; ++i) {
+							if (this.newTurnsFilter[i].campo5.trim().toUpperCase() == STATE_TURN.FCA.trim().toUpperCase())
+								this.arrayPatients.push(this.newTurnsFilter[i]);
+						}
+					}
+				}
+				
+				document.getElementById("btnInfo").click();
 		}
 		else
 			this.nameButton = ANYBODY;
@@ -669,8 +753,8 @@ export class GraphsComponent implements OnInit {
     
 
 
-	//grafico de torata estado de turnos
-	public stateLabels:string[] = ['Aun no se presentan', 'Atendidos', 'En sala de espera', 'Falto', 'Falto con aviso'];
+	//grafico de torta estado de turnos
+	public stateLabels:string[] = ['Aun no se presentan', 'Atendidos', 'En sala de espera', 'Falto', 'Falto con aviso', 'En el consultorio'];
   	public stateData:number[] = [];
   	public attendedLabels: string[] = ['Atendidos: ', 'No atendidos: '];
 
@@ -696,54 +780,34 @@ export class GraphsComponent implements OnInit {
   		//0: para  atendidos 1: para no atendidos
   		this.attendedDesktop = [0,0];
   		this.attendedWeb = [0,0];
-  		this.combinedDataDesktop = [0,0,0,0,0];
-		this.combinedDataWeb = [0,0,0,0,0];
+  		this.combinedDataDesktop = [0,0,0,0,0,0];
+		this.combinedDataWeb = [0,0,0,0,0,0];
 
-  		let aux: number[] = [0,0,0,0,0];
+  		let aux: number[] = [0,0,0,0,0,0];
   		for (var i = 0; i < array.length; i++) {
   			if (array[i].campo5.trim() == STATE_TURN.MISSING){
   				this.countInfo(array[i].subTema,1,0);
-  				/*if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase()){
-  					this.attendedWeb[1] = this.attendedWeb[1] + 1;
-  					this.combinedDataWeb[0] = this.combinedDataWeb[0] + 1;
-  				}
-  				else{
-  					this.attendedDesktop[1] = this.attendedDesktop[1] + 1;
-  					this.combinedDataDesktop[0] = this.combinedDataDesktop[0] + 1;
-  				}*/
   				aux[0] = aux[0] + 1;
   			}
   			else if (array[i].campo5.trim() == STATE_TURN.ATTENDED) {
   				this.countInfo(array[i].subTema,0,1);
-  				/*if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
-  					this.attendedWeb[0] = this.attendedWeb[0] + 1;
-  				else
-  					this.attendedDesktop[0] = this.attendedDesktop[0] + 1;*/
   				aux[1] = aux[1] + 1;
   			}
   			else if (array[i].campo5.trim() == STATE_TURN.WAITING){
   				this.countInfo(array[i].subTema,1,2);
-  				/*if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
-  					this.attendedWeb[1] = this.attendedWeb[1] + 1;
-  				else
-  					this.attendedDesktop[1] = this.attendedDesktop[1] + 1;*/
   				aux[2] = aux[2] + 1;
   			}
   			else  if(array[i].campo5.trim() == STATE_TURN.F){
   				this.countInfo(array[i].subTema,1,3);
-  				/*if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
-  					this.attendedWeb[1] = this.attendedWeb[1] + 1;
-  				else
-  					this.attendedDesktop[1] = this.attendedDesktop[1] + 1;*/
   				aux[3] = aux[3] + 1;
   			}
   			else if(array[i].campo5.trim() == STATE_TURN.FCA){
   				this.countInfo(array[i].subTema,1,4);
-  				/*if (array[i].subTema.toUpperCase()== SUBTOPIC.WEB.toUpperCase())
-  					this.attendedWeb[1] = this.attendedWeb[1] + 1;
-  				else
-  					this.attendedDesktop[1] = this.attendedDesktop[1] + 1;*/
   				aux[4] = aux[4] + 1;
+  			}
+  			else if (array[i].campo5.trim() == STATE_TURN.C){
+  				this.countInfo(array[i].subTema,1,5);
+  				aux[5] = aux[5] + 1;
   			}
   			else 
   				console.log(array[i]);

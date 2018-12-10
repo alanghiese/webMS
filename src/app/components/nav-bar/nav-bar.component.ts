@@ -3,6 +3,7 @@ import { AppComponent } from '../../app.component';
 import { DbPetitionsComponent } from '../../providers/dbPetitions';
 import { Router } from '@angular/router';
 import { PAGES } from '../../constants';
+import { Filter } from '../../models/filter'
 
 @Component({
   selector: 'navBar',
@@ -61,7 +62,30 @@ export class NavBarComponent implements OnInit {
             }
             else {
               alert ('cambiado con exito a: ' + value);
-              localStorage.setItem('reload','true');
+              // this.user = this._appComponent.getCurrentClient().nombreFuente;
+              console.log(r);
+              this.user = c;
+              //NUEVO
+              let doctors: any[];
+              let services: any[];
+              let coverages: any[];
+              doctors = dbpet.data.medicos;
+              services = dbpet.data.servicios;
+              coverages = dbpet.data.coberturas;
+              this._appComponent.setDoctors(doctors);
+              this._appComponent.setServices(services);
+              this._appComponent.setCoverages(coverages);
+              let client: any[];
+              client = dbpet.otracosa.fuenteDatos;
+              this._appComponent.setClients(client);
+              //FIN DE LO NUEVO
+
+              //location.reload();//recarga la pagina
+              // let url = this._router.url.substr(1,this._router.url.length);
+              // this._appComponent.filter = new Filter('','','','','','Todos','','');
+              this._router.navigate([PAGES.HOME]);
+              document.getElementById('usr').innerHTML = '<strong>Conectado a </strong>' + this.user;
+              // localStorage.setItem('reload','true');
             }
             localStorage.setItem('loading','false');
 
@@ -73,7 +97,7 @@ export class NavBarComponent implements OnInit {
                 this._router.navigate([PAGES.LOGIN]);
         });
   }
-
+ 
   clientsExists(){
     
     if (this._appComponent.getClients()){

@@ -12,8 +12,9 @@ export class Error404Component implements OnInit {
   constructor(private appComponent: AppComponent) { }
 
   ngOnInit() {
-  	this.appComponent.setNotFilter(true);
-  	this.appComponent.stateFilter = false;
+  	// this.appComponent.setNotFilter(true);
+    this.appComponent.filterVisibility('hidden');
+  	// this.appComponent.stateFilter = false;
   }
 
 }

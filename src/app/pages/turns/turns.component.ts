@@ -29,7 +29,6 @@ const valuesGroupBy={
 export class TurnsComponent implements OnInit {
 
 	private valueGroupBy: any = "Cobertura";
-
 	private turns: turnosV0[] = [];
 	private allCoverages:string[] = [];//lista de nombres repetidos de coberturas
 	private allServices:string[] = [];//lista de nombres repetidos de servicios
@@ -54,8 +53,9 @@ export class TurnsComponent implements OnInit {
 		){}
 
 	ngOnInit() {
-		this.appComponent.setNotFilter(false);
-    	this.appComponent.stateFilter = true;
+    this.appComponent.filterVisibility('visible	');
+		// this.appComponent.setNotFilter(false);
+    	// this.appComponent.stateFilter = true;
     	
 		// let backURL = this._router.url;
 		// localStorage.setItem('url', backURL);

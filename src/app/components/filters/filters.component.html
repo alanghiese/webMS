@@ -1,11 +1,15 @@
 <br>
 <div class="row m-0">
 	<h4>Filtros</h4>
-	<button *ngIf="showMe()" (click)="hide()" class="btn" style="margin-left: 10px">Ocultar Filtros</button>
-	<button *ngIf="!showMe()" (click)="hide()" class="btn" style="margin-left: 10px">Mostrar Filtros</button>
+	<!-- <button *ngIf="showMe()" (click)="hide()" class="btn" style="margin-left: 10px"
+	 placement="bottom" ngbPopover="Ocultar filtros" triggers="mouseenter:mouseleave" popoverClass="popovertop">Ocultar Filtros</button>
+	<button *ngIf="!showMe()" (click)="show()" class="btn" style="margin-left: 10px" 
+	 placement="bottom" ngbPopover="Mostrar filtros" triggers="mouseenter:mouseleave" popoverClass="popovertop" >Mostrar Filtros</button> -->
 </div>
 <hr>
-<div class="row-md"  *ngIf="needReload() && showMe()">
+
+<!--  && showMe() -->
+<div class="row-md"  *ngIf="needReload()" id="div" >
 
 	<!-- fila de arriba -->
 	<div class="input-group input-group-sm mb-3" >
@@ -97,6 +101,7 @@
 				<option>En sala de espera</option>
 				<option>Falto</option>
 				<option>Falto con aviso</option>
+				<option>En el consultorio</option>
 			</select>
 		</div>
 		

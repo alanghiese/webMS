@@ -6,8 +6,10 @@ import { DbPetitionsComponent } from '../../providers/dbPetitions'
 import { turnosV0 } from '../../interfaces';
 import { nameAVG } from '../../models/regNameAVG';
 import { prepareArrays } from '../../providers/prepareArrays';
-import { STATE_TURN, ERR_UPS } from '../../constants';
+import { STATE_TURN, ERR_UPS, ANYBODY } from '../../constants';
 import { PAGES } from '../../constants';
+
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'realTime',
@@ -15,7 +17,7 @@ import { PAGES } from '../../constants';
   styleUrls: ['./real-time.component.css']
 })
 export class RealTimeComponent implements OnInit {
-  timeToRefresh: number = 5000 * 60;
+  private timeToRefresh: number = 5000 * 60;
   private lastUpdate = '';
 
   private turnsCompleteds: turnosV0[] = [];
@@ -23,11 +25,15 @@ export class RealTimeComponent implements OnInit {
   private prepareArrays: prepareArrays;
   private stack = false;
   private stateData: number[] = [0,0,0,0,0]; //ausentes, atendidos, esperando, falto, falto con aviso 
+  private nameButton = "Nadie";
+  private arrayPatients: turnosV0[] = []; 
+  private arraySol: turnosV0[] = [];
 
   constructor(
               private _router: Router,
               private appComponent: AppComponent,
-              private dbPetitions:DbPetitionsComponent
+              private dbPetitions:DbPetitionsComponent,
+              private modalService: NgbModal
               ){}
 
 
@@ -35,9 +41,10 @@ export class RealTimeComponent implements OnInit {
     // let backURL = this._router.url;
     // localStorage.setItem('url', backURL);
     
-    this.appComponent.stateFilter = false;
+    this.appComponent.filterVisibility('visible');
+    // this.appComponent.stateFilter = false;
     this.prepareArrays = new prepareArrays();
-    this.appComponent.setNotFilter(false);
+    // this.appComponent.setNotFilter(false);
 	  clearInterval(this.appComponent.interval);
   	if (localStorage.getItem('logged') != null && localStorage.getItem('logged') == 'false')
         this._router.navigate([PAGES.LOGIN]);
@@ -94,6 +101,12 @@ export class RealTimeComponent implements OnInit {
   
   getTotalTurns(){
     return this.totalTurns;
+  }
+
+
+
+  open(content) {
+    this.modalService.open(content);
   }
 
 
@@ -176,11 +189,11 @@ export class RealTimeComponent implements OnInit {
   filterFunction(){
       //FILTROS
     this.totalTurns = this.turnsCompleteds.length;
-
+    this.arraySol = [];
     let arraySolOnlyOlds =  this.filterNewTurns(this.turnsCompleteds);
-    let arraySol = this.appComponent.filter.filter(arraySolOnlyOlds);
-    this.prepareArrays.prepareArrayDoctors(arraySol);
-    this.prepareArrays.doctorsAverage(arraySol);
+    this.arraySol = this.appComponent.filter.filter(arraySolOnlyOlds);
+    this.prepareArrays.prepareArrayDoctors(this.arraySol);
+    this.prepareArrays.doctorsAverage(this.arraySol);
     this.delays = this.prepareArrays.getDelays();     
     this.prepareGraphicDelay(this.delays);
 
@@ -289,6 +302,20 @@ export class RealTimeComponent implements OnInit {
 
   // events
   public chartClicked(e:any):void {
+    this.arrayPatients = []
+    if (e.active != {}){
+      this.nameButton=e.active[0]._model.label;
+      
+        for (var i = 0; i < this.arraySol.length; ++i) {
+          if (this.arraySol[i].campo1.trim().toUpperCase() == this.nameButton.trim().toUpperCase())
+            this.arrayPatients.push(this.arraySol[i]);
+        
+        }
+        
+        document.getElementById("expand").click();
+    }
+    else
+      this.nameButton = ANYBODY;
     console.log(e);
   }
 

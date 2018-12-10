@@ -26,6 +26,8 @@ import { FiltersComponent } from './components/filters/filters.component';
 
 import { dbPetitionsInterceptor } from './providers/dbPetitionsInterceptor';
 
+import { AppRoutingModule } from './app.routing'
+
 //pipes
 import { UPPERCASE } from './pipes/toUpperCase.pipe';
 import { LoadingComponent } from './pages/loading/loading.component';
@@ -33,6 +35,8 @@ import { RealTimeComponent } from './pages/real-time/real-time.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { MedicalHistoryComponent } from './pages/medical-history/medical-history.component';
 import { MyTurnsComponent } from './pages/my-turns/my-turns.component';
+
+
 
 
 
@@ -63,7 +67,8 @@ import { MyTurnsComponent } from './pages/my-turns/my-turns.component';
     NgbModule.forRoot(),
     ChartsModule,
     HttpClientModule,
-    routing
+    routing,
+    AppRoutingModule
   ],
   providers: [
       appRoutingProviders,

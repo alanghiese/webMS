@@ -17,7 +17,11 @@
 		    	 -->
 
 		    <div class="col-md-12" style="margin-left: 15px"> 
-		        <filters *ngIf="isLogged() && !isNotFilter()"></filters>
+		    	<!--  && !isNotFilter() -->
+		    	<!-- id="filters" -->
+		    	<div id="filters">
+		        	<filters *ngIf="isLogged()"></filters>
+		        </div>
 		        <router-outlet></router-outlet>
 		    </div>
 		</div>

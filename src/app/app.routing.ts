@@ -1,3 +1,4 @@
+import { NgModule } from '@angular/core';
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -15,6 +16,7 @@ import { MyTurnsComponent } from './pages/my-turns/my-turns.component';
 
 
 
+
 const appRoutes: Routes = [
 	{path: '', component: EmptyComponent},
 	{path: 'home', component: EmptyComponent},
@@ -28,5 +30,17 @@ const appRoutes: Routes = [
 	{path: '**', component: Error404Component}
 ];
 
+
+
+
 export const appRoutingProviders: any[] = [];
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes, {
+    onSameUrlNavigation: 'reload'
+  })],
+  exports: [RouterModule]
+})
+
+export class AppRoutingModule { }

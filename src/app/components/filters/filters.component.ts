@@ -38,7 +38,7 @@ export class FiltersComponent implements OnInit {
 	private doctors:any = null;
 	private services:any = null;
   private coverages:any = null;
-  private showMeBool = false;
+  private showMeBool = true;
 
 
 	constructor(
@@ -80,6 +80,14 @@ export class FiltersComponent implements OnInit {
     }
 
     hide(){
+      document.getElementById("div").style.visibility="hidden"; 
+      document.getElementById("div").style.maxHeight="0px";
+      this.showMeBool = !this.showMeBool;
+    }
+
+    show(){
+      document.getElementById("div").style.visibility="visible"; 
+      document.getElementById("div").style.maxHeight="none";
       this.showMeBool = !this.showMeBool;
     }
 
@@ -145,7 +153,7 @@ export class FiltersComponent implements OnInit {
 	//Practice
 	onChangeState(value: any) {
 		if (value == STATES.ALL)
-			this.appComponent.filter.selState = STATES.ALL;
+			this.appComponent.filter.selState = STATE_TURN.ALL;
 		else if (value == STATES.MISSING)
       this.appComponent.filter.selState = STATE_TURN.MISSING;
     else if (value == STATES.ATTENDED)
@@ -154,8 +162,10 @@ export class FiltersComponent implements OnInit {
       this.appComponent.filter.selState = STATE_TURN.WAITING;
     else if (value == STATES.F)
       this.appComponent.filter.selState = STATE_TURN.F;
-    else 
+    else  if (value == STATES.FCA)
       this.appComponent.filter.selState = STATE_TURN.FCA;
+    else
+      this.appComponent.filter.selState = STATE_TURN.C
 	}
 
 

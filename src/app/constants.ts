@@ -22,11 +22,13 @@ export const SUBTOPIC = {
 };
 
 export const STATE_TURN = {
+        ALL: 'TODOS',
         MISSING: '',
         ATTENDED: 'A',
         WAITING: 'S',
         F: 'F',
-        FCA: 'F CA'
+        FCA: 'F CA',
+        C: 'C'
 };
 
 export const ANYBODY = "Nadie";

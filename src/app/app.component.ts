@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Filter } from './models/filter';
 import { back } from './constants';
 import { coverageObject, serviceObject } from './interfaces';
-import { PAGES } from './constants';
+import { PAGES,STATE_TURN } from './constants';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +17,7 @@ export class AppComponent implements OnInit{
 	services: any[] = [];
 	coverages: any[] = [];
 	now: boolean = false;
-	notFilter: boolean = localStorage.getItem('url') != null && (localStorage.getItem('url') == '/contact' || localStorage.getItem('url') == '/home');
+	// notFilter: boolean = localStorage.getItem('url') != null && (localStorage.getItem('url') == '/contact' || localStorage.getItem('url') == '/home');
 	interval; //para el intervalo de datos en el momento
 	stateFilter: boolean = false;
 
@@ -27,6 +27,7 @@ export class AppComponent implements OnInit{
 
 
 	constructor(private _router: Router) {
+		// this.filter = new Filter('','','','','','Todos','','')
 
 		// alert(	'FALTA PROGRAMA LOS DOCTORES Y SUS TURNOS TOMADOS/OFRECIDOS' +'\n'+
 		// 		'HACER UN LOGIN MAS SEGURO EN CUANTO A LA ENCRIPTACION DEL PASSWORD' +'\n'+ 
@@ -73,7 +74,7 @@ export class AppComponent implements OnInit{
 		
 
 	    
-	    this.filter = new Filter('','','','','','Todos','','');
+	    this.filter = new Filter('','','','','',STATE_TURN.ALL,'','');
 
 
 	}
@@ -90,14 +91,22 @@ export class AppComponent implements OnInit{
 	// 	this.emptyScreen = value;
 	// }
 
-	
-	isNotFilter():boolean{
-		return this.notFilter;
-	}
 
-	setNotFilter(value: boolean){
-		this.notFilter = value;
+	filterVisibility(v){
+		document.getElementById("filters").style.visibility=v;
+		if (v=='hidden')
+			document.getElementById("filters").style.maxHeight='0px';
+		else
+			document.getElementById("filters").style.maxHeight='none';
 	}
+	
+	// isNotFilter():boolean{
+	// 	return this.notFilter;
+	// }
+
+	// setNotFilter(value: boolean){
+	// 	this.notFilter = value;
+	// }
 
 	setCoverages(c:coverageObject[]){
 		this.coverages = [];

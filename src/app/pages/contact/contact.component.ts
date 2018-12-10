@@ -22,9 +22,10 @@ export class ContactComponent implements OnInit {
 	  // localStorage.setItem('url', backURL);
     
 	  clearInterval(this.appComponent.interval);
-    this.appComponent.setNotFilter(true);
+    this.appComponent.filterVisibility('hidden');
+    // this.appComponent.setNotFilter(true);
     setTimeout(() => this._router.navigate([PAGES.CONTACT]),1);
-    this.appComponent.stateFilter = false;
+    // this.appComponent.stateFilter = false;
 
 
   }

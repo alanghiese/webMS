@@ -48,6 +48,7 @@ export interface Client {
   logoDefault: string,        // logo por default
   logoChicoDefault: string,   // logo por default (chico)
   turnos: AppointmentQuery    // turnos del dia actual (sin campo "msg")
+  otracosa: any;
 }
 
 

@@ -24,7 +24,7 @@
 					</select>
 				</div>
 				<button class="btn btn-warning mb-3" style="background-color: rgb(255, 179, 102); border: 0px; color: white; color:black; margin-left: 10px"
-				(click) = "refresh()" >
+				(click) = "refresh()"  ngbPopover="Actualizar ahora" triggers="mouseenter:mouseleave">
 					Actualizar ahora
 				</button>
 			</div>
@@ -63,6 +63,7 @@
 								    (chartHover)="chartHovered($event)"
 								    (chartClick)="chartClicked($event)">
 							    </canvas>
+							    <!-- (chartClick)="chartClicked($event)" -->
 							</div>
 						  
 						</div>
@@ -97,10 +98,51 @@
 
 		</div>
 
+		<button (click)="open(modal2)" id="expand" hidden="true">open modal</button>
+
+
+		<ng-template #modal2 let-c="close" let-d="dismiss">
+		  <div class="modal-header">
+		    <h4 class="modal-title">Informacion expandida:</h4>
+		    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+		      <span aria-hidden="true">&times;</span>
+		    </button>
+		  </div>
+		  <div class="modal-body">
+		    
+		  	<table class="table table-hover">
+			  <thead>
+			    <tr>
+			      <th>Paciente</th>
+			      <th>Fecha del turno</th>
+			      <th>Hora del turno</th>
+			      <th>Hora de llegada</th>
+			      <th>Hora de atencion</th>
+			    </tr>
+			  </thead>
+			  <tbody style="font-size: 10px">
+			    <tr *ngFor="let data of arrayPatients">
+			      <td> {{ data.nomUsuario }} </td>
+			      <td> {{ data.fecha1 | date: "dd/MM/yyyy"}} </td>
+			      <td> {{ data.campo2 }} </td>
+			      <td> {{ data.campo3 }}</td>
+			      <td> {{ data.campo4 }}</td>
+			    </tr>		
+			  </tbody>
+			</table>
+
+
+		  </div>
+		  <!-- <div class="modal-footer">
+		    <button type="button" class="btn btn-secondary" >Cerrar</button>
+		  </div> -->
+		</ng-template>
+
+
 
 
 		<!-- Modal -->
-		<div class="modal fade bd-example-modal-lg sizeBox" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal fade bd-example-modal-lg sizeBox" #exampleModal id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		  <div class=" modal-dialog modal-lg modify">
 		    <div class="modal-content ">
 		      <div class="modal-header">

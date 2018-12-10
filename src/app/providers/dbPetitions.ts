@@ -60,7 +60,7 @@ export class DbPetitionsComponent {
     * Conecta a la fuente de datos especificada
     * @param dataSource - nombre de la conexión de la fuente de datos
     */
-  connectToClient(dataSource: string): Observable<Client> {
+  connectToClient(dataSource: string): Observable<any> {
     let params = new HttpParams()
       .set("cliente", dataSource);
 

@@ -1,4 +1,6 @@
 import { turnosV0 } from '../interfaces';
+import { STATE_TURN } from '../constants';
+
 
 
 export class Filter{
@@ -51,7 +53,7 @@ export class Filter{
 
 	public filterState(full: turnosV0[]){
   		let array: any[] = [];
-  		if (this.selState != 'Todos'){
+  		if (this.selState != STATE_TURN.ALL){
 			for (let k = 0; k < full.length ; k++) {
 				if (full[k].campo5.trim().toUpperCase() == this.selState.trim().toUpperCase()){
 					array.push(full[k]);
@@ -86,7 +88,7 @@ export class Filter{
   		
   		if (this.excludeSurname != ''){
 			for (let k = 0; k < full.length ; k++) {
-				if (full[k].nomUsuario.toUpperCase() != this.excludeSurname.toUpperCase()){
+				if (!full[k].nomUsuario.toUpperCase().includes(this.excludeSurname.toUpperCase())){
 					array.push(full[k]);
 				}
 			}
@@ -102,7 +104,7 @@ export class Filter{
   		
   		if (this.foundSurname != ''){
 			for (let k = 0; k < full.length ; k++) {
-				if (full[k].nomUsuario.toUpperCase() == this.foundSurname.toUpperCase()){
+				if (full[k].nomUsuario.toUpperCase().includes(this.foundSurname.toUpperCase())){
 					array.push(full[k]);
 				}
 			}

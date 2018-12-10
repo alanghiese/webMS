@@ -12,7 +12,8 @@
   
 
       <button *ngIf="!isLogged()" class="userConnected" [routerLink] = "['']" 
-                                    style=" border-radius: 5px !important;" >
+                                    style=" border-radius: 5px !important;" 
+                                    placement="bottom" ngbPopover="Entrar" triggers="mouseenter:mouseleave"  >
         Entrar
       </button>
 
@@ -25,15 +26,17 @@
           Estadisticas
         </button>
 
-        <button class="userConnected" [routerLink] = "['my_turns']" >
+        <button class="userConnected" [routerLink] = "['my_turns']" 
+                                              style=" border-top-right-radius: 5px !important;
+                                              border-bottom-right-radius: 5px !important">
           Mis Turnos
         </button>
 
-        <button class="userConnected" [routerLink] = "['medical_history']" 
+        <!--<button class="userConnected" [routerLink] = "['medical_history']" 
                                       style=" border-top-right-radius: 5px !important;
                                               border-bottom-right-radius: 5px !important">
           Historiales Clinicos
-        </button>
+        </button>-->
       </div>
 
 
@@ -41,7 +44,7 @@
 
     <div *ngIf="clientsExists() && isLogged()" class="input-group" style=" max-width: 250px;">
       <div class="btn-group">
-        <button type="button" class="btn dropdown-toggle dropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn dropdown-toggle dropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="usr">
           Conectado a <strong>{{ this.user }}</strong>
         </button>
         <div class="dropdown-menu dropdown-menu-right dropdownContainer">
